@@ -1,0 +1,79 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+1)
+	"man -k number of lines"
+	"nl /etc/passwd"
+     1	root:x:0:0::/root:/bin/bash
+     2	bin:x:1:1:bin:/bin:/bin/false
+     3	daemon:x:2:2:daemon:/sbin:/bin/false
+     4	adm:x:3:4:adm:/var/log:/bin/false
+     5	lp:x:4:7:lp:/var/spool/lpd:/bin/false
+     6	sync:x:5:0:sync:/sbin:/bin/sync
+     7	shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+     8	halt:x:7:0:halt:/sbin:/sbin/halt
+     9	mail:x:8:12:mail:/:/bin/false
+    10	news:x:9:13:news:/usr/lib/news:/bin/false
+    11	uucp:x:10:14:uucp:/var/spool/uucppublic:/bin/false
+    12	operator:x:11:0:operator:/root:/bin/bash
+    13	games:x:12:100:games:/usr/games:/bin/false
+    14	ftp:x:14:50::/home/ftp:/bin/false
+    15	smmsp:x:25:25:smmsp:/var/spool/clientmqueue:/bin/false
+    16	mysql:x:27:27:MySQL:/var/lib/mysql:/bin/false
+    17	rpc:x:32:32:RPC portmap user:/:/bin/false
+    18	sshd:x:33:33:sshd:/:/bin/false
+    19	gdm:x:42:42:GDM:/var/state/gdm:/bin/bash
+    20	oprofile:x:51:51:oprofile:/:/bin/false
+    21	apache:x:80:80:User for Apache:/srv/httpd:/bin/false
+    22	messagebus:x:81:81:User for D-BUS:/var/run/dbus:/bin/false
+    23	haldaemon:x:82:82:User for HAL:/var/run/hald:/bin/false
+    24	pop:x:90:90:POP:/:/bin/false
+    25	nobody:x:99:99:nobody:/:/bin/false
+2)
+locate inetd
+ls -l /etc/inetd.conf 
+-rw-r--r-- 1 root root 4588 Aug 15  2011 /etc/inetd.conf
+
+3)
+lab68> man -k disk space usage
+lab68> which df
+/usr/bin/df
+lab68> df
+Filesystem         1K-blocks     Used Available Use% Mounted on
+/dev/root           69231284  3863636  61850868   6% /
+tmpfs                1001832        0   1001832   0% /dev/shm
+134.139.248.17:/u3 480720640  9027840 447273728   2% /net/cheetah/u3
+134.139.248.17:/u4 480720640 55233024 401068288  13% /net/cheetah/u4
+
+4)
+lab68> cd /etc/X11
+lab68> ls xorg*
+xorg.conf-vesa
+
+xorg.conf.d:
+
+5)
+lab68> cd /usr/lib64
+lab68> ls *Xfontcache*
+libXfontcache.la*  libXfontcache.so@  libXfontcache.so.1@  libXfontcache.so.1.0.0*
+
+6)
+lab68> grep cpuinfo *
+...
+lab68> grep MHz cpuinfo 
+cpu MHz		: 2992.195
+cpu MHz		: 2992.195
+
+7)
+jaguar> cd /var/log/
+jaguar> ls -ltr
+-rw-r--r-- 1 root root    37627344 Jan 22 18:21 syslog
+-rw-r--r-- 1 root root     4751001 Jan 22 18:21 messages
+-rw-r--r-- 1 root root     5926724 Jan 22 18:21 lastlog
+
+8)
+less +G /var/log/messages
+Jan 22 18:24:17 jaguar sshd[5310]: Accepted password for csa476zz from 134.139.248.17 port 47593 ssh2
+Jan 22 18:25:17 jaguar sshd[5379]: Accepted password for csa476v1 from 134.139.248.73 port 53484 ssh2
+Jan 22 18:25:38 jaguar sshd[4959]: Received disconnect from 134.139.248.67: 11: disconnected by user
