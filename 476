@@ -1,0 +1,22 @@
+export PATH=$PATH:/usr/bin/compass
+#COLORS AND SHIT
+export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)\[\033[00m\] $ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+
+#GIT COMPLETION, YO. BE IN A GIT REPO, DO SOME GIT COMMANDS, HIT TAB. SEE THE MAGIC.
+test -f ~/.git-completion.bash && . $_
+
+parse_git_branch() {
+
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+
+}
+
+#ALIAS
+alias goto_dev="clear; cd /Users/Cody/dev"
+
+#PATHS ... (an example, you can remove this)
+#export MONGO_PATH=/usr/local/bin/mongo
+#export PATH=$PATH:$MONGO_PATH/bin
+alias 476="ssh -p 2022 csa476u1@cheetah.cecs.csulb.edu"
