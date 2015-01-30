@@ -1,0 +1,47 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+1)
+--Edited the /etc/passwd file
+bob:x:13101:71:HW03:/home/bob:/bin/csh
+
+sue:x:13102:72:HW03:/home/sue:/bin/csh
+
+--Edited the /etc/shadow file
+bob:*:9797:0:::::
+sue:*:9797:0:::::
+
+--Create the password for bob and sue
+passwd bob 
+
+passwd sue
+
+cd ~djv
+
+cd /etc/
+
+--Copy the .login and .cshrc into the skel folder
+cp .login /etc/skel/
+
+cp .cshrc /etc/skel/
+
+--Move to the skel folder
+cd ~/etc/skel/
+
+--Create the demo file
+vim demo
+
+--Make the message
+"Hi there...."
+
+--Copy the skel folder into bob and sue
+cp -r /etc/skel/ ~bob
+
+cp -r /etc/skel/ ~sue
+
+--Change the home directory permissions
+chmod 755 ~bob
+chmod 755 ~sue
+
+
