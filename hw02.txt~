@@ -1,0 +1,52 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+1) id -u volper
+100
+
+2) id -g volper
+30
+
+3) echo ~volper
+/net/aardvark/u1/volper
+
+4) 
+/bin/csh
+
+5) 
+faculty:x:30:
+
+6) id -G djv
+30 10 12 100
+
+7) 
+guest:x:60:
+cecsu:x:71:
+cecsg:x:72:
+
+8) 
+root:$1$BB2sRjzi$Ik9DrbLXMknCgOtwXKFBE/:16457:0:::::
+
+9) 
+January, 2015
+
+10)
+chage -l root
+
+11)
+It is possible that the encryption strategy used to encrypt the password could be cracked in the future like MD5 was and give an unauthorized user access to encrypted passwords.
+
+12) vim ~/.cshrc
+3
+alias lf ls -aCF
+alias l ls -al
+alias term 'set noglob ; eval `tset -rsQ \!*` ; set glob'
+
+13)echo $PATH
+/net/cheetah/u3/c/csa476/u1/bin:/usr/ucb:/usr/bin:/bin:/etc:/usr/etc:/usr/cecs/bin:/sbin:/usr/sbin:/usr/bin/X11:/usr/local/bin:.
+12
+
+14) 
+alias p="ps aux"
+

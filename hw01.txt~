@@ -73,3 +73,7 @@ jaguar> ls -ltr
 -rw-r--r-- 1 root root     5926724 Jan 22 18:21 lastlog
 
 8)
+less +G /var/log/messages
+Jan 22 18:24:17 jaguar sshd[5310]: Accepted password for csa476zz from 134.139.248.17 port 47593 ssh2
+Jan 22 18:25:17 jaguar sshd[5379]: Accepted password for csa476v1 from 134.139.248.73 port 53484 ssh2
+Jan 22 18:25:38 jaguar sshd[4959]: Received disconnect from 134.139.248.67: 11: disconnected by user
