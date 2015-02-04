@@ -1,0 +1,19 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+1)
+#!/bin/csh
+date >> cshlog.txt
+ps aux | grep csh | grep -v "cpeek" >> cshlog.txt
+
+
+2)
+#!/bin/csh
+if( "$1" != "" && -d $1 ) then
+	foreach i ('ls $1')
+		echo $i
+	end
+else
+	echo "Sorry"
+endif 
