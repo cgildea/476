@@ -1,0 +1,74 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+1)
+fdisk /dev/sdb
+Command (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x01e05c57
+
+   Device Boot      Start         End      Blocks   Id  System
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4, default 1): 1
+First sector (2048-58633343, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-58633343, default 58633343): +3GB
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4, default 2): 2
+First sector (5861423-58633343, default 5861423): 
+Using default value 5861423
+Last sector, +sectors or +size{K,M,G} (5861423-58633343, default 58633343): +27GB
+
+ommand (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x26292ac9
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048     5861422     2929687+  83  Linux
+/dev/sdb2         5861423    58595797    26367187+  83  Linux
+
+Command (m for help): t   
+Partition number (1-4): 1
+Hex code (type L to list codes): 82
+Changed system type of partition 1 to 82 (Linux swap)
+
+Command (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x26292ac9
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048     5861422     2929687+  82  Linux swap
+/dev/sdb2         5861423    58595797    26367187+  83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+

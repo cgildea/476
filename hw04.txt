@@ -11,9 +11,113 @@ ps aux | grep csh | grep -v "cpeek" >> cshlog.txt
 2)
 #!/bin/csh
 if( "$1" != "" && -d $1 ) then
-	foreach i ('ls $1')
-		echo $i
-	end
+	if( -x $file )
+		foreach i ('ls $1')
+			echo $i
+		end
+	endif
 else
 	echo "Sorry"
 endif 
+
+
+3)
+csa476u1@cheetah:~$ ls -l /dev/root
+lrwxrwxrwx 1 root root 4 Jan 12 20:19 /dev/root -> sda2
+csa476u1@cheetah:/$ df
+/dev/sdb1                             480720616  9057372 447243968   2% /u3
+/dev/sdc1                             480720616 55250604 401050736  13% /u4
+
+4)
+csa476u1@cheetah:/$ df
+Filesystem                            1K-blocks     Used Available Use% Mounted on
+/dev/root                             432649064 12250176 398421544   3% /
+tmpfs                                   1001832        0   1001832   0% /dev/shm
+/dev/sdb1                             480720616  9031012 447270328   2% /u3
+/dev/sdc1                             480720616 55250604 401050736  13% /u4
+jaguar:/sdb/slack13.37-64/slackware64 153836544 11559680 134462208   8% /mnt/nate
+aardvark.cecs.csulb.edu:/u1           432649216 15822848 394849280   4% /net/aardvark/u1
+--
+csa476u1@cheetah:/$ df -h
+Filesystem                             Size  Used Avail Use% Mounted on
+/dev/root                              413G   12G  380G   3% /
+tmpfs                                  979M     0  979M   0% /dev/shm
+/dev/sdb1                              459G  8.7G  427G   2% /u3
+/dev/sdc1                              459G   53G  383G  13% /u4
+jaguar:/sdb/slack13.37-64/slackware64  147G   12G  129G   8% /mnt/nate
+aardvark.cecs.csulb.edu:/u1            413G   16G  377G   4% /net/aardvark/u1
+
+5) The filesystem type is ext4 and is read/write
+csa476u1@cheetah:/$ mount
+/dev/root on / type ext4 (rw,relatime,barrier=1,stripe=1,data=ordered)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+tmpfs on /dev/shm type tmpfs (rw)
+/dev/sdb1 on /u3 type ext4 (rw)
+/dev/sdc1 on /u4 type ext4 (rw)
+nfsd on /proc/fs/nfs type nfsd (rw)
+nfsd on /proc/fs/nfsd type nfsd (rw)
+jaguar:/sdb/slack13.37-64/slackware64 on /mnt/nate type nfs (rw,addr=134.139.248.18)
+aardvark.cecs.csulb.edu:/u1 on /net/aardvark/u1 type nfs (rw,soft,intr,nsfvers=2,sloppy,vers=4,addr=134.139.248.3,clientaddr=134.139.248.2)
+
+6)
+csa476u1@cheetah:~$ du -h
+4.0K	./476/.git/branches
+8.0K	./476/.git/refs/heads
+12K	./476/.git/refs/remotes/origin
+16K	./476/.git/refs/remotes
+4.0K	./476/.git/refs/tags
+32K	./476/.git/refs
+8.0K	./476/.git/logs/refs/heads
+8.0K	./476/.git/logs/refs/remotes/origin
+12K	./476/.git/logs/refs/remotes
+24K	./476/.git/logs/refs
+32K	./476/.git/logs
+8.0K	./476/.git/objects/ca
+8.0K	./476/.git/objects/63
+8.0K	./476/.git/objects/f0
+4.0K	./476/.git/objects/pack
+8.0K	./476/.git/objects/a1
+8.0K	./476/.git/objects/12
+8.0K	./476/.git/objects/83
+8.0K	./476/.git/objects/f3
+8.0K	./476/.git/objects/3e
+8.0K	./476/.git/objects/9d
+8.0K	./476/.git/objects/cf
+8.0K	./476/.git/objects/66
+8.0K	./476/.git/objects/2c
+8.0K	./476/.git/objects/6d
+12K	./476/.git/objects/c1
+12K	./476/.git/objects/89
+8.0K	./476/.git/objects/29
+8.0K	./476/.git/objects/b4
+8.0K	./476/.git/objects/54
+8.0K	./476/.git/objects/09
+8.0K	./476/.git/objects/ab
+8.0K	./476/.git/objects/a8
+8.0K	./476/.git/objects/3a
+4.0K	./476/.git/objects/info
+8.0K	./476/.git/objects/37
+8.0K	./476/.git/objects/5c
+8.0K	./476/.git/objects/a2
+220K	./476/.git/objects
+48K	./476/.git/hooks
+8.0K	./476/.git/info
+380K	./476/.git
+444K	./476
+20K	./.ssh
+520K	.
+
+7)
+/dev/sda1        swap             swap        defaults         0   0
+
+
+8) dumpe2fs /dev/sda2 | less
+Filesystem state: not clean
+Block size: 4096
+Groups: 537 (0 - 536)
+
+9)fdisk -l
+Device Boot	Start		End		Blocks		Id	System
+/dev/sda1	2048		15630148	7814050+	82	Linux swap
+/dev/sda2	15630149	156301487	70335669+	83	Linu
