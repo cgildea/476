@@ -72,6 +72,7 @@ The partition table has been altered!
 Calling ioctl() to re-read partition table.
 Syncing disks.
 
+1b)
 root@lab68:/dev# mke2fs sdb2
 root@lab68:/dev# mkdir /newdrive
 root@lab68:/dev# mount -w /dev/sdb2 /newdrive

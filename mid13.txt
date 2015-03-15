@@ -1,0 +1,163 @@
+CECS 476, Spring 2013, Midterm, Dennis Volper Name:
+Open book, open notes, access to your the machine you administer. (All question 8 points, 96 total points possible)
+
+1) The user sue wishes to set her background to solid blue regardless of which window manager she chooses to use. Give the file and the line she needs to add to that file.
+
+In .xinitrc:
+
+xsetroot -solid yellow
+xterm -n "xterm" -g 80x56+0+0 \#+420+764 -sb -sl 300 &
+twm
+#fvwm2
+
+When any user chooses the twm window manager you wish modify the default configuration for that window manager to use Shift-left-click to change the background color. What file would you need to change? (Give the full path.) (Just give the file name, you don’t need to give the change.)
+
+/usr/share/X11/twm/system.twmrc ?? Maybe
+
+What link controls the selection of a default window manager for all users on the system? (Of course users can override this.)
+
+/etc/X11/xinit/xinitrc
+/etc/X11/xinit/xinitrc.wmaker
+
+2) Give the names of two stream editors that are available on your machine. Also give the command(s) you used to find out this information.
+
+man -k stream | grep stream editor
+sed, ed, psed, red
+
+Give the full command (with arguments) that will tell you which libraries have been recently installed on your system.
+
+ls -t /usr/lib64
+
+In what directory would you most likely find the following: A) What IO ports on your system were found by the kernel:
+
+/dev/
+
+B) Log file for the mysql database:
+
+/var/log
+
+3) What command would you use to build a new kernel (assuming you have already modified the configuration file).
+
+make bzImage -
+
+In the main labs we boot the /boot/vmlinuz kernel with from the boot sector on /dev/sda with /dev/sda1 as the root partition. Give a minimal lilo.conf file to do this. (Note: you are not allowed to access those machines to answer this question.
+
+image = /boot/bzImage
+  root = /dev/sda1
+  label = bz
+  read-only 
+
+4) You have an /dev/sdc1 swap partion you wish to use. to Give the commands to place the swap structure
+into parttion and to activate the swapping on the partition by hand (don’t use fstab).
+
+mkswap /dev/sdc1
+swapon /dev/sdc1
+
+Give the exact command (with options) to list all processes being run from /dev/tty1. (You are expected to do a manual lookup for the options.)
+
+ps -t tty1
+
+5) A machine has internet number 128.139.35.122 and netmask 255.255.255.252; give it’s subnet/cable number and subnet broadcast address.
+
+
+
+For looking up host names/numbers you wish to use your the information in you /etc/hosts before you attempt to use DNS. Give the name of the file you need to modify and the new value of the entry that you need to change in that file.
+
+/etc/nsswitch
+hosts: files dns
+
+You want your DNS server to be 142.15.22.99. Give the file name and the entry to do this.
+
+/etc/resolv.conf
+change nameserver to 142.15.22.99
+
+6) Your IP number is 128.139.35.122 and netmask is 255.255.255.252; give the exact command to configure your (only) network interface.
+
+ifconfig eth0 128.139.35.122 netmask 255.255.255.252
+
+Your default (and only) gateway is 128.139.35.121; give the exact command to configure your machine to use this gateway.
+
+route add default gw 128.139.35.121
+
+You wish to enable finger. Give name of the file and the exact line that needs to be uncommented. (Hint: look in the file on your machine and find the line.)
+
+/etc/inetd.conf 
+finger stream  tcp     nowait  nobody  /usr/sbin/tcpd  in.fingerd -u
+
+You wish do allow finger to be accessed only from panther.net.cecs.csulb.edu. Give file names and modifications to do this.
+
+/etc/hosts.allow
+in.telnetd: panther.net.cecs.csulb.edu
+
+7) You have an /dev/sdc2 Linux native partion you wish to add to your machine as the /disk2. Give the exact command to build a Linux file ext2 system on that partition, the command to make the mount point available and the fstab entry to that partition automatically mount at boot time.
+
+mke2fs sdc2
+mkdir /disk2
+mount -w /dev/sdc2 /disk2
+
+in /etc/fstab:
+/dev/sdc2        /disk2        ext2        defaults         1   1
+
+8) You wish permanently run the X11 window system, even for login’s. This means you need to start X11 at boot time. To do this you will need to modify the default runlevel. Give the name of the file you need to modify and the modification (one line) you will need to make to that file (Hint: Look at that file on your machine to find the line.)
+
+HW 7
+
+You need to reboot one of your servers to use a new Linux kernel. (You have already installed the kernel and modified the lilo.conf; all you need is the reboot.) However because classes are in you want the reboot to happen at 2:00am. Give the command you would run and the contents of any file associated with that command.
+
+
+
+You want to get a new copy of your system’s default window manager file (/etc/X11/xinit/xinitrc.fvwm2) from /net/cheetah/u4/backups/xinitrc.fvwm2 once a week (Saturday 2:00am) Explain how you would do this. Give the command(s) and details.
+
+
+
+9) A user wants to change their default umask (whatever that is). What files could the user edit to do this?
+HW 2 or 3
+~/.cshrc
+umask ...
+
+You are using the database a lot and are tired of typing /usr/local/share/ in front of all the database commands. What file would you need to change and what change would you need to make?
+
+~/.cshrc
+set path=( ... /usr/local/share/ )
+
+You need to add a group to your local machine for the xyzzy project, the number of this new group should be 4321. What file do you need to modify and what line to you need to add?
+
+/etc/group
+xyzzy:x:4321
+
+10) You want control-y to be the key that interrupts (intr) a program. Give the command to do this.
+HW 10
+
+
+Give the command to backup /home to a file called /backups/homes.tgz.
+
+
+
+Give the command to decrypt the exam.cr file.
+
+
+
+11) The user sam has a home directory of /home/sam, a shell of /bin/bash, a user number of 4321 and a base group of 2222. Give the password and shadow entries for sam.
+HW 3
+
+
+
+Who should own /home/sam and it’s contents?
+
+
+
+12) Give a command that would list your disks and their partitions?
+
+df
+
+Write a script that will list all files (not directories) in /etc that have modification dates newer than the file /timestamp.
+
+#!/bin/bash
+for i in `ls .`
+do
+    if [ tmp.txt -nt $i ]
+    then
+            echo $i
+    fi
+done
+
