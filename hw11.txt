@@ -1,0 +1,138 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+This project is about general networking. You will be asked about existing configurations. In general the
+answers to the questions can be found on the machine for which you are an administrator. No root
+priviledges should be necessary to answer any of the questions.
+Questions about network drivers. (visit drivers/net in the kernel source code)
+1) Support for several types of 3-Com (3cXXX) cards are available for the unix kernel, list 4 such cards.
+
+cd /usr/src/linux/drivers/net/
+ls 3c*
+3c501.c 
+3c503.c 
+3c505.c 
+3c507.c  
+
+2) The etherworks 3 (ewrk3) driver supports what three cards?
+
+grep card ewrk3.c
+
+DE203
+DE204
+DE205
+
+3) On a Parallel line cable running PLIP, what are pins 18,19 and 20?
+
+grep -r 18 .
+
+Pins 18, 19, and 20 appear to be extra grounds.
+
+
+Questions about configuration of TCP/IP. (examine the front of your machine, also run the ifconfig and
+netstat commands)
+4) Use a command to find out the fully qualified hostname of your machine? What is the fully qualified
+hostname and what command did you use to find this out?
+
+lab68> hostname --fqdn
+lab68.net.cecs.csulb.edu
+
+
+5) What is the hardware (ethernet) address of your machine?
+
+lab68> ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr 00:22:4d:4c:79:03 
+...
+
+the hardware address is:
+HWaddr 00:22:4d:4c:79:03
+
+
+6) What does it use for its broadcast address?
+
+lab68> ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr 00:22:4d:4c:79:03  
+          inet addr:134.139.248.68  Bcast:134.139.248.95  Mask:255.255.255.224
+
+Bcast:134.139.248.95
+
+
+7) The routing table for your machine contains one gateway entry. What is that entry?
+
+lab68> route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+134.139.248.64  *               255.255.255.224 U     0      0        0 eth0
+loopback        *               255.0.0.0       U     0      0        0 lo
+default         jaguar.net.cecs 0.0.0.0         UG    1      0        0 eth0
+
+
+8) What netmask does the loopback interface use?
+
+255.0.0.0 (See above)
+
+Question about arp. Ping two other of the lab machines.
+9) What entries are in the arp table? Give the full entries including the hardware addresses.
+
+arp -n
+Address			HWtype	HWaddress		Flags Mask		Iface
+134.139.248.65		ether	00:a0:cc:29:d0:70	C			eth0
+134.139.248.67		ether	00:22:4d:4c:79:82	C			eth0
+
+
+Questions about the resolver. Examine /etc/resolv.conf and /etc/nsswitch.conf; read the manual
+entry for resolv.conf.
+10) What methods (NIS, DNS/bind, hosts file) does your machine use to locate a hostname and in what
+order?
+
+In /etc/nsswitch:
+hosts: files dns
+
+
+11) What other machine does your machine use for DNS (resolver)?
+
+In /etc/resolv.conf:
+nameserver 134.139.248.17
+
+12) Your machine allows certain other machines to be accessed without typing the entire (fully qualified)
+host name. Which hostnames can be accessed using this shorthand.
+
+*.net.cecs.csulb.edu
+*.cecs.csulb.edu
+*.ics.uci.edu
+
+
+Questions about the route table on panther.
+13) What two gateways (routers) does panther know about?
+
+csa476u1@panther:~$ /sbin/route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+134.139.248.16  *               255.255.255.240 U     0      0        0 eth0
+localnet        jaguar.net.cecs 255.255.255.224 UG    0      0        0 eth0
+134.139.248.64  jaguar.net.cecs 255.255.255.224 UG    0      0        0 eth0
+loopback        *               255.0.0.0       U     0      0        0 lo
+default         cheetah.cecs.cs 0.0.0.0         UG    1      0        0 eth0
+
+jaguar.net.cecs and cheetah.cecs.cs
+
+14) What route entry on panther allows panther to talk to the machine you administer? Hint: what
+network address and subnet mask is your machine part of?
+
+134.139.248.64
+
+255.255.255.224
+
+
+Question about netmasks.
+15) A machine has internet number 134.139.43.56 and netmask 255.255.255.0; give its subnet
+number (network name) and subnet broadcast address.
+
+The subnet number is 0 and the subnet broadcast address is 255.
+
+16) A machine has internet number 134.139.201.134 and netmask 255.255.255.224; give its subnet
+number (network name) and subnet broadcast address.
+
+The subnet number is 128 and the subnet broadcast address is 159.

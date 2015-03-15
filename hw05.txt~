@@ -72,3 +72,45 @@ The partition table has been altered!
 Calling ioctl() to re-read partition table.
 Syncing disks.
 
+root@lab68:/dev# mke2fs sdb2
+root@lab68:/dev# mkdir /newdrive
+root@lab68:/dev# mount -w /dev/sdb2 /newdrive
+
+root@lab68:/dev# df -h /newdrive/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb2        25G   44M   24G   1% /newdrive
+
+2)
+root@lab68:/dev# vim /etc/fstab
+--I added this line into the fstab file:
+/dev/sdb2        /newmount        ext2        defaults         1   1
+
+root@lab68:~# df -h /newdisk/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb2        25G   44M   24G   1% /newdisk
+
+
+3)
+root@lab68:/dev# mke2fs fd0
+root@lab68:/dev# mkdir /mnt/extdisk
+root@lab68:/dev# mount -w /dev/fd0 /mnt/extdisk
+root@lab68:/dev# vim /etc/fstab
+--I added this line into the fstab file:
+/dev/fd0        /mnt/extdisk        ext2        user         0   0
+root@lab68:/dev# chmod 777 /mnt/extdisk
+
+4)
+root@lab68:/dev# umount /dev/fd0
+root@lab68:/dev# fsck /dev/fd0
+fsck from util-linux 2.19
+e2fsck 1.41.14 (22-Dec-2010)
+/dev/fd0: clean, 23/184 files, 55/1440 blocks
+
+root@lab68:/dev# chmod 755 /mnt
+
+
+
+
+
+
+

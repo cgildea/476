@@ -1,0 +1,26 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+1)
+s0:12345:respawn:/sbin/agetty -L ttyS0 9600 vt100
+
+2)
+ca::ctrlaltdel:/sbin/shutdown -t5 -r now
+
+Use init q in the console after saving the file to apply the changes
+
+3)
+ca::ctrlaltdel:/sbin/shutdown -t5 -r now
+
+init waits 5 seconds before using a kill -9 command on processes
+
+4)
+* * * * * ls >> ~/lstemp.txt
+
+5)
+at 18:58
+at> ls >> ~/ls2tmp.txt
+
+

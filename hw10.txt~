@@ -1,0 +1,121 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+Purpose: This assignment covers backups and termcap.
+Backups --
+tar: Make a tar back up of the home directory of your user (bob) to your removable device (floppy or
+flashdrive). Confirm that the backup was made using the t option.
+Note: This is a tar device not a tar file. It does not have a directory structure, so no mkfs should be done;
+all information on the device before the tar will be destroyed. After you do the backup, your device will
+look like a tape.
+
+1) Submit: the sequence of commands from login up through the tar command that lists the tar contents.
+tar, extracting an archive: Login as root, this puts you in /root. Extract the contents of the
+compressed tar file ~djv/giant.tgz, preserving the permissions. (Note, this should build a directory called
+giant inside /root.)
+
+
+root@lab68:/dev# tar -cf /dev/fd0 ~bob/
+tar: Removing leading `/' from member names
+root@lab68:/dev# tar -tf /dev/fd0
+home/bob/
+home/bob/.xsession
+home/bob/.screenrc
+home/bob/.login
+home/bob/.cshrc
+home/bob/demo
+home/bob/cshlog.txt
+home/bob/cpeek.txt
+home/bob/.viminfo
+home/bob/cpeek.txt~
+home/bob/clook.csh
+home/bob/cshlog.txt~
+home/bob/lstemp.txt
+home/bob/clook.csh~
+home/bob/ls2tmp.txt
+home/bob/test.txt
+home/bob/ls2tmp.txt~
+home/bob/.fvwm/
+home/bob/.xinitrc
+home/bob/.Xauthority
+home/bob/.xinitrc~
+
+root@lab68:~# tar -xpf ~djv/giant.tgz
+root@lab68:~# ls
+giant/
+
+2) Submission: The exact command you used. Inside giant there are three subdirectories, submit: the
+names of these three directories. (This lets me know you unwound the archive.) Pick any of these
+subdirectories, you will find a file inside it, submit: the name of the file, who owns the file, what group the
+file belongs to and the access rights (the rwx stuff) for the file. (This lets me know you preserved
+permissions.)
+
+root@lab68:~# cd giant/
+root@lab68:~/giant# ls
+fee/  fie/  foe/
+root@lab68:~/giant# cd foe/
+root@lab68:~/giant/foe# ls -al
+total 12
+drwxr-xr-x 2 djv faculty 4096 Feb 23  1998 ./
+drwxr-xr-x 5 djv faculty 4096 Feb 23  1998 ../
+-rw-r--r-- 1 djv faculty   10 Feb 23  1998 fum
+
+Name: fum
+Owner: djv
+Group: faculty
+Access Rights: -rw-r--r-- 
+
+As root, extract the contents of the compressed tar file ~djv/house.txz, preserving the permissions.
+(Note, this should build a directory called house inside /root.)
+
+3) Submission: The exact command you used. The contents of the file called wolf.
+
+root@lab68:~# tar -xpf ~djv/house.txz
+root@lab68:~# ls
+giant/  house/ 
+root@lab68:~# cd house/
+root@lab68:~/house# ls
+bricks/  sticks/  straw/
+root@lab68:~/house/bricks# cat wolf 
+Huff and puff
+
+Encryption: The file is encrypted using gpg with the passphrase troll. Decrypt the file ~djv/joe.cr.
+4) Submit: the contents of the file.
+
+root@lab68:~/house/bricks# gpg -d ~djv/joe.cr 
+gpg: directory `/root/.gnupg' created
+gpg: new configuration file `/root/.gnupg/gpg.conf' created
+gpg: WARNING: options in `/root/.gnupg/gpg.conf' are not yet active during this run
+gpg: keyring `/root/.gnupg/secring.gpg' created
+gpg: keyring `/root/.gnupg/pubring.gpg' created
+gpg: CAST5 encrypted data
+gpg: encrypted with 1 passphrase
+Hi there joe
+gpg: WARNING: message was not integrity protected
+
+Terminals --
+5) Termcap. On the linux console: what sequence is used to start underlining?
+
+root@lab68:~# man termcap | grep underlin
+       ms   Cursor movement works in standout/underline mode
+       ul   Terminal underlines although it can not overstrike
+       ue   End underlining
+       us   Start underlining
+
+us is used to start underlining
+In /etc/termcap:
+:us=\E[1m
+
+6) stty. On the linux console: what key is used to stop (pause) the output to the screen? What command
+would you give to define control-Y to be the key used to stop the output?
+
+stop CHAR
+   CHAR will stop the output
+
+From stty -a:
+stop = ^S;
+
+stty stop ^Y will set the stop the output to the screen
+
+
