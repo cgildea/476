@@ -1,0 +1,165 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2008, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook. No digital or communications devices.
+All questions 4 points.
+
+\ques
+% Project 24
+Give the steps you would take on {\ltt{}puma} to install and use
+a new {\ltt{}/etc/exports} file on {\ltt{}panther}.
+You will perform the install from a file called {\ltt{}exports}
+located on {\ltt{}puma}.
+To activate the change you will need to issue the command
+{\ltt{}exportfs -a} on {\ltt{}panther}.
+\vskip 2.4in
+\ques
+% Project 14
+You wish to attach the files the
+{\ltt{}/u3} directory on {\ltt{}cheetah.cecs.csulb.edu}
+to your file tree as {\ltt{}/mnt}.
+Give the {\ltt{}fstab} entry to do this.
+\vskip 0.6in
+\ques
+% Project 14
+You want to make your directory 
+{\ltt{}/homes}
+available (read write) to {\ltt{}cougar}.
+What file do you need to change?
+What change do you need to make?
+\vskip 1.2in
+\ques
+% Project 25
+You want to make a directory called {\ltt{}/myshare} on your
+Linux machine available to all machines running Microsoft Windows as
+{\ltt{}LinuxShare}.
+What file do you need to change?
+What do you need to add to that file?
+\vskip 1.2in
+\vfill\eject
+\ques
+% Project 17
+What is the install step between setting up swap space and selecting source?
+\vskip 0.8in
+\ques
+% Project 18
+You want only users with local accounts (not network accounts) to
+be able to use the ftp service.
+What file do you change? What change do you make?
+\vskip 1.0in
+\ques
+% Project 15
+You want print to {\ltt{}cougar} to the printer puma calls {\ltt{}lp}.
+What file do you need to modify?
+What do you need to add to that file?
+\vskip 1.2in
+\ques
+% Project 21
+You wish to block (not receive) all messages from news groups starting
+with {\ltt{}alt.}
+What file do you need to change and what change to you need to make?
+\vskip 1.2in
+\ques
+% Project 21
+On your lab machine, you wish to exchange news with {\ltt{}panther}
+(in addition to {\ltt{}jaguar}).
+Give the names of the files you will need to change and lines you
+will have to add to each of those files.
+\vskip 2.2in
+\vfill\eject
+\ques
+% Project 15
+You wish to record debug messages from {\ltt{}innd}
+(level {\ltt{}debug}, facility {\ltt{}news}) in
+the file {\ltt{}/var/log/news/debug}.
+Give the name of the file you need to modify and the line you need to
+add to that file.
+\vskip 1.0in
+\ques
+% Project 16
+What are the two uses of the package tool?
+\vskip 1.2in
+\ques
+% Project 22
+How would you block web access to all directories under {\ltt{}/home/students}?
+What file do you need to change and what do you need to add to that file.
+\vskip 2.2in
+\ques
+% Project 22
+Given the {\ltt{}.htaccess} file that would be needed to require an
+account name and password for the directory it is place in.
+\vskip 2.8in
+\vfill\eject
+\ques
+% Project 13
+After you install, you wish to use accounts and groups from the NIS
+server on {\ltt{}cougar} (NIS domain name: {\ltt{}FinalExam}).
+What files do you need to change and what changes do you need to make?
+\vskip 1.4in
+\ques
+% Project 20
+How do you make an executable into a setuid program?
+\vskip 1.0in
+\ques
+% Project 18
+You want to present a message when a users who is using ftp enters a directory.
+Where do you look to find out the name the message file should have?
+\vskip 0.8in
+\ques
+% Project 19
+You want to send all your mail with the word {\ltt{}forged} in the
+``{\ltt{}Received}" header to {\ltt{}/dev/null}.
+What file do you need to create and what does that file need to contain?
+\vskip 1.6in
+\vfill\eject
+\ques
+% Project 26
+When you boot from the network, how does the server decide which internet
+address to give you?
+\vskip 1.6in
+\ques
+% Project 20
+If a user's home directory is not available you don't want that user to be
+able to login.
+What file do you to change?
+\vskip 0.8in
+\ques
+% Project 23
+There are two machines for which {\ltt{}lab88.ns.com} ({\ltt{}129.41.1.1})
+supplies name service:
+{\ltt{}a.xyzzy.com} ({\ltt{}129.41.2.1}) and 
+{\ltt{}b.xyzzy.com} ({\ltt{}129.41.2.2}).
+Give the forward entries for the  {\ltt{}named.conf} file.
+\vskip 1.7in
+\ques
+% Project 23
+Give the entire forward zone file for the zone {\ltt{}xyzzy.com}.
+\vskip 3.5in
+\vfill\eject
+Analysis section. Assume {\ltt{}lab88} is a machine you administer.
+For each of the questions on this page
+state what things would you check on {\ltt{}lab88}
+and for each thing you would check give the command you would use to
+perform the check. (If you wish to examine the file you may give the
+command as {\ltt{}vi}).
+
+\ques
+Ping to {\ltt{}lab87} works, but ping to {\ltt{}panther} times out.
+\vfill
+\ques
+{\ltt{}bob} can login, but {\ltt{}csa476z6} can't.
+\vfill
+\ques
+You can view web pages on posted by lab87, but you when you try to
+view web pages posted on panther you get ``{\ltt{}host not found}".
+\vfill
+\ques
+Telnet's into your machine work, but rlogin's don't.
+\bye

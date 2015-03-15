@@ -1,0 +1,701 @@
+\def\chapternumber{TCP/IP --19 December 2012}
+\input slides.tex
+\centerline{\bbf TCP/IP Overview}
+
+A protocol that allows two computers to talk to each other
+
+May be used with network card, modem, serial port, parallel port
+or wireless port.
+
+Server: any machine that handles requests.
+\break
+Provides files, news, mail, dial-up ports.
+
+Client: any machine that makes requests.
+
+Local: on your own machine
+\break
+Remote: on some other other machine
+
+Gateway: connects you to the rest of the network
+\break
+Firewall: protects you from the rest of the network
+
+Services supported using TCP/IP include:
+\break
+mail, network file system, telnet, news,
+\break
+network information system (yp), www
+
+\newslide
+\centerline{\bbf IP Names and Addresses}
+
+Network addresses are officially assigned.
+\break
+Use the one defined by your service provider
+or network administrator.
+
+32-bit (4 octet) number
+\break
+usually given in dot notation:
+\break
+{\ltt{}134.139.248.22}
+\break
+each octet is given in decimal (0..255)
+
+Some addresses have special meanings and uses.
+
+Network names are officially assigned.
+\break
+Coordinate names with your network administrator
+\break
+{\ltt{}lab18.net.cecs.csulb.edu}
+
+User on the network
+\break
+Specify which user and which machine
+\break
+format: {\ltt{}user@machine}
+\break
+example: {\ltt{}sam@lab99.net.cecs.csulb.edu}
+\newslide
+\centerline{\bbf Internet Numbering}
+
+An internet number has two parts,
+\break
+a subnet part and a host part
+
+\ind{1)} Use the subnet part of the internet number to get the packet to the 
+correct internet subnet. 
+\ind{2)} On the local subnet use the host part of the internet number to get the 
+packet to the correct machine. 
+\break
+(Actually this step uses the whole number.)
+\vt
+Rule: IP numbers of all interfaces of all hosts on the same subnet must 
+have the same subnet part.
+
+Packets always move from a host to another host on the same subnet.
+
+At a host, a packet can enter the host on one subnet and leave on another.
+\break
+(Provided the host is connected to two subnets and the packet is to be
+forwarded.)
+
+Definition: a host that is connected to more than one subnet
+is called a {\bit gateway}.
+
+Each card in a gateway has a different Internet number.
+\newslide
+\centerline{\bbf Determining if a Host is on the Local Subnet}
+
+Needed: a way to distinguish the subnet part from the host part.
+\break
+Solution: netmasks
+
+Examples:
+
+1) {\ltt{}0xffffff00} first 24 bits: subnet, last 8 bits: host
+\break
+2) {\ltt{}0xffffffc0} first 26 bits: subnet, last 6 bits: host
+\break
+3) {\ltt{}0xffff0000} first 16 bits: subnet, last 16 bits: host
+
+Two host parts are reserved: 
+\break
+all 1's (8,6,16 bits)--broadcast to all on subnet
+\break
+all 0's--refers to the subnet
+\vt
+\centerline{\bbf Examining a Network Interface}
+
+Each interface must be configured with a unique IP number.
+
+{\ltt{}ifconfig} -- Examine the configuration of the network interfaces.
+
+Reports: ethernet numbers, internet numbers, netmasks, hardware configuration
+
+Linux Reports: interface statistics.
+
+\newslide
+\centerline{\bbf The ARP Table}
+
+We use IP numbers, the hardware needs ethernet numbers.
+
+We need to translate.
+\break
+This is called the Address Resolution Problem.
+\break
+Solved by the Address Resolution Protocol.
+
+IP number -- hardware number mapping table
+
+{\ltt{}arp -a -n}: display the table
+\break
+{\ltt{}134.139.248.65 ether 00:00:C0:9E:DD:5A C * eth0}
+\break
+IP address, interface type, his hardware adddress, flag, mask,
+which ethernet card
+
+Arp entries are generated automatically
+
+{\ltt{}arp -s 134.139.248.61 01:01:01:01:01:01}
+\break
+force an entry into the arp table
+\break
+(only if the other machine is brain-dead)
+
+The administrator does not need to maintain this table,
+\break
+it is useful for seeing what else is on the subnet.
+\newslide
+\centerline{\bbf The Routing Table}
+
+Needed: a way to specify forwarding.
+\break
+Solution: routing tables
+
+partial route table for cheetah 
+\halign{#\hfil&\quad#\hfil&\quad#\hfil\cr
+destination&gateway&Genmask\cr
+134.139.248.32&134.139.248.18&255.255.255.224\cr
+0.0.0.0&134.139.248.1&0.0.0.0\cr}
+
+For machines on {\ltt{}134.139.248.32} subnet send to machine
+{\ltt{}134.139.248.18}
+
+For all other machines  send to machine {\ltt{}134.139.248.1}
+
+{\ltt{}netstat}--examine network information
+
+{\ltt{}route}--examine routing information (uses {\ltt{}netstat})
+\vt
+Although {\ltt{}ifconfig} configures the subnets you are directly attached to; 
+the route contains entries for these subnets.
+\break
+Having everything put into a single table speeds the lookups.
+\newslide
+\centerline{\bbf Configuring for Networking}
+\centerline{ Internet Protocol}
+
+Plug and Play: On modern cards Linux will find the card if the
+drivers for that card are loaded.
+
+If you have more than one card, you must be careful.
+
+The drivers are probed in the order they are loaded into the kernel.
+So certain types of cards will be found first and labeled {\ltt{}eth0}.
+(On the first boot).
+
+If cards are identical, they are loaded in their order on the PCI bus.
+
+On the first boot udev records the hardware addresses and which eth numbers
+they were assigned.
+\break
+These will be assign the same eth numbers on subsequent boots,
+even if they are removed from the machine.
+
+Consequence: need to erase the udev ({\ltt{}/etc/udev/rules.d})
+when you swap ethernet cards.
+
+\vt
+
+Typical action: load all cards, assign IPs and ping to see which ones have the
+blinking lights.
+
+Now reassign IPs (or switch around the subnet).
+
+\newslide
+\centerline{\bbf Name and Number Lookup}
+
+Two files have principle control over looking up
+names and numbers.
+
+{\ltt{}resolv.conf}:
+\break
+Used only in the look of internet name/number information.
+
+Specifies the name server to use for name and number lookups.
+\break
+It also specifies the search order for names.
+
+\vt
+
+{\ltt{}nsswitch.conf}:
+\break
+Used for internet name/number lookup
+\break
+as well as for other lookups
+\break
+(passwords, group, netmasks, boot params)
+
+Specifies what order the lookups are to be done in.
+\break
+Files, NIS, DNS are used in the order specified by this file.
+
+\newslide
+\centerline{\bbf Configuring An Interface}
+
+{\ltt{}ifconfig} -- you must specify an interface and
+its new configuration.
+
+The following is one line:
+
+{\program
+ifconfig eth0 134.139.248.2 
+                broadcast 134.139.248.3 
+                netmask 255.255.255.252 
+\endprogram}
+
+The internet number, netmask and broadcast address are set.
+\break
+Usually the broadcast address is omitted, because
+it is the subnet number with all 1's in the host part.
+You only need to include it if there is an unsual broadcast
+address.
+
+\vt
+\centerline{\bbf Adding A Route}
+
+{\ltt{}route} -- specify a subnet and a gateway to use to get there.
+
+The following is one line:
+
+{\program
+route add -net 134.139.248.32 
+         netmask 255.255.255.224
+         gw 134.139.248.18
+         metric 1
+\endprogram}
+
+The metric, if omitted, is assumed to be 1.
+\newslide
+\centerline{\bbf Configuring TCP/IP}
+
+1) Build networking into your kernel
+\break
+{\ltt{}cd /usr/src/linux}
+\break
+{\ltt{}make config}
+\break
+1b) Select a kernel with networking in it
+
+2) Set up {\ltt{}/etc/hosts} (optional)
+\break
+{\ltt{}127.0.0.1 localhost}
+\break
+{\ltt{}134.139.248.19 puma.net.cecs.csulb.edu puma}
+\break
+assigned number, full name, nick-name
+
+{\ltt{}/etc/networks} is optional
+
+The following may be done by hand, but
+\break
+are usual done at boot
+\break
+{\ltt{}/etc/rc.d/rc.inet1}
+
+{\ltt{}/etc/rc.d/rc.inet2} -- starts the daemons that provide various network
+services.
+
+{\ltt{}/etc/rc.d/rc.inet1.config} -- data used by {\ltt{}rc.inet1}
+
+
+3) Set up you host name
+\break
+{\ltt{}hostname [}{\bit{}your name}{\ltt{}]}
+\break
+{\ltt{}hostname puma}
+
+4) configure the localhost (loopback) interface
+\break
+{\ltt{}ifconfig lo 127.0.0.1}
+
+\newslide
+5) configure the network interface
+\break
+{\ltt{}ifconfig [}{\bit{}parameters}{\ltt{}]}
+\break
+{\ltt{}ifconfig eth0 134.139.248.19 netmask 255.255.255.248}
+
+6) Set up the route to the gateway
+\break
+{\ltt{}route [}{\bit{}parameters}{\ltt{}]}
+\break
+{\ltt{}route add default gw 134.139.248.17}
+
+7) Add other routes if necessary.
+{\program
+route add -net 134.139.248.32 gw 134.139.248.18 
+              netmask 255.255.255.224
+\endprogram}
+\newslide
+\centerline{\bbf Hostnames and Internet Numbers}
+
+Principle: Each machine has a name, it may have several internet
+numbers.
+
+Needed: name-number and number-name lookup.
+
+{\ltt{}/etc/hosts} file -- list of names and number
+
+{\program
+127.0.0.1    localhost
+134.139.248.18 jaguar.net.cecs.csulb.edu jaguar
+\endprogram}
+
+Needed a way to handle millions of names.
+
+Domain Name Service. Principle--contact a network database
+and have them do the the names-number and number-name lookups.
+
+Needed: the IP number of a DNS (network database) server.
+
+You have several ways to a lookups
+
+Needed: which order to apply the lookups.
+\newslide
+
+8) Point name resolution at a DNS server
+\break
+{\ltt{}/etc/resolv.conf} -- (a file)
+\break
+{\ltt{}domain net.cecs.csulb.edu}
+\break
+{\ltt{}nameserver 134.139.248.17}
+\break
+{\ltt{}search net.cecs.csulb.edu cecs.csulb.edu}
+
+9) Set the resolver parameters
+\break
+{\ltt{}/etc/nsswitch.conf}
+
+{\program
+hosts: files nis dns
+passwd: files nis
+\endprogram}
+
+\newslide
+\centerline{\bbf Testing}
+
+{\ltt{}ping 127.0.0.1}
+\break
+failure $\Rightarrow$ loopback not setup
+
+{\ltt{}ping 134.139.248.99} -- (self)
+\break
+failure $\Rightarrow$ interface not configured
+
+{\ltt{}ping 134.139.248.65} -- (gateway)
+\break
+failure $\Rightarrow$ incorrect netmask
+
+{\ltt{}ping 134.139.248.17} -- (some distant machine)
+\break
+failure $\Rightarrow$ bad netmask or missing gateway route
+
+{\ltt{}ping puma} -- (ourselves)
+\break
+failure $\Rightarrow$ bad {\ltt{}nsswitch.conf} or {\ltt{}/etc/hosts}
+
+{\ltt{}ping prep.ai.mit.edu} -- (some distant machine)
+\break
+failure $\Rightarrow$ bad {\ltt{}resolv.conf} or {\ltt{}nsswitch.conf}
+\newslide
+\centerline{\bbf Network Services}
+\centerline{\bbf inetd}
+
+The {\ltt{}inetd} super-server is responsible for providing/starting many 
+standard services such as: ftp telnet time finger rlogin
+
+{\ltt{}/etc/inetd.conf} -- controls what inetd does
+
+{\ltt{}ftp stream tcp nowait root /usr/sbin/tcpd proftp}
+
+service name (ftp): should be in {\ltt{}services}
+\break
+socket type/protocol: should be {\ltt{} dgram udp}
+or {\ltt{}stream tcp}
+\break
+fork: {\ltt{}nowait} fork a process to handle this request
+{\ltt{}wait} handle the request yourself
+\break
+UID: run service with this priviledge (root uucp)
+\break
+base server: tcpd--called tcp wrappers this program does a security
+check, logs the access and starts the service
+\break
+real server (name of executable): {\ltt{}proftp}
+\break
+options: allows - options after real server
+
+Commenting out the entry turns off the service.
+
+To make inetd re-read it's configuration file use
+\break
+{\ltt{}kill -HUP}
+\newslide
+\centerline{\bbf TCP Wrappers}
+
+Two control files.
+
+{\ltt{}/etc/hosts.allow}: permission is granted to these.
+\break
+{\ltt{}/etc/hosts.deny}: permission is denied to these.
+\break
+Not found: permission is granted
+
+Example: {\ltt{}/etc/hosts.allow}
+
+{\program
+in.fingerd : lynx.cecs.csulb.edu .net.cecs.csulb.edu
+in.tftpd : 134.139.248.64/255.255.255.224
+wu.ftpd : 134.139.0.0/255.255.0.0
+in.telnetd : ALL
+\endprogram}
+
+Subnet/netmask format is allowed, starting . is a wild card
+
+The key word {\ltt{}ALL} is recognized.
+
+\vf
+
+Example: {\ltt{}/etc/hosts.deny}
+
+{\program
+ALL : ALL
+\endprogram}
+
+Everything not explicitly allowed in {\ltt{}hosts.allow} is denied.
+
+On the left, {\ltt{}ALL} refers to all inetd services.
+
+\newslide
+\centerline{\bbf Services List}
+
+{\ltt{}/etc/services} --- 
+Provides a list of names and numbers for common services.
+
+{\ltt{}telnet  23/tcp}
+
+Port 23 is assigned to the telnet server
+
+Note: inetd uses this file to find the port numbers, if the service is not
+in here, you can't name the service in {\ltt{}inetd.conf}. Usually: don't
+change this file or {\ltt{}/etc/protocols} which lists the allowed IP 
+protocols.
+
+\newslide
+\centerline{\bbf The r Commands}
+
+{\ltt{}rlogin}: login into another machine.
+\break
+{\ltt{}rsh}: run a command on another machine
+\break
+{\ltt{}rcp}: copy a file to/from another machine
+
+{\ltt{}rlogin lab85 -l sam} ---login to lab85 as sam
+
+Authorization: requires a password or preauthorization.
+
+{\ltt{}~sam/.rhosts} --- user authorization granted.
+
+{\ltt{}lab88.net.cecs.csulb.edu joe}
+\break
+joe from lab88 doesn't need a password to login as sam
+
+{\ltt{}/etc/hosts.equiv} --- machine authorization granted for
+same user name.
+
+{\ltt{}lab89.net.cecs.csulb.edu}
+\break
+joe from lab89 doesn't need a password to login as joe
+
+\vt
+{\ltt{}rsh}, {\ltt{}rcp} --- require pre-authorization
+\newslide
+\centerline{\bbf Remote Procedure Calls}
+
+You can get information about remote procedure calls
+
+Command: {\ltt{}rpcinfo}
+
+Options:
+
+{\ltt{}-p [host]} -- probe the host to see what calls
+are available.
+
+{\ltt{}-u host program} -- see if a particular RPC is running
+on the specified machine (UDP)
+\break
+{\ltt{}-t} same only TCP
+
+{\ltt{}-b program version} -- broadcast to see which machines
+on the subnet are running a program.
+
+{\ltt{}-d program version} -- deregister (remove) a remote program from
+your system
+
+Example:
+
+{\ltt{}rpcinfo -p cheetah.cecs.csulb.edu}
+
+List the remote programs that cheetah provides.
+\newslide
+\centerline{\bbf ssh Capabilities}
+
+The ssh suite provides both login, copy and tunneling facilities.
+\break
+All facilities use the {\ltt{}sshd} server on the remote machine.
+
+Command: {\ltt{}ssh}
+
+A machine may be specified by either it's name of IP number.
+
+A user to login as on the remote machine may be specified.
+\break
+If no user is specified the name of the user originating the
+connection is used.
+
+Sample: {\ltt{}ssh bob@lab99}
+
+\vt
+Command: {\ltt{}scp}
+
+In addition to specifying a machine and user a source and destination
+file or path are specified.
+
+Sample: {\ltt{}scp myfile bob@lab99:Hisfile}
+
+\newslide
+\centerline{\bbf ssh Security Features}
+
+Each host running {\ltt{}sshd} has a private and public key.
+\break
+(Actually it has 3 such pairs)
+
+These are stored in the {\ltt{}/etc/ssh} directory.
+
+Also in that directory are the configuration files for the
+ssh clients and server.
+
+If you use an ssh client a {\ltt{}.ssh} directory is created
+inside your home directory.
+Public keys of known hosts are stored here.
+
+If you attempt to connect to a known host and it's private key
+does not match the public key you have stored for it, the connection
+is broken. (configurable)
+
+If you attempt to connect to a host for which you do not have
+a public key you will be asked if you want to proceed. (configurable)
+
+\vt
+For each connection a session key is created and the network data
+is encrypted with that key.
+
+\newslide
+\centerline{\bbf Client Configuration}
+
+Options on the client side (e.g. ssh) can be set in three ways:
+
+1) Command-line  (overrides all other settings)
+
+2) User configuration file ({\ltt{}~/.ssh/config})
+(overrides system-wide settings)
+
+3) System-wide configuration file ({\ltt{}/etc/ssh/ssh_config})
+
+Thus the administrator can set default values, but the user
+can override anything (standard Unix philosophy).
+
+Configuration file format: {\bit keyword arguements} 
+
+Some options:
+
+{\ltt{}CheckHostIP}: {\bit yes} tells ssh to lookup the host key
+in the known hosts file.
+
+{\ltt{}Cipher}: tell ssh what encryption method to use.
+
+{\ltt{}Port}: use a port other than 22.
+
+{\ltt{}StrictHostKeyChecking}: how to handle the known hosts file.
+Warning, if your hosts are frequently reloaded, this option is a pain.
+
+\newslide
+\centerline{\bbf Server Configuration}
+
+Options on ther server side are set in {\ltt{}/etc/ssh/sshd_config}
+\break
+(The user cannot tell the server how to behave).
+
+{\ltt{}AllowUsers}: can be used to restrict which users can
+login and can also restrict the machines they can login from.
+
+{\ltt{}ListenAddress}: Only accept client requests on the
+interface with the specified IP address.
+This line can be repeated to specify several IP addresses.
+
+Existing config files: 
+\break
+Commented out keywords with default values
+
+\newslide
+\centerline{\bbf Access Without a Password}
+
+In some cases you may to set up access without a password.
+
+The steps: 
+
+1) setup a public/private key for your account
+
+2) send the public key to the other account
+
+3) if your public key is installed in the other account's 
+{\bit authorized keys} list then your account can
+ssh to  that account without a password.
+\break
+This access right applies to the other ssh commands
+as well such as {\ltt{}scp}.
+
+\vf
+Note: updates are distributed using this method in the main labs.
+
+\newslide
+\centerline{\bbf Access Details}
+
+1) {\ltt{}ssh-keygen -t dsa}
+\break
+Generates a public/private key pair,
+\break
+Places them in your {\ltt{}.ssh} directory,
+\break
+{\ltt{}id_dsa}, {\ltt{}id_dsa.pub}
+\break
+It also creates the directory if necessary.
+\break
+If you are going to use this for automatic login,
+don't use a passphrase.
+
+2) scp the public key to the other account,
+\break
+You will need the password
+\break
+Call it something safe like newkey
+
+3) ssh to the other account
+\break
+create the {\ltt{}.ssh} for that account
+\break
+make sure the directory is mod 700 ({\ltt{}rwx------})
+\break
+Add the key to that accounts list of authorized keys
+\break
+A safe way to do this is to use {\ltt{}cat} to append the key:
+\break
+{\ltt{}cat newkey >> ~/.ssh/authorized_keys}
+
+Both scp and ssh should now work without a password.
+\bye

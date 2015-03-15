@@ -1,0 +1,392 @@
+\def\chapternumber{User Administration -- 1 May 2012}
+\input slides.tex
+\centerline{\bbf User Administration}
+
+Each user has a unique user identification number (UID)
+
+low UIDs (0-99) are for special accounts
+
+UID 0 is root, the superuser/system administrators account, 
+this account always has access to everything.
+
+UID 1--10, system services and system users
+
+UID 11--99, System and special accounts.
+
+Nobody: 99 (numbers may vary), no priviledge account
+
+All operations are by UID.
+
+\newslide
+Human: each user name is assigned a UID.
+\break
+Linux: UIDs are assigned user names.
+\break
+{\ltt{}/etc/passwd}: define the users
+\break
+Name, password, UID, primary group, User Info, home, shell.
+
+Linux: when you need to display a name
+\break
+(you have the uid),
+\break
+linearly search the password for the uid
+\break
+use the first match.
+
+On login: you have a name--
+\break
+linearly search the password for the name,
+\break
+use the first match.
+
+Note:
+
+{\program
+joe:xxxxyyyyzzzzt:111:100:OK:/home/joe:/bin/csh
+sam:xxxxyyyyzzzzs:111:100:OK:/home/sam:/bin/bash
+\endprogram}
+
+If one user, logs in as sam, gets sam home and shell,
+but still owns joe home directory.
+
+{\ltt{}joe:x:} means see shadow for password.
+\break
+{\ltt{}mail:*:} means no login allowed.
+\newslide
+\centerline{\bbf Password File Format}
+
+{\program
+joe:xxxxyyyyzzzzt:111:100:Joseph,ECS202:/home/joe:/bin/csh
+\endprogram}
+
+Fields separated by :
+\break
+User name--login name
+\break
+Encrypted password (or an {\ltt{}x}--see shadow)
+\break
+UID
+\break
+Default (primary) group.
+\break
+GECOS (comment) -- user's actual name, and other finger info
+\break
+Home directory
+\break
+login shell
+
+\vfill
+\centerline{\bbf Shadow File}
+
+Problem: encrypted passwords in a publically readable file.
+\break
+Attack: guess and test.
+\break
+Advantage: Only the system checks passwords.
+\break
+Solution: encrypted passwords in a special (non-readable) file
+and have the system check it.
+
+{\ltt{}/etc/shadow}
+\break
+{\ltt{}sam:OHCp6yRvIfpg2:10296:0:::::}
+
+Login name, password, password change and account expire information
+
+\newslide
+\centerline{\bbf Groups}
+
+Group names are specified in the {\ltt{}/etc/group} file.
+
+Each user belongs to the one group specified in the password file.
+
+The {\ltt{}group} file can specify additional groups for the user
+
+{\ltt{}/etc/group} entry
+\break
+{\ltt{}database::123:john,joe}
+
+Human: the database group is number 123
+\break
+Computer: group number 123 is called database
+
+In addition to the group specified in the password file, john and joe
+also belong to the database group.
+
+password field (empty), ignored by many systems.
+
+(some systems):
+Those in Group 0 group can {\ltt{}su}
+to root (password will be asked for).
+Those not in this group, can't su to root, even with password.
+
+sudo: A command used to run a single command as root.
+You must be in a group (usually {\ltt{}admin}) to use this command.
+You will be asked your (not root's) password.
+
+\newslide
+\centerline{\bbf Switching Users}
+
+You can change to another user (if you have the password).
+
+{\ltt{}su joe} -- Start a shell, in this shell you become the user {\ltt{}joe}
+
+You may be prompted for a password.
+
+The password prompt is skipped if:
+
+1) the user has no password ({\ltt{}::})
+
+2) you are root when you do the su.
+
+Warning: environment setup is not done by default when switching users.
+\break
+{\ltt{}su -}
+\break
+{\ltt{}su -c}
+\break
+run the full login scripts
+\newslide
+\centerline{\bbf User logins}
+
+After a user logs in the user environment is (automatically) set up.
+
+1) cd to the users home
+
+2) run the shell initialization scripts.
+Assuming csh (c-shell):
+
+a) {\ltt{}/etc/csh.cshrc}
+\break
+b) {\ltt{}~/.cshrc}
+\break
+c) {\ltt{}/etc/csh.login}
+\break
+d) {\ltt{}~/.login}
+
+You can run your initialization scripts any time by:
+\break
+{\ltt{}source .cshrc}
+
+3) On logout a file is run
+\break
+{\ltt{}~/.logout}
+
+The {\ltt{}.cshrc} or {\ltt{}.login} may contain
+aliases (shorthand) for commands.
+\break
+{\ltt{}alias myls ls -aCF}
+\break
+establishes the command {\ltt{}myls} as an alias
+for a version of {\ltt{}ls}.
+
+\newslide
+\centerline{\bbf Mail Aliases}
+
+{\ltt{}/etc/aliases}
+
+Entries like
+
+{\ltt{}joe  joe37@netcom.com}
+
+reroute mail.
+\break
+Mail sent to ``joe" is rerouted.
+
+\vt
+
+Entries like
+
+{\ltt{}admins sam sue bob}
+
+are mailing lists.
+\break
+Mail to ``techs" is sent to the 3 techs.
+
+\newslide
+\centerline{\bbf Paths}
+
+Executables are scattered over several directories,
+How do you find them?
+\break
+The search path is
+a list of directories to be searched, in order, for an executable.
+
+Sample search path:
+\break
+{\ltt{} set path=( /bin /usr/bin /sbin . )}
+
+First check {\ltt{}/bin} for the executable,
+\break
+if you find it, run it;
+\break
+Next check {\ltt{}/usr/bin}, then check {\ltt{}/sbin}
+\break
+finally, check the directory you are in ({\ltt{}.})
+
+Note: if there is an {\ltt{}ls} in both {\ltt{}/bin} and
+{\ltt{}/sbin}, you will use the one in {\ltt{}/bin} because
+that is first in your path.
+
+Warning: putting {\ltt{}.} into the administrator's
+path can be dangerous.
+\break
+Suppose the user {\ltt{}joe} creates an executable called
+{\ltt{}ls} that formats the hard drive. Joe does not have
+the priviledge to format the hard drive so he cannot use the
+program; but if the administrator has {\ltt{}.} at
+the front of his path, {\ltt{}cd}'s to joe's home directory
+and does an {\ltt{}ls} he will run the format program.
+Joe will have tricked him into destroying the system.
+
+\newslide
+\centerline{\bbf Adding a user}
+
+1) Create the password entry.
+
+2) Create shadow password entry.
+\break
+(Leave password undefined {\ltt{}:*:} )
+
+3) Set a password ({\ltt{}passwd} command)
+
+4) Create the users home directory (with contents)
+
+4a)) {\ltt{}mkdir ~joe} creates a home directory for user {\ltt{}joe}
+\break
+4b) {\ltt{}cp -r skeleton-dir ~joe} gives joe a copy of the skeleton directory
+
+5) Set home directory permissions.
+\break
+{\ltt{}chmod 755 ~joe}
+\break
+Allows others to read unprotected stuff of
+joe, but only joe can write or create files.
+
+6) Change ownership, groups of home and content to the user.
+\break
+{\ltt{}chown -R joe.joe-group ~joe}
+\break
+Recursively changes the ownership and group of the home directory and
+contents.
+\break
+{\ltt{}joe-group} correspond to the group you listed for joe in
+the password file.
+
+\newslide
+\centerline{\bbf Deleting Users}
+
+1) remove password/shadow entries
+
+2) remove home directory
+
+3) remove any cron/at entries
+
+4) remove/change/add mail aliases
+
+5) remove unread mail
+
+\vt
+Notes:
+
+3) {\ltt{}cron} and allows users to start jobs when they want,
+\break
+e.g., start my long compile at midnight.
+
+4) aliases may be used as a means to forward the mail to a new system,
+but nothing should be left that points to the defunct account.
+
+\newslide
+\centerline{\bbf Administration}
+
+The password and group files are essential for proper running of Unix. 
+
+Password file:
+
+Use vipw whenever it exists
+\break
+(1) it makes sure only one administrator/program at a time is
+making changes
+\break
+(2) it performs some minimal consistency checks.
+
+Regularly back-up the {\ltt{}/etc/passwd}
+\break
+Back up {\ltt{}/etc/group} occasionally.
+
+Double check your changes
+
+Before going network, make sure all real users have passwords
+especially root.
+
+Permissions of {\ltt{}passwd} and {\ltt{}group}: {\ltt{}-rw-r--r--}
+\break
+Permissions of {\ltt{}shadow}: {\ltt{}-rw-------}
+\break
+All should be owned by {\ltt{}root}
+
+Use user IDs between 500 and 60000. 
+\break
+Low ones = system; high ones = no priviledges
+
+Network File System Consideration--file ownership is by UID,
+user must have same UID on all systems.
+\newslide
+\centerline{\bbf Linux Specifics}
+
+{\ltt{}/sbin/adduser}: prompts you for user information, creates the account
+
+{\ltt{}/etc/skel}: default skeleton for new accounts you {\bit must}
+set up a default appropriate to your site.
+
+{\ltt{}/home}: standard location of home directories
+\break
+e.g. {\ltt{}/home/joe}, {\ltt{}/home/sue}
+
+System vs. user setup
+\break
+System: {\ltt{}/etc/csh.cshrc} {\ltt{}/etc/profile}
+\break
+User: {\ltt{}~/.cshrc} {\ltt{}~/.profile}
+
+System: particular to the computer
+\break
+e.g. defaults effected by screen size.
+
+User: particular to the user
+\break
+e.g. paths to programs (compilers, spread sheets...)
+
+Disabling a user: add an asterisk at the start of the password field.
+\break
+Changing shell: ftp is still available and can be used to modify the
+contents of the account.
+\newslide
+\centerline{\bbf User Account Modification}
+
+Several programs allow the user to configure their own account
+or root to configure any account.
+If you don't want the user to do a command, apply a:
+\break
+{\ltt{}chmod o-x}
+\break
+e.g. {\ltt{}chmod o-x /usr/bin/passwd}
+
+{\ltt{}/usr/bin/passwd}--the user can change their password.
+\break
+Note: in a group of tightly coupled network systems, special handling is 
+necessary because the password must be changed on all machines at the
+same time. (see {\ltt{}yppasswd} in the networking section of this course)
+
+{\ltt{}/usr/bin/chfn}--the user can change the GECOS (comment) field information,
+such as phone, name, address.
+
+{\ltt{}/usr/bin/chsh}--the user can select a different login shell such
+as {\ltt{}bash}, {\ltt{}ksh}, {\ltt{}csh}
+\break
+Note: selecting a bad shell such as {\ltt{}/bin/rm} can disable the account.
+\break
+This command restricts the user's choice to those shells listed
+in {\ltt{}/etc/shells}.
+\bye

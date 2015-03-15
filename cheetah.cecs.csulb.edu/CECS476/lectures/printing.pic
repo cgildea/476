@@ -1,0 +1,295 @@
+\def\chapternumber{Printing -- 7 December 2009}
+29 June 2007\input slides.tex
+\centerline{\bbf Printers, Print Spoolers and Printcap}
+
+You can print
+\break
+You can share a ``network" printer
+
+Printing occurs in two steps:
+\break
+1) you send the file to the print daemon (print spooler) ({\ltt{}lpd})
+\break
+2) the print daemon prints it or 
+\break
+sends it to a print daemon on another machine
+
+Because Unix is designed for large systems,
+\break
+and a large system may have several printers,
+\break
+each printer on a machine is given a unique name.
+\break
+The printer on {\ltt{}jaguar} is named {\ltt{}jaguar}
+
+The system default printer is called {\ltt{}lp}.
+
+A user can set their default printer using the environment variable 
+{\ltt{}PRINTER}. Usually this would be setup in the user's {\ltt{}.cshrc}
+\break
+{\ltt{}setenv PRINTER jaguar}
+\break
+({\ltt{}printenv} displays your environment)
+
+\newslide
+\centerline{\bbf Commands for the User}
+
+Actions apply to the default printer unless you
+specify a printer using the  {\ltt{}-P} option
+
+{\ltt{}lpr} {\bit file\_name} -- print the file (send the file to lpd).
+The file is queued (spooled) for printing. 
+\break
+The file will be printed when the printer
+is on and it reaches the front of the queue.
+\break
+The queue is kept in a directory
+\break
+{\ltt{}lpr -Pcecs1  .cshrc}
+
+{\ltt{}lpq} -- examine what is in the print queue
+\break
+Jobs are assigned an identification number for easy reference.
+
+{\ltt{}lprm} -- remove jobs from the print queue
+\break
+Default: Removes all jobs you own.
+\break
+Option: list the jobs by their identification number (found using {\ltt{}lpq})
+\break
+{\ltt{}lprm 231}
+
+\newslide
+\centerline{\bbf Print Spools}
+
+Situation:
+\break
+Printing is slow, several jobs may be backed up.
+\break
+Unix does not make you wait for the print to complete.
+
+Problem: if you return control to the user before the print completes;
+the user could remove the file to be printed.
+
+Solution: Make a copy of the file to a special directory
+controlled by {\ltt{}lpd} and then can {\ltt{}lpd} print 
+it later.
+
+Default print spool directory:
+\break
+{\ltt{}/var/spool/lpd}
+\break
+default in the sense that it already exists
+
+Second consideration:
+\break
+Have a separate spool directory for each printer.
+\break
+Helps keep straight what is going to each printer.
+\newslide
+\centerline{\bbf Line Printer Control}
+
+{\ltt{}lpc status} -- status of all known printers,
+
+{\ltt{}root} can use {\ltt{}lpc} to control printers
+
+{\ltt{}lpc disable cecs1} -- jobs can no longer be spooled to
+the specified printer. ({\ltt{}enable})
+
+{\ltt{}stop} -- stop printing, you can still spool a job,
+if a job is in progress it is completed ({\ltt{}start})
+
+{\ltt{}kill} -- stop and restart the server
+start printing
+
+{\ltt{}reread} -- reread the configuration files
+
+{\ltt{}topq} -- send a job to the front of the queue
+
+{\ltt{}down} -- disable printing and queuing ({\ltt{}up})
+
+\newslide
+\centerline{\bbf Ports and Device Drivers}
+
+{\ltt{}/dev} supplies access to the device drivers that are found
+in the kernel.
+
+Printers are often hung of the printer (parallel) port.
+
+{\ltt{}jaguar} -- {\ltt{}jaguar}: attached to the parallel port
+
+A printer can be accessed over the serial port.
+
+{\ltt{}cheetah} -- {\ltt{}cecs1}: attached to the primary serial
+port {\ltt{}/dev/ttyS0}.
+
+{\ltt{}/dev/lp0}, {\ltt{}/dev/lp1}, {\ltt{}/dev/lp2}
+the first, second and third PC printer ports
+
+{\ltt{}/dev/usb/lp0} the first usb printer.
+\break
+The file appears/disappears with the presence/absence of the printer.
+\break
+The printer may need to be started after being plugged in so it
+registers correctly with the usb drivers.
+
+\newslide
+\centerline{\bbf Protections and Permissions}
+
+{\ltt{}rw-rw---- root daemon /dev/lp0} -- technically the printer daemon
+and root can access the device, actually {\ltt{}lpd} runs with
+{\ltt{}root} privilidge,  so {\ltt{}rw-------} will work.
+
+print programs run with Set UID and Set GID.
+
+{\ltt{}rws--s--x     root    lp     lpq}
+
+\newslide
+\centerline{\bbf Printcap}
+
+Printer capability database ({\ltt{}/etc/printcap})
+controls printing
+
+On jaguar:
+
+{\cprogram
+lp|jaguar:lp=/dev/lp0:\
+    :sd=/var/spool/lpd:\
+    :tr=\f:
+@endprogram}
+
+the printer is called {\ltt{}jaguar} or {\ltt{}lp} or
+\break
+{\ltt{}lp} -- it is on the parallel port {\ltt{}lp0}
+\break
+{\ltt{}/var/spool/lp} is the spool directory
+\break
+{\ltt{}tr} -- do a form feed after the job
+\break
+
+If you are using an old printer off the serial cable,
+you may need to know about the control lines
+and control commands.
+
+\newslide
+\centerline{\bbf A Remote Printer}
+
+{\cprogram
+cecs1|lp|cecs line printer:\
+        :lp=:rm=cheetah.net.cecs.csulb.edu:\
+        :rp=cecs1:sd=/var/spool/cecs1:
+@endprogram}
+
+{\ltt{}cecs1} or {\ltt{}lp} -- what we call the printer
+\break
+{\ltt{}lp} -- no device for this printer
+\break
+{\ltt{}rm} -- the printer is attached to this remote machine
+\break
+{\ltt{}rp} -- what the remote machine calls the printer 
+\break
+(need not be the same name we give it)
+\break
+{\ltt{}sd} -- the spool directory. We have one locally for those
+files to be sent to the remote machine. The remote machine
+will also have one for those files it has received.
+\vfill
+\centerline{\bbf Allowing Remote Printing}
+
+A machine must/may grant printer access to other machines.
+
+File: {\ltt{}/etc/hosts.lpd}
+
+File Contents: a list of remote machines authorized to spool jobs to our 
+printers.
+\newslide
+\centerline{\bbf CUPS}
+\centerline{Common Unix Printing System}
+
+A good choice for a MS environment, problematic for a Linux lab.
+
+Administration is through commands, not files.
+
+Files are found in {\ltt{}/etc/cups}.
+\break
+Do not edit them directly, they are modified by commands.
+\break
+{\ltt{}cupsd} is the main server.
+\break
+Commands talk to the server, the server writes the files.
+
+{\ltt{}cupsd} also scans the LAN for other CUPS printers
+and shared MS printers.
+
+{\ltt{}cupsd} can forward files to other print spoolers,
+including {\ltt{}lpd}.
+\newslide
+\centerline{\bbf CUPS configuration commands}
+
+{\ltt{}lpadmin}: basic printer administration
+
+Core options (pick one): {\ltt{}-p} {\ltt{}-d} {\ltt{}-x}
+
+{\ltt{}-p} configure (add) a printer.
+\break
+{\ltt{}lpadmin -p lj -v parallel:/dev/lp1 -m laserjet.ppd}
+\break
+A printer called {\ltt{}lj} is now available.
+\break
+It is attached to the parallel port and is a laserjet.
+\break
+{\ltt{}ppd} definition needs to be in {\ltt{}ppds.dat}
+or added to {\ltt{}/etc/cupsd/ppd} directory.
+
+{\ltt{}lpadmin -p cheetah -v lpd://134.139.248.17/lp}
+\break
+A printer called {\ltt{}cheetah} is now available on this machine.
+\break
+This is a remote printer. This printer is attached to the machine
+{\ltt{}134.139.248.17}, and which is running the {\ltt{}lpd} protocol.
+On {\ltt{}134.139.248.17} the printer is called {\ltt{}lp}.
+
+{\ltt{}-d} sets the printer to be the default
+\break
+{\ltt{}lpadmin -d cheetah}
+\break
+The {\ltt{}cheetah} printer is the default for this machine.
+
+{\ltt{}-x} deletes the printer
+\break
+{\ltt{}lpadmin -x cheetah}
+\break
+The {\ltt{}cheetah} printer is not available on this machine.
+\newslide
+\centerline{\bbf CUPS configuration commands}
+
+{\ltt{}accept}: start accepting jobs to the specified printer
+
+The jobs are accepted and spooled, they are not sent to the printer.
+
+{\ltt{}accept cheetah}
+\break
+Jobs to the {\ltt{}cheetah} printer are spooled.
+\break
+The named printer has to be configured (available).
+
+{\ltt{}reject}: stop accepting jobs to the specified printer
+
+{\ltt{}reject lj}
+\break
+Requests to print to the {\ltt{}lj} printer are refused.
+
+\vt
+{\ltt{}enable}: print any jobs that are spooled for the specified printer
+
+{\ltt{}enable cheetah}
+\break
+Jobs spooled for the {\ltt{}cheetah} printer are sent to that
+printer (are printed).
+
+{\ltt{}disable}: stop printing to the specified printer.
+
+{\ltt{}disable lj}
+\break
+Jobs spooled for the {\ltt{}lj} printer are kept in the spool.
+\bye

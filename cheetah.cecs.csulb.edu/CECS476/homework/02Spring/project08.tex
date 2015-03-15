@@ -1,0 +1,46 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 8 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 20 February 2002 (Week 4 Lecture 2)\hfill 
+Due: 25 February 2002 (Week 5, Lab 1)}
+\parindent 0pt
+
+This assignment covers the X Window system.
+
+On your machine examine the x configuration file.
+Report 1) the number of modelines you found.
+Report 2) What device are you using for the mouse.
+Examine that device (this means examine {\ltt{}/dev}) 
+and report 3) exactly what is that device is
+(A look at the manual entry for mouse will help here.)
+
+Check the configuration of your X system (using a command, not using
+the files).
+Report 4) the number of valid modes that the command found
+and what clock rates (mode clock) is used for each of them,
+5) the exact command you ran to find that out,
+6) the version of the X11 system on your machine and its release date.
+When you run this check the command reports something things are 
+deleted (i.e., discarded) from the configuration file,
+what were those things.
+
+Check your video hardware.
+Report: 7) what type of videocard is in the machine (include the
+number) and
+8) how much memory is on that card,
+9) the exact command you ran to find that out.
+
+Re-do your X11 configuration file.
+You know your video card (from above).
+Assume your monitor can do a standard SVGA (800x600), 30-50K horizontal,
+40-90 vertical.
+
+Try starting X and stepping through some modes. Pick your
+best mode and tune it.
+
+Report: 10) the exact numbers from the tuning program.
+
+Note: If you have trouble with the name of your videocard, you may need
+to "reboot" and see what the video BIOS displays.
+\bye

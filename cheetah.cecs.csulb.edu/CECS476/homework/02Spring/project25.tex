@@ -1,0 +1,38 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 25 \hfill Srping 2002}}
+\footline{Dennis Volper \hfill 6 May 2002 (Week 14 Lecture 1)\hfill 
+Due: 8 May 2002 (Week 14, Lab 2)}
+\parindent 0pt
+
+This project is about SAMBA.
+
+1) Create a directory {\ltt{}/home/share} on your machine and
+create a couple text files in it. Call them {\ltt{}sam.txt} and 
+{\ltt{}joe.txt}.
+
+2) Modify the samba configuration file so that your security is by
+share and you share the {\ltt{}/home/share} directory as public
+read only. Call this share {\ltt{}[myshare]}. (Yes, you'll need
+to do a few other housekeeping items.)
+
+3) Set up the rc files ({\ltt{}rc.samba}) to enable the samba services.
+(Check the first inet assignment if you don't know how to do this.
+You did the disable if you followed the instructions during the install
+project.) Reboot. (Check to make sure the two samba daemons are running.)
+
+4) Test your configuration: Go to the NT machine in the lab.
+Login as guest (it should be logged in already). Click on network 
+neighborhood. If your machine shows up and when you click on
+your machine's icon the share should appear, if your
+machine doesn't show up, use the ``find computer" option on the pull-down
+and find {\ltt{}lab}{\it{}xx} where {\it xx} is the number of your machine.
+(The NT machine is configure so it doesn't need the {\ltt{}net.cecs.csulb.edu}
+suffix.
+
+Submit: a copy of your smb.conf with the comments removed.
+
+Demonstration: When you hand your submission to me, you must use the NT machine
+to demonstrate that your share works.
+\bye

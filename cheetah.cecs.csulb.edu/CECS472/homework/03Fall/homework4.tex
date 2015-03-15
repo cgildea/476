@@ -1,0 +1,223 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Project 4 \hfill Fall 2003}}
+\footline{Dennis Volper \hfill 24 September 2003 (Week 4 Lecture 2)\hfill 
+Due: 6 October 2003 (Week 6 Lecture 1)}
+\parindent 0pt
+
+Purpose: To gain an in-depth understanding of
+a concurrent connection-oriented server (Chapter 11).
+
+You will build a client and a concurrent connection-oriented server.
+Your client-server combination will provide the ability browse
+the file system on the server's machine.
+You will provide 3 capabilities 
+(1) {\bf c} to change directories and
+%(2) {\bf p} to print the current working directory and
+(2) {\bf g} to get/retrieve a file
+(3) {\bf l} to list the entries in the current directory.
+You will use a connection-oriented multiple process server (TCP).
+
+{\it THE BROWSERD SERVER}
+
+The {\ltt{}browserd} server will listen on your personal well-known TCP port.
+The server will accept as many clients as want to connect.
+Each time it accepts a connection from a client,
+the server will fork a process to handle that client. 
+When the client closes the socket, the (slave) server should exit.
+
+The server will handle three types of requests from the client:
+change directory,
+%report the current directory,
+get (retrieve) a file,
+and list the contents of the current directory.
+
+When the client requests a directory change,
+the client must send to the server the command and a null terminated
+string that contains the command and the name of the directory. 
+(This is a request for a directory change by the server on the server's 
+machine.)
+The server will attempt to change to that directory (it might not be able
+to due to a bad directory name or lack of permission).
+%The server should use the {\ltt{}chdir} system call to attempt this change,
+%passing it the name portion of the string it received from the client.
+The server will not send any reply to the client,
+hence the client will not be told if the directory change worked.
+
+When the client requests a listing of the server's current directory,
+the client sends only the command.
+The server, gets a listing of the directory and sends this listing
+back to the client.
+The end of the listing shall be indicated by the sending of a string
+containing a single null.
+Nulls must not be sent during (in the middle of) the listing. 
+
+%When the client requests a report of the current directory,
+%the client sends only the command a single letter followed by a null.
+%The server uses the {\ltt{}getcwd} command to get the name of the current
+%directory.
+%The server sends that directory name to the client as a null terminated string.
+
+When the clients requests a get of a file,
+the client must send to the server the command and a null terminated
+string that contains the command and the name of the file to be
+retrieved. 
+The server will attempt to open that file (it might not be able
+to due to a bad name or lack of permission).
+The server will use the {\ltt{}stat} command to see how large the
+file is.
+It will ship the file size (4 bytes, network order) to the client;
+followed by the file.
+
+Note: the list and get commands use the two different models
+of transferring information over the network,
+{\it list} uses a terminator,
+{\it get} sends a byte count.
+
+{\it THE BROWSER CLIENT}
+
+When started, the client will open a TCP connection to the server.
+The user of the client will be given four options,
+%{\ltt{}c}, {\ltt{}p}, {\ltt{}l}, and {\ltt{}q}.
+{\ltt{}c}, {\ltt{}g}, {\ltt{}l}, and {\ltt{}q}.
+You shall use the user interface provided in the shell found in
+\hfill\break
+{\ltt{}~volper/classes/472/shells/browser.c}.
+%If the user types {\ltt{}c}, {\ltt{}p}, or {\ltt{}l}, the client will
+If the user types {\ltt{}c}, {\ltt{}g}, or {\ltt{}l}, the client will
+send the entire command to the server.
+If the user typed {\ltt{}q}, the client shall exit
+(you should close the socket before exiting, but that is all).
+If the user typed {\ltt{}l}, the client shall
+print the directory listing the server returns.
+%If the user typed {\ltt{}p}, the client shall
+%print the name of the directory the server returns.
+If the user typed {\ltt{}g}, the client shall
+save the file that is transferred from the server.
+
+%In addition to the listings returned by the server
+%markers shall be printed (see the discussion of
+%boundaries below).
+
+{\bf Submit:} The a fully commented copy (print-out) of the source code for the 
+client and the server.
+In addition,
+the source code for the client must be placed in your home directory
+in a file named {\ltt{}browser.c} and
+the source code for the server must be placed in your home directory
+in a file named {\ltt{}browserd.c}.
+
+{\bf Directions and Discussion:} 
+You are given a shell ({\ltt{}browser.c}). 
+That shall has a (extemely primitive) user interface.
+Your program shall have the same user interface.
+You program must print the directory listing in exactly the same
+format that the shell does.
+The shell assumes the user types the command correctly,
+(for example that c is followed by a space and a directory name)
+you also should make this assumption
+(this is a user interface problem and we are concentrating on networking).
+Compile and run the shell to see how it behaves.
+So what is missing from the shell;
+the shell browses directories on the local machine.
+You need a client/server pair that allows you to browse directories on
+a remote machine (you used ftp to do this in assignment 1).
+So you must turn the local program into network program.
+Since part of the shell belongs on the client and part belongs
+on the server, I recommend you make a copy of the file
+(call it {\ltt{}browserd.c}) that will be modified to become the server.
+
+To the client copy you will need to add the 
+capability to connect to a server, 
+including handling the command line (the case argv stuff from Comer)
+as was done in your time client
+(I recommend copying the code from your time client).
+You need to send commands to the server,
+%and in the case of {\ltt{}l} and {\ltt{}p}; read and print the answer.
+and in the case of {\ltt{}l} read and print the answer;
+and in the case of {\ltt{}g} read and save the answer into a file.
+Do not send the {\ltt{}q} command; instead close the socket and exit.
+When you print the directory, you can't get the whole directory before 
+printing it (it can be arbitrarily large), 
+you must print it as it arrives (like the echo client does).
+Similary when you get (retrieve) a file you will need to save it to disk.
+To reduce the risk of {\it get} clobbering a file, when the file is
+saved it will always be given the name {\ltt{}xfer.tmp}; this means
+that a second get will overwrite the first; but in the interest of
+safety we will tolerate that.
+
+In the server copy you need to add the passiveTCP and fork stuff.
+A good way is to copy in the Comer code from chapter 11 and make the shell 
+into the server procedure.
+You read the command from the socket,
+%run it, and ship the answer ({\ltt{}l} and {\ltt{}p}) back.
+run it, and ship the answer ({\ltt{}l} and {\ltt{}g}) back.
+If you get end of file, you close/exit.
+In the case of the {\ltt{}l} command, the shell uses a {\ltt{}printf}
+you server doesn't want to print it, it wants to ship it.
+You should use {\ltt{}sprintf} to have the {\ltt{}printf} go to a string
+({\ltt{}get_port} does this).
+
+To both files you need to add the call to {\ltt{}get_port} so that
+your client and server use your special well known port.
+
+You must be careful with the communication between the client and the server.
+Remember, {\it boundaries are not preserved} in TCP.
+On the {\ltt{}c} command, make sure you have read the whole directory name
+before attempting the {\ltt{}chdir}.
+On the {\ltt{}l} command, the listing of the directory could be arbitrarily
+large; the server must send the listing back to the client a line at a time.
+The client will end up doing multiple reads. 
+Even though the server writes a line at a time, several lines or portions
+of a line may arrive in a read.
+Again, {\it boundaries are not preserved}.
+Since the null indicates the end of a directory listing,
+you must be careful when you send the listing 
+that you don't ship any nulls until the very end.
+Programs that use read 1 byte at a time will be given a substantial penality.
+
+%{\it Printing Markers:}
+%To ensure you get the idea about no boundaries you are
+%required to print markers in the middle of your listings.
+%These markers will ``mess up" your listing, that is,
+%they will place some extra ``stuff" into the output of
+%your {\ltt{}l} and {\ltt{}p} commands.
+%Requirement: each time the client does a network read,
+%a {\it marker} will be printed on to the client's screen.
+%The marker will consist of a vertical bar, a number
+%and a second vertical bar ({\ltt{}printf("|%d|",n)}).
+%The number will be the number of bytes read.
+
+Be sure to test your server on more than one machine, and
+for each server test, run clients on several different machines.
+Be sure your tests exercise the concurrent nature of your server.
+If you find your mistakes before submitting it, there is no penalty.
+If it fails when I test it, there will be substantial penalty for
+submitting a program that does not work.
+Working in a single case (such as cheetah to cheetah) is not sufficient
+for a client/server program.
+
+When you test your get, try it on a text file which will allow you
+to open it with the editor to ensure the contents got copied
+correctly. (The method of transfer we are using doesn't distinguish
+text from binary, so if you transfer text files correctly you will
+transfer binary files correctly.
+
+Notes: use English identifiers and add comments.
+Bad style will be tolerated for the parts you copy from Comer,
+but not for stuff you add.
+Test your client and server on several machines.
+Switch to a longer directory ({\ltt{}/etc}) and try it.
+(You get points off if I find a problem,
+but none if you find and fix it before turning it in!)
+As with the previous programs you will discover there is not a lot to type.
+You are given most of the pieces,
+you have to put them together.
+Allow your self enough time to debug,
+little errors in a network program take a while to find.
+
+Remember on {\ltt{}puma} to
+add the network libraries by compiling with the command:
+
+{\ltt{}gcc browser.c -lsocket -lnsl -o mybrowser}
+\bye

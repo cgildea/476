@@ -1,0 +1,241 @@
+\def\chapternumber{Installing Linux -- 16 February 2012}
+\input slides.tex
+\centerline{\bbf Installing Linux}
+
+To install Linux you must boot linux from
+floppy, CDROM, DVD, memory stick or network.
+
+\vf
+
+\centerline{\bbf The DVDs}
+
+Several recent DVDs are found in the {\ltt{}/sdb} directory of {\ltt{}jaguar}
+
+The install DVD is bootable (except on machines with a very old BIOS).
+
+The install directory is called {\ltt{}slackware}
+\break
+Example: {\ltt{}/sdb/slack13.37/slackware}
+
+The DVDs also contain source code to the various packages.
+
+\newslide
+\centerline{\bbf RAM Disk}
+
+A portion of RAM is reserved to act as though it were a hard-drive.
+
+When booting to do an install, RAM disk is the {\ltt{}/} drive,
+that is, where all the install utilities, scripts and libraries
+reside.
+
+Ramdisk is usually an image.
+The image is a Linux file system, so you could simply copy the image
+into ram.
+
+For efficiency, when downloaded or stored on disk, the image is compressed;
+\break
+you decompress before (while) you are copying the image to RAM.
+
+With CD booting, RAM disk allows you to switch CDs.
+\break
+With DVD booting, it increases the install speed.
+
+\newslide
+\centerline{\bbf Network Booting}
+
+The Boot Client
+\break
+1) The hardware (ROM BIOS) must support a net boot.
+\break
+2) The BIOS must be set to allow net boot.
+\break
+3) For our BIOS you need to hit the F12 key during
+the boot sequence to tell the client to try booting from
+the network first.
+
+Boot Server:
+\break
+Your boot server must be running both dhcpd and tftpd.
+\break
+dhcpd does the lookups and reports to the client
+\break
+tftpd does the file transfers
+
+a) dhcpd gives the client an ip address.
+\break
+b) dhcpd tells the client the name of the file to download and run
+\break
+This file is usually called {\ltt{}pxelinux} and it is the boot loader
+for the operating system.
+\break
+c) {\ltt{}pxelinux} reads its configuration file(s)
+off the boot server
+\break
+c.1) it downloads the kernel ({\ltt{}bzImage)}
+\break
+c.2) it downloads and decompresses the root filesystem
+({\ltt{}initrd.img}).
+\break
+c.3) it boots the kernel.
+
+\newslide
+\centerline{\bbf Partitioning a Disk}
+
+You usually need:
+\break
+A Linux native partition (82) marked as active/bootable
+\break
+A Linux swap partition.
+
+Other possibilities:
+\break
+A user partition, so the users can't squeeze out the OS
+\break
+A partition for {\ltt{}/var} so the expandable log files
+are kept separate from other things.
+\break
+Partitions on a second drive for more space.
+
+The disk is partitioned using the standard {\ltt{}fdisk}
+facility.
+
+
+\newslide
+\centerline{\bbf Building a Disk (Repeat)}
+
+The install ({\ltt{}setup}) program will do these if you select the menu items.
+(If you have 4MB or less you will need to turn swapping on before 
+starting the install).
+
+Set up the swap partition for swapping using the standard
+{\ltt{}mkswap} command.
+
+Set up the native partition file system using the
+standard {\ltt{}mke2fs} command.
+\break
+
+\vt
+
+Setup script:
+
+Add swap--
+\break
+1) Runs {\ltt{}mkswap}, remembers the entry for 
+the {\ltt{}fstab} (can't do anything with it until the fstab
+is on the drive).
+\break
+2) Turns swapping on for the partition.
+
+Select targets--
+\break
+1) Runs {\ltt{}mke2fs}, remembers the entry for the {\ltt{}fstab}
+\break
+2) Mounts the partition so you can install files on it.
+
+\newslide
+\centerline{\bbf The Install Groups (Disk Sets)}
+
+The install is organized into groups,
+for example the base install is group {\ltt{}a}
+and the files for that group are in subdirectory {\ltt{}a}
+
+Each directory has several compressed tar files
+\break
+{\ltt{}tar} then {\ltt{}xz}
+\break
+These can be extracted by the package tool.
+\break
+{\ltt{}pkgtool}: menu extract program for after install
+\break
+You can extract packages manually using {\ltt{}tar}
+and {\ltt{}source install/doinst.sh}.
+
+\vt
+
+Disk sets are thematic: a--base install, d--development tools,
+n--networking stuff, x--X11 windows stuff...
+
+Install: pick disk sets, make picks within each disk set
+
+History: these are called disk sets because they used to
+come on floppies, for example the {\ltt{}a} disk set
+contained 5 floppies.
+\newslide
+\centerline{\bbf Install (setup) Steps}
+
+Warning: do not type ahead, the script is badly sensitive to this.
+
+Set up swap: you also decided this at {\ltt{}fdisk} time.
+You have one swap partition, choose it;
+set it up, turn it on.
+\break
+Notes: this part of the dialogue will also cause the swap entry to be
+made in your (new) {\ltt{}fstab} on the hard drive you are loading.
+
+Select partitions: you decided this at {\ltt{}fdisk} time.
+You have one partition, no choices.
+
+Source: NFS, from jaguar. 
+jaguar has the disk sets under {\ltt{}/sdb/slack13.37/slackware}
+
+Disk sets: Do this carefully.
+(Some of the stuff I ask you to load is necessary for the later projects.)
+\break
+You may load extra stuff.
+\break
+Do not to load {\ltt{}cups} or you will
+have two competing printing systems installed.
+
+\newslide
+\centerline{\bbf Configuration}
+
+Build a new USB boot stick:
+\break
+We boot from the network, so no.
+
+Lilo: You've done this by hand. 
+What this part of the script does is build a lilo.conf and then run lilo.
+You don't need special parameters, you want no wait, standard screen
+resolution, master boot record and the sda drive.
+
+Where to find your modem and mouse:
+\break
+On other installations, you will need to know about your hardware,
+for this one, I tell you in the handout.
+
+Your network address and name:
+\break
+On the front of your machine. For the numbers, the defaults got you
+to the NFS disks so they should be correct.
+
+Install Services:
+\break
+This will do the {\ltt{}chmod a+x} for the {\ltt{}rc} files.
+The services to be used are listed in the handout.
+
+Setup the Time and Default X server as specified in the handout.
+
+Set the root password to the old value.
+\newslide
+\centerline{\bbf Post Configuration Steps}
+
+(After reboot)
+\break
+We are setting up some that are not usually used in a home install,
+like NIS, NFS. 
+The script doesn't handle these so they need to be done by hand
+after we've booted to the new system.
+
+You should have done all of this in previous projects.
+You'll need your old homeworks with such things as the DNS, NIS, and NFS 
+information.
+\break
+Therefore, I sketch out what is to be done.
+
+\vf
+\centerline{\bbf Notes}
+
+packages: may be added later using the package tool
+\break
+or using {\ltt{}tar} and {\ltt{}install/doinst.sh}
+\bye

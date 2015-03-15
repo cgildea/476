@@ -1,0 +1,86 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 1 \hfill Fall 2006}}
+\footline{Dennis Volper \hfill 28 August 2006 (Week 1 Lecture 1)\hfill 
+Due: 30 August 2006 (Week 1 Lab 2)}
+%first day assignment, unless monday is a holiday
+\parindent 0pt
+
+Purpose:
+To familiarize you with the systems you will be using.
+
+Submission: You will submit a printout.
+This document and all submissions in this course will have a header
+containing the following information:
+
+Your name, your login name, and the name of the machine on which you
+did the homework.
+
+All the questions will also serve to drill you on the organization
+of the Linux file system.
+The first three questions are also a drill on using the online manual.
+
+How many users are listed in the password file of cheetah?
+(Fortunately there is one user per line.)
+Hint: use {\ltt{}man -k} to find a command that prints the number
+of lines in a file.
+
+1) Report: the number of entries in the password file and
+the command you used to find out.
+
+File system organization:
+
+Examine: the configuration file that controls the {\ltt{}inetd} system service
+on your Linux system.
+
+2) Report: 
+What is the name exact name of this file,
+in what directory did you find this file,
+and what commands did you use to do this.
+
+Locate: the program that will tell the disk space usage
+on your Linux system.
+
+3) Report: What is the name name of that program,
+in what directory (where) is the program found
+and what commands did you use to do this.
+
+The next 5 questions are designed to make you use various
+commands with specific options.
+The answers themselves are of minor interest, the drill here is
+on use of various Unix commands.
+These commands will be frequently used by you in later assignments.
+
+Report the answer to each of the following questions and the
+commands you used to find that answer.
+
+4) Your {\ltt{}/etc/X11} directory should contain templates for
+the configuration file for the {\ltt{}X} window system,
+what are the name of these files?
+(Hint: the file names start with xorg.)
+
+5) In the {\ltt{}/dev} directory, there is an the entry that starts
+with {\it sony}. What is the full name of that entry.
+(Hint, use ls with a wild card).
+
+6) Examine the {\ltt{}/proc} file system.
+What is the cpu MHz of your machine.
+Hint: this is information about the cpu and can be obtained using the
+cat command on the correct pseudo-file.
+
+Examine the log files on {\ltt{}jaguar}:
+\hfill\break
+7) Give the names of the last 3 log files that have changed and 
+the dates at which they changed.
+\hfill\break
+8) Give the last 3 lines found in the {\ltt{}messages} log file.
+
+This following is not really a question, it is an action that
+willl attach your name and account to my gradesheet.
+
+9) Log into {\ltt{}cheetah} and run the {\ltt{}register} program,
+follow the intructions that program gives you.
+(No submission on this one.)
+
+\bye

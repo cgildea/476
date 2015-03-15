@@ -1,0 +1,44 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Homework 4 \hfill Fall 2004}}
+\footline{Dennis Volper \hfill 13 September 2004 (Week 3 Lecture 1) \hfill
+Due: 15 September 2004 (Week 3, Lab 2)}
+\parindent 0pt
+
+Purpose: This is designed to familiarize you with information
+retrieving system calls.
+
+Build a program that takes 4 command line arguments
+(that's counting the command).
+
+If the number of arguments is not equal to 4, the program
+should print a message and exit.
+(Remember argument 0 is the name of the command.)
+
+Argument 1: this should be the name of a machine.
+Use this in a {\ltt{}gethostbyname} call.
+If a {\ltt{}null} pointer is returned print a message;
+otherwise print the IP address (use {\ltt{}inet_ntoa} as in lecture).
+
+Argument 2: this should be the name of a service.
+Use this in a {\ltt{}getservbyname} call.
+If a {\ltt{}null} pointer is returned print a message;
+otherwise print the port number of the service.
+
+Argument 3: this should be the port number of a service.
+Use this in a {\ltt{}getservbyport} call.
+If a {\ltt{}null} pointer is returned print a message;
+otherwise print the name of the service.
+(Assume the protocol is {\ltt{}"tcp"}.
+
+Finally: call {\ltt{}gethostbyaddr} with the number
+{\ltt{}0x868bf811}. You will have to do an {\ltt{}htonl}
+on this and put it into an {\ltt{}int} so you can pass the
+address to the routine.
+If a {\ltt{}null} pointer is returned print a message;
+otherwise print the name of the host.
+
+{\ltt{}~volper/classes/472/shells/info.c} contains 
+the code examples from the lecture
+(you don't have to retype them).
+\bye

@@ -1,0 +1,122 @@
+\def\chapternumber{CECS 472, Licenses --- Volper -- 13 August 2003}
+\input slides.tex
+\input cstuff.tex
+\centerline{\bbf Internet}
+
+History:
+
+ARPA-net (Defense Advanced Research Projects Agency)
+\ind{}UC Berkeley, MIT
+\ind{}TCP/IP (version 4)
+
+Internet (Internet Activities Board)
+\ind{}Defense Data Net (Mil-net), Sprint, MCI
+\ind{}IETF: research and engineering groups
+\ind{}IAB: steering groups
+\ind{}RFC: Request For Comments
+\indind{}1179--line printer daemon protocol
+\indind{}{\ltt{}~volper/rfc/rfc_index.txt}
+\indind{}{\ltt{}www.ietf.org /iesg/1rfc_index.txt}
+\newslide
+\centerline{\bbf Domain Names vs. Internet Numbers}
+
+%(Comer: Chapter 20)
+
+Humans: names \qquad Machines: numbers
+
+Host name: like a address,
+\break
+Internet number: like a zip code + 4
+
+Post Office:
+\break
+Addresses are used by humans,
+\break
+mail is delivered using zip code.
+
+Internet:
+\break
+Host names are used by humans,
+\break
+messages are delivered using internet numbers.
+\break
+Internet numbers have 32-bits (4-octets).
+
+Principle: numbers reflect wires (cables/fiber)
+\break
+Principle: names reflect organization
+\break
+$\Rightarrow$ mapping may be complicated
+
+Delivery principle: zip codes uniquely specify the destination
+
+To avoid duplication zip codes are assigned.
+
+Principle: To avoid duplication internet numbers and host names
+must be centrally assigned.
+\newslide
+\centerline{\bbf Delegation}
+
+With millions machines on the internet;
+\break
+Centrally managing that many names and numbers is impossible.
+
+Solution: delegate, issue names and numbers in blocks.
+\break
+Such a block is called an {\bit internet license}.
+\break
+Let the local authorities handle individual machines. 
+
+The Long Beach license:
+\break
+All internet names ending in {\ltt{}csulb.edu}
+\break
+All internet numbers starting with {\ltt{}134.139}
+
+Our internet names: must end in {\ltt{}csulb.edu},
+\break
+but we choose any prefixes we want.
+\break
+Internet numbers: must start with {\ltt{}134.139},
+\break
+but we choose any postfixes
+
+\halign{#\quad\hfil&#\hfil\cr
+{\ltt{}cheetah.cecs.csulb.edu}&{\ltt{}134.139.248.2}\cr
+{\ltt{}elmo.acs.csulb.edu}&{\ltt{}134.139.60.7}\cr
+{\ltt{}mercator.geog.csulb.edu}&{\ltt{}134.139.60.51}\cr}
+
+We choose names to reflect campus political organization.
+
+We choose numbers to reflect physical location on the campus network.
+\newslide
+\centerline{\bbf Internet Licenses}
+
+Traditional subnet licenses come in three sizes
+
+\halign{\hfil#\hfil\quad&\hfil#\hfil\quad&\hfil#\hfil\quad&\hfil#\hfil\cr
+License&Number&Machines&Numbers\cr
+Class&Available&in license&\cr
+A&$2^7$&$2^{24}$&0..127\cr
+B&$2^{14}$&$2^{16}$&128..191\cr
+C&$2^{21}$&$2^8$&192..224\cr}
+
+Some licenses:
+
+\halign{#\hfil\quad&#\hfil\quad&#\hfil\cr
+names&numbers&class\cr
+mit.edu&18.x.x.x&A\cr
+csulb.edu&134.139.x.x&B\cr
+ics.uci.edu&128.195.x.x&B\cr
+csu.net&130.150.x.x&B\cr
+lasierra.edu&192.156.214.x&C\cr}
+\vf
+Home/small business technique: 
+\break
+Contact a service provider a block
+of numbers and name service and
+register a domain name.
+
+Typical block (of 16):
+32.14.98.32..32.14.98.47
+\bye

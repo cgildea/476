@@ -1,0 +1,124 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1998, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(8 points)
+Add a user: Account name {\ltt{}joe}, primary group {\ltt{}other},
+home directory {\ltt{}/u1/homes/joe}.
+Describe the steps you need to take to add this user.
+Do not use any scripts.
+\vskip 3.5in
+\ques
+(5 points)
+You have many Windows NT users, they keep trying to use control-alt-del
+to logout. You decide the best solution is to allow them to logout with
+this command. Exactly how would you do this?
+\vskip 1.2in
+\ques
+(5 points)
+User {\ltt{}sam} wants to know how much disk he is using.
+How do you find out? (Give the exact command).
+\vskip 0.9in
+\ques
+(5 points)
+You have a bunch of disks, each containing home directories,
+{\ltt{}/u1/homes}, {\ltt{}/u2/homes}, ... .
+You wish to place a new users ({\ltt{}sue}) home directory on
+the disk with the most space.
+How do you find the disk with the most space?
+\vfill\eject
+\ques
+(8 points)
+Your machine has new (2 Gigabyte) hard drive with 2000 cylinders. 
+You are to make two partion on this drive for user home directories
+{\ltt{}/homes1} and {\ltt{}/homes2}.
+Describe the sequence of commands you would use to partition the drive.
+\vskip 3.0in
+\ques
+(4 points)
+Assuming you have successfully partitioned the above drive; give the
+commands that you would use to set up file systems in the partitions.
+\vskip 1.0in
+\ques
+(5 points)
+You want these drives to mount automatically at boot time.
+What file do you change? And what lines to you add to that file?
+\vskip 1.2in
+\ques
+(5 points)
+After several months, you have a problem with the file system in the first
+partition ({\ltt{}/homes1}). What command do you run to fix that file system?
+\vfill\eject
+\ques
+(8 points)
+It's half way through the semester. Your server is very sluggish.
+It is running programs at a much slower speed than it should.
+What commands would you use to locate the problem.
+What would you look for when you ran those commands.
+\vskip 2.5in
+\ques
+(8 points)
+You've just downloaded the source for your new Linux 2.0.35 kernel
+into {\ltt{}/usr/src/linux}.
+It has your long awaited fixes.
+You have successfully built the kernel ({\ltt{}make config}, {\ltt{}make dep},
+{\ltt{}make zImage}). Now you are ready to try it out.
+What do you do to try this new kernel?
+\vskip 2.0in
+\ques
+(4 points)
+You are networking a machine. 
+Your machine's internet number is {\ltt{}134.139.136.92}.
+Give the command to configure the {\ltt{}eth0} interface.
+\vskip 0.5in
+\ques
+(5 points)
+On you machine, you default gateway is {\ltt{}134.139.136.99}.
+Give the command to configure the default route.
+\vfill\eject
+\ques
+(5 points)
+Your DNS server is {\ltt{}134.139.47.130}.
+How do you configure DNS to work? Give the name of the file and its contents
+\vskip 1.5in
+\ques
+(5 points)
+You want to diable the {\ltt{}ftp} service on your machine.
+What do you do? (Give file name and action.)
+\vskip 0.8in
+\ques
+(5 points)
+You don't want to allow users from {\ltt{}grimy.net} to telnet into your
+machine.
+What do you do? (Give file name and contents.)
+\vskip 0.9in
+\ques
+(5 points)
+You want to make your {\ltt{}/home2} directory available over the network
+to all machines in {\ltt{}cecs}.
+What do you do? (Give file name and contents.)
+\vskip 0.9in
+\ques
+(5 points)
+You want to use the {\ltt{}/homes3} directory from {\ltt{}lynx.cecs.csulb.edu}.
+You create the mount point with the command {\ltt{}mkdir /net/homes3}.
+What else do you do? (Give file name and contents.)
+\vskip 0.9in
+\ques
+(5 points)
+You add a second machine to your subnet called
+{\ltt{}hi2.net99.cecs.csulb.edu} (you already had a 
+{\ltt{}hi.net99.cecs.csulb.edu}).
+On your DNS server, give the name of the file that needs to be changed 
+and the line your would add to that file.
+\vfill\eject
+\bye

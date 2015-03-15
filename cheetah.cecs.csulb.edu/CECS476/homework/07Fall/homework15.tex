@@ -1,0 +1,60 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476 \hfill Homework 15 \hfill Fall 2007}}
+\footline{Dennis Volper \hfill 29 October 2007 (Week 9 Lecture 1)\hfill 
+Due: 31 October 2007 (Week 9 Lab 2)}
+\parindent 0pt
+
+{\bf Syslog--}
+
+Set up your machine so that it logs {\it  all} mail activity 
+on your machine to a file called {\ltt{}/var/log/mymaillog}.
+Note: this is a change in the name of the log file.
+Send mail from your machine and make sure the new log file records this.
+
+1) Report: the line you put into the syslog.conf that did this.
+
+Set up your machine so that it logs {\it all mail} activity 
+on your machine to 
+{\ltt{}jaguar.net.cecs.csulb.edu}.
+(Please don't swamp jaguar by logging everything.)
+
+Send mail from your machine and make sure the log records this works.
+Note: On {\ltt{}jaguar}, you will need to examine the {\ltt{}syslog.conf}
+to see what file that {\ltt{}jaguar} puts this log information into.
+The name of the log file on jaguar is slightly different from
+the name of the logfile I've asked you to use on your machine.
+
+2) Report: the line you put into the syslog.conf that did this.
+
+Clean up: Remove the {\ltt{}jaguar} entry from your {\ltt{}syslog.conf}.
+
+{\bf Printers---}
+
+Remove everything from your print spool ({\ltt{}lprm}).
+Use {\ltt{}lpq} to make sure it's empty.
+
+Your machine uses the lpd print server.
+Add a line to your printcap so that your machine can
+print to the printer on jaguar.
+This printer attached to {\ltt{}jaguar.net.cecs.csulb.edu} is
+as {\ltt{}jaguar} and as {\ltt{}lp}.
+Make the printer on {\ltt{}jaguar} the default printer for the system 
+({\ltt{}lp}).
+Make sure you can print
+
+3) Report: the line that you added to the printcap. 
+Do not submit the entire printcap.
+
+%Your machine uses the cups print server.
+%Use the configuration commands to enable printing on your machine.
+%Your machine should, as a default printer, print to the printer
+%named {\ltt{}jaguar} on the machine named 
+%{\ltt{}jaguar.net.cecs.csulb.edu}.
+%(Make sure you can print.)
+%4) Report: Describe what each of the fields in the panther's
+%printcap entry mean.
+
+
+\bye

@@ -1,0 +1,756 @@
+\def\chapternumber{CECS 472, CORBA --- Volper -- 8 January 2004}
+\input slides.tex
+\input bigcstuff.tex
+\centerline{\bbf Common Object Request Broker Architecture}
+\centerline{(CORBA)}
+
+RPC Problems:
+
+1) Have to name server machine, can't move service.
+\break
+2) C, not C++, not language independent
+
+CORBA Goals:
+
+1) Simplify development of distributed applications.
+
+2) Decouple machine---service relationship
+\break
+(allow services to move)
+
+3) Provide a foundation for distributed object cooperation.
+
+4) Provide for OO programmers what RPC provides for C.
+
+Advantages over RPC
+\break
+1) Object abstractions used instead of procedural abstractions.
+\break
+2) Inheritance supported.
+
+Other Differences
+\break
+Supports multi-threaded services
+\newslide
+\centerline{\bbf Components}
+
+1) Object Request Broker.
+
+2) Interoperability Specification
+
+3) Interface definition language
+
+4) Program language mappings for IDL
+
+5) Static invocation interface
+
+6) Dynamic invocation interface
+
+7) Dynamic skeleton interface
+
+8) Basic object adapter
+
+9) Interface and implementation repositories
+\newslide
+\centerline{\bbf Object Request Broker}
+
+Provides communication for exchanging requests between
+local and remote objects.
+\break
+Clients may bind to a service by using a broker or by
+explicitly naming the server.
+
+\vfill
+\centerline{\bbf Interoperability Specification (GIOP, IIOP)}
+
+Specifies protocols for communication to ORB
+
+Several clients can share a connection to an ORB.
+
+ORBs can communicate with each other.
+
+Common Data Representation (CDR), (like XDR)
+
+Objects (Servers) can be located dynamically,
+\break
+objects can migrate to other machines transparently
+
+Seven message types:
+\break
+Client --
+{\ltt{}Request},
+{\ltt{}CancelRequest},
+{\ltt{}LocateRequest}
+\break
+Server --
+{\ltt{}Reply},
+{\ltt{}LocateReply},
+{\ltt{}CloseConnection}
+\break
+Both --
+{\ltt{}MessageError}
+
+\newslide
+\centerline{\bbf IDL}
+
+Needed--something to define interfaces to remote objects (similar to
+what the {\ltt{}.x} file does for RPCs.
+
+Solution--Interface Definition Language (similar to C++)
+
+Goals:
+
+Platform independence.
+
+Enforced modularity.
+
+Easy to program.
+
+Language independent.
+
+Object oriented
+\break
+--specify interfaces that have operations and attributes.
+\break
+support inheritance
+
+Language mappings: C, C++ Smalltalk, COBOL, Modula 3, DCE, Java.
+
+\newslide
+\centerline{\bbf More IDL}
+
+Supported features:
+
+Modules, interfaces, operations, attributes, inheritance, 
+basic types (double, long, char),
+arrays, sequence, struct, enum, union, typedef, consts,
+exceptions
+
+C++ differences:
+no data members, no pointers, 
+no overloading, no {\ltt{}int}, no templates, 
+tagged unions only
+
+parameter passing modes, 
+different string type,
+different sequence type,
+different exception interface,
+oneway call semantics
+
+no constructors/destructors,
+no control constructs (like the {\ltt{}.x} file--no programming)
+\vfill
+Static Invocation Interface--
+Methods are specified in advance by the IDL.
+
+Dynamic Invocation Interface--
+Objects and methods can be specified at runtime.
+\break
+Meta-data is stored in ``Interface Repository"
+\break
+May query an objects interface (what methods do you support)
+at runtime.
+\newslide
+\centerline{\bbf Object Access Methodology}
+
+1) Client calls object proxy
+\break
+(similar {\ltt{}clnt} stub)
+
+2) Proxy calls object broker, finds out where
+the server object lives.
+(Clients may bind to a service using the broker or by
+explicitly naming the server.)
+
+3) Proxy calls object, gets response.
+
+4) Proxy returns response to client.
+\vt
+Object Reference: a ``handle"
+\break
+(Similar to the RPC handle)
+\break
+use it only for passing to the proxy.
+\break
+Binding client to a target object:
+\break
+Request an object reference (handle) from a server
+\break
+The object reference serves as the local proxy.
+\break
+Invoke methods on the proxy.
+\break
+Warning: do not use this pointer to access the object;
+
+The ORB activates (starts) any idle service when any method of that
+service is invoked.
+
+Call-backs can be set up. (Notifier service)
+\break
+A client can request to be called when an event occurs.
+
+
+\newslide
+\centerline{\bbf The Echo Example}
+
+Goal: Echo a string.
+
+Programming steps:
+
+1. define the object interface in IDL
+
+2. use the IDL compiler to generate the stub
+
+3. build the object implementation
+
+4. build the client implementation
+
+\newslide
+\centerline{\bbf The Echo IDL}
+
+File: {\ltt{}echo.idl}
+
+{\cprogram
+#ifndef __ECHO_IDL__
+#define __ECHO_IDL__
+
+interface Echo {
+    struct Line {
+      char data[20];
+    };
+    Line echoString(in Line mesg);
+};
+
+#endif 
+@endprogram}
+
+The ``{\ltt{}ifndef}" is so the same idl compile doesn't include this twice
+(not necessary in a simple project).
+
+The IDL says the {\ltt{}Echo} object has a method
+called {\ltt{}echoString} 
+that takes a string and returns a string.
+\vfill
+\centerline{\bbf The OmniORB IDL compiler}
+
+{\ltt{}omniidl -bcxx echo.idl}
+
+Produces:
+\break
+{\ltt{}echo.hh} -- C++ header file
+\break
+{\ltt{}echoSK.cc} -- C++ source (stub) file
+(SKeleton Class)
+\break
+{\ltt{}echoDynSK.cc} -- another stub (we don't use this)
+
+\newslide
+\centerline{\bbf A look at the stub declaraion (header file)}
+
+{\cprogram
+class Echo;
+typedef Echo* Echo_ptr;
+
+class Echo {
+public:
+ typedef Echo_ptr _ptr_type;
+ static _ptr_type _duplicate(_ptr_type);
+ static _ptr_type _narrow(CORBA::Object_ptr);
+ static _ptr_type _nil();
+ struct Line { CORBA::Char data[20]; };
+ virtual Line  echoString(const Line & mesg) = 0; };
+
+class _objref_Echo: public virtual CORBA::Object, 
+  public virtual omniObjRef { 
+public:
+  Echo::Line echoString(const Echo::Line& mesg); };
+class _impl_Echo: public virtual omniServant {
+  virtual Echo::Line 
+    echoString(const Echo::Line& mesg) = 0; };
+@endprogram}
+
+{\ltt{}_ptr_type} -- (a type) points to an {\ltt{}Echo} object
+\break
+{\ltt{}_duplicate}--make a second reference to the object
+\break
+{\ltt{}_narrow}--Restrict to being an Echo object
+\break
+{\ltt{}_nil}--returns an official null pointer (no object)
+\break
+{\ltt{}is_nil}--official null pointer check
+\break
+{\ltt{}Echo::Line} exists twice (on both client and server)
+\newslide
+\centerline{\bbf A look at the skeleton class (header file)}
+
+{\ltt{}_sk_Echo} is the generated skeleton class.
+
+{\cprogram
+class _sk_Echo : public virtual Echo {
+public:
+ _sk_Echo() {}
+ _sk_Echo(const omniORB::objectKey& k);
+ virtual ~_sk_Echo();
+ Echo_ptr _this() { return Echo::_duplicate(this); }
+ void _obj_is_ready(CORBA::BOA_ptr boa) 
+   { boa->obj_is_ready(this); }
+ CORBA::BOA_ptr _boa() 
+   { return CORBA::BOA::getBOA(); }
+ void _dispose() { _boa()->dispose(this); }
+ omniORB::objectKey _key();
+ virtual Line  echoString(const Line & mesg) = 0;
+
+ ...
+};
+@endprogram}
+
+These methods will be available to the object.
+\newslide
+\centerline{\bbf The Object Implementation}
+\centerline{(you must build this)}
+
+{\cprogram
+// File: echo_i.cc
+#include "echo.hh"
+
+class Echo_i : public POA_Echo,
+  public  PortableServer::RefCountServantBase {
+public:
+ Echo_i() {}
+ virtual ~Echo_i() {}
+ struct Line echoString(const struct Line & mesg){
+  return mesg;
+ };
+};
+
+@endprogram}
+
+Constructor and destructor--default.
+
+The {\ltt{}echoString} is built by you to implement
+the capability you want to provide.
+
+Note: In building objects, you often use the heap (new)
+\newslide
+\centerline{\bbf The Actual Client}
+
+(OmniORB style)
+Do it so all methodology dependent code is in {\ltt{}main}.
+\break
+We are passed a pointer to the proxy
+
+{\cprogram
+// File: do_echo.cc
+#include <iostream>
+int do_Echo(Echo_ptr Echo_Obj ) {
+ struct Echo::Line original;
+ struct Echo::Line new_version;
+ strcpy( original.data, "Hi there" );
+ new_version = Echo_Obj->echoString( original );
+ cout << new_version.data << endl;
+};
+@endprogram}
+\newslide
+\centerline{\bbf Separate Client/Server (Server side)}
+
+{\cprogram
+#include <iostream.h>
+#include "echo.hh" #include "echoSK.cc"
+#include "echo_i.cc"
+int main(int argc, char *argv[]) {
+  CORBA::ORB_var orb = 
+    CORBA::ORB_init(argc,argv,"omniORB3");
+  CORBA::Object_var obj =
+    orb->resolv_initial_references("RootPOA");
+  PortableServer::POA_var poa = 
+    PortableServer::POA::_narrow(obj);
+ Echo_i *myobj = new Echo_i();
+ PortableServer::ObjectId_var myobjid =
+   poa->activate_object(myobj);
+ Echo_var myobjRef = myobj->_this();
+ CORBA::String_var 
+   sior(orb->object_to_string(myobjRef));
+ cout << (char*)sior << endl;
+ myobj->_remove_ref();
+ PortableServer::POAManager_var pman =
+   poa->the_POAManager();
+ pman->activate();
+ orb->run();
+ orb->destroy();
+ return 0;
+}
+@endprogram}
+
+\newslide
+\centerline{\bbf Comments on Server}
+
+Includes, {\ltt{}hh} is essential, others make for a single
+compile.
+
+Setup ORB and POA.
+
+Create a {\ltt{}Echo_i}, the real implementation.
+
+Activate the real implementation.
+
+Build a string that represents the server object
+\break
+(encodes server IP and port numbers)
+\break
+print string.
+\break
+(The string makes {\ltt{}do_echo} available to external callers.)
+
+Count down (lower the reference count)
+
+Activate the POA.
+
+Enter "run" mode.
+
+On exit of run mode, free all memory and objects
+\newslide
+\centerline{\bbf Client Side}
+
+{\cprogram
+#include <iostream.h>
+#include "echo.hh" #include "echoSK.cc"
+#include "echo_i.cc"  #include "do_echo.cc"
+
+int main (int argc, char **argv) {
+  CORBA::ORB_ptr orb = 
+    CORBA::ORB_init(argc,argv,"omniORB3");
+  try {
+   CORBA::Object_var obj =             //(1)
+       orb->string_to_object(argv[1]);
+   Echo_ptr Echo_Obj = Echo::_narrow(obj);
+   if (CORBA::is_nil(Echo_Obj)) return -1;
+   do_echo(Echo_Obj);
+  }
+  catch(...) {...}
+  orb->destroy();
+  return 0;
+}
+@endprogram}
+
+Usage: {\ltt{}a.out <object reference>}
+\break
+Type the string representation of the object reference
+on the command line
+\break
+1) Use the string representation to set up access to the object.
+\break
+Call {\ltt{}do_echo} with the object proxy/handle
+\newslide
+\centerline{\bbf Co-located Client/Server (single program)}
+{\cprogram
+#include "echo.hh" #include "echoSK.cc"
+#include "echo_i.cc"  #include "do_echo.cc"
+int main(int argc, char *argv[]) {
+ CORBA::ORB_ptr orb =
+    CORBA::ORB_init(argc,argv,"omniORB3");
+ CORBA::Object_var obj = orb-> //POA init
+   resolve_initial_references("RootPOA");
+ PortableServer::POA_var poa=
+   PortableServer::POA::_narrow(obj);
+ Echo_i *myobj = new Echo_i();
+ PortableServer::ObjectId_var myobjid = 
+   poa->activate_object(myobj);
+ Echo_var myobjRef = myobj->_this();
+ myobj->_remove_ref();
+ PortableServer::POAManager_var pman = 
+   poa->the_POAManager();
+ pman->activate();
+ Echo_ptr Echo_Obj = Echo::_narrow(obj);
+ if (CORBA::is_nil(Echo_Obj)) return -1;
+ //Call the procedure that uses the object. 
+ do_echo(Echo_Obj);
+ orb->destroy(); //cleanup
+ return 0;
+}
+@endprogram}
+
+\newslide
+\centerline{\bbf Colocated version}
+
+Both client and server side are located
+in the same program.
+
+Since the {\ltt{}Object_var} was created by the
+server code, we have it directly and don't need
+a string to get a reference/handle to it.
+
+\newslide
+\centerline{\bbf Vector Example}
+
+Regular program (split).
+
+The main class.
+
+{\cprogram
+// vector_services.cc
+class Vector_Ops {
+
+  public: 
+    struct Vector { 
+      long x,y;
+    };
+
+    Vector_Ops() {};
+    virtual ~Vector_Ops() {};
+
+    virtual struct Vector Add(
+          const struct Vector &a, 
+          const struct Vector &b) {
+      struct Vector Answer;
+      Answer.x = a.x + b.x;
+      Answer.y = a.y + b.y;
+      return Answer;
+    };
+};
+@endprogram}
+
+\newslide
+
+The principal function that uses the class.
+\break
+Note: this must be passed a class instantiation when called.
+
+{\cprogram
+// do_vectors.cc
+#include <iostream>
+typedef Vector_Ops* Vector_ptr;
+int do_vectors(Vector_ptr Vector_Obj) {
+  struct Vector_Ops::Vector p;
+  struct Vector_Ops::Vector q;
+  struct Vector_Ops::Vector r;
+  p.x = 1;
+  p.y = 4;
+  q.x = 2;
+  q.y = 5;
+  r = Vector_Obj->Add(p, q);
+  cout << "answer (should be (3, 9)) " <<  r.x 
+  cout << "  " <<  r.y << endl;
+  return 0;
+}
+@endprogram}
+\vt
+Main program instantiates a vector object and calls the principal function.
+
+{\cprogram
+int main() {
+  Vector_ptr Vector_Instance = new Vector_Ops;
+  return do_vectors(Vector_Instance);
+}
+@endprogram}
+\newslide
+\centerline{\bbf The idl file}
+
+{\cprogram
+// File: vector_handler.idl
+interface Vector_Ops {
+    struct Vector { 
+      long x,y;
+    };
+    Vector Add( in Vector a, in Vector b);
+};
+@endprogram}
+
+The key word in has been added.
+\break
+Class has been switched to interface.
+\break
+The structure prefixes have been removed.
+\break
+The private area has been removed.
+\newslide
+\centerline{\bbf The Implementation Class}
+
+{\cprogram
+//File: vector_ops_i.cc
+#include "vector_handler.hh"
+class Vector_Ops_i : public POA_Vector_Ops,
+        public PortableServer::RefCountServantBase {
+
+  public: 
+//    struct Vector { 
+//      int x,y;
+//    };
+
+    Vector_Ops_i() {};
+    virtual ~Vector_Ops_i() {};
+
+    virtual struct Vector_Ops::Vector Add(
+        const struct Vector_Ops::Vector &a, 
+        const struct Vector_Ops::Vector &b) {
+      struct Vector_Ops::Vector Answer;
+      Answer.x = a.x + b.x;
+      Answer.y = a.y + b.y;
+      return Answer;
+    };
+};
+@endprogram}
+
+Must inherit from the corba classes.
+\break
+Change of name to {\ltt{}_i}
+\break
+Removal of the structure declarations because the idl
+compiler had placed them in the skeleton class.
+\newslide
+\centerline{\bbf The user interface}
+{\cprogram
+// do_vectors.cc
+#include <iostream.h>
+#include "vector_handler.hh"
+int do_vectors(Vector_Ops_ptr Vector_Obj) {
+  struct Vector_Ops::Vector p;
+  struct Vector_Ops::Vector q;
+  struct Vector_Ops::Vector r;
+
+  p.x = 1;
+  p.y = 4;
+  q.x = 2;
+  q.y = 5;
+  r = Vector_Obj->Add(p, q);
+  cout << "answer (should be (3, 9)) " <<  r.x 
+  cout << "  " <<  r.y << endl;
+  return 0;
+}
+@endprogram}
+
+The parameter type has been changed.
+\break
+The {\ltt{}Vector_Obj} has change type to {\ltt{}..._ptr}
+\newslide
+\centerline{\bbf Separate Server}
+
+{\cprogram
+#include <fstream.h> #include "vector_handler.hh"
+#include "vector_handlerSK.cc"
+#include "vector_ops_i.cc"
+int main(int argc, char *argv[]) {
+ CORBA::ORB_var orb =
+  CORBA::ORB_init(argc,argv,"omniORB4");
+ CORBA::Object_var obj = 
+  orb->resolve_initial_references("RootPOA");
+ PortableServer::POA_var poa = 
+  PortableServer::POA::_narrow(obj);
+ Vector_Ops_i *myobj = new Vector_Ops_i();
+ PortableServer::ObjectId_var myobjid = 
+  poa->activate_object(myobj);
+ obj = myobj->_this();
+ CORBA::String_var 
+  sior(orb->object_to_string(obj));
+ ofstream F("mysior.txt");
+ F << (char*)sior << endl;
+ F.close();
+ myobj->_remove_ref();
+ PortableServer::POAManager_var pman = 
+  poa->the_POAManager();
+ pman->activate(); orb->run();
+ orb->destroy();
+ return 0;
+}
+@endprogram}
+\newslide
+\centerline{\bbf Separate Server Comments}
+
+Similar to the echo example,
+\break
+except it drops sior into file.
+
+Entirely boilerplate,
+
+the mentions of {\ltt{}Vector_Ops} occur in exactly
+the same places as {\ltt{}Echo} in the previous example.
+
+This could be done as text replacement by a reasonable
+idl compiler.
+
+rpcgen has the advantage here because it does this for the
+server side main.
+
+\newslide
+\centerline{\bbf Separate Client}
+
+The sior string is read in from the file.
+\break 
+The orb initialization is done.
+\break
+The stringified reference is used to
+contact the server
+
+{\cprogram
+#include "vector_handler.hh"
+#include "vector_handlerSK.cc"
+#include "do_vectors.cc"
+#include <fstream.h>
+int main(int argc, char *argv[]) {
+ // Get the sior string from the file.
+ char siorbuf[2048];
+ ifstream F("mysior.txt");
+ F >> siorbuf ;
+ F.close();
+ // The object request broker is initialized.
+ CORBA::ORB_ptr orb =
+    CORBA::ORB_init(argc,argv,"omniORB4");
+ CORBA:Object_var obj =
+   orb->string_to_object(siorbuf);
+@endprogram}
+\newslide
+
+\break
+We do the narrow to a vector object, getting
+a proxy pointer.
+\break
+We call the client interface procedure passing the proxy
+\vt
+
+{\cprogram
+ Vector_Ops_var Vector_Obj =
+   Vector_Ops::_narrow(obj);
+ if (CORBA::is_nil(Vector_Obj) {
+   cerr << "Object request failed\n";
+   return -1;
+ }
+ do_vectors(Vector_Obj);
+
+ orb->destroy(); //cleanup
+ return 0;
+}
+@endprogram}
+
+Except for the {\ltt{}do_vectors} call this could be generated.
+\break
+Everything else is ``text replacement"
+\newslide
+\centerline{Colocate main is almost all CORBA stuff}
+
+{\cprogram
+#include <iostream.h> #include "vector_handler.hh"
+#include "vector_handlerSK.cc"
+#include "vector_ops_i.cc" #include "do_vectors.cc"
+int main(int argc, char *argv[]) {
+  CORBA::ORB_ptr orb = 
+      CORBA::ORB_init(argc,argv,"omniORB4");
+  CORBA::Object_var obj = 
+    orb->resolve_initial_references("RootPOA");
+  PortableServer::POA_var poa =
+    PortableServer::POA::_narrow(obj);
+  Vector_Ops_i *myobj = new Vector_Ops_i();
+  PortableServer::ObjectId_var myobjid = 
+    poa->activate_object(myobj);
+  Vector_Ops_var myobjRef = myobj->_this();
+  myobj->_remove_ref();
+  PortableServer::POAManager_var pman = 
+    poa->the_POAManager();
+  pman->activate();
+  Vector_Ops_ptr Vector_Obj = 
+    Vector_Ops::_narrow(myobjRef);
+  if (CORBA::is_nil(Vector_Obj)) {
+    cerr  << "Object request failed" << endl;
+    return -1; }
+  do_vectors(myobjRef);
+  orb->destroy(); return 0; }
+@endprogram}
+\bye

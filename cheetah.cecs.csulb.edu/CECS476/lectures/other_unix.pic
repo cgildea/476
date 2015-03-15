@@ -1,0 +1,53 @@
+\def\chapternumber{Unix -- 8 May 2012}
+\input slides.tex
+\centerline{\bbf Unix}
+
+Unix/Linux flavors differ.
+\break
+Branches: BSD, System V
+
+{\bit Startup:}
+
+1) rc, rc.local. few files.
+
+2) multiple {\ltt{}/etc} directories: rc1.d, rc3.d
+\break
+One for each run level. Each with files:
+\break
+S01ip, S02mail, S03innd
+\break
+When switching to run-level, run these file in order
+
+When leaving the run-level run these in order:
+\break
+K01ip, K02innd
+
+Usually links to {\ltt{}/etc/init.d}
+\vf
+{\bit Devices:}
+
+1) /dev/sda3
+
+2) {\ltt{}/dev/dsk/c0t2d0s0}: controller, which target (SCSI ID), 
+which device, which section.
+\newslide
+{\bit Log files:}
+
+1) {\ltt{}/var/log} (user does not have files that grow)
+
+2) {\ltt{}/usr/adm}
+\vf
+{\bit System programs:}
+
+1) {\ltt{}/usr/sbin}, {\ltt{}/sbin}
+
+2) {\ltt{}/usr/etc}
+\vf
+{\bit Additional programs:}
+
+1) /bin
+
+2) /usr/share/bin
+
+
+\bye

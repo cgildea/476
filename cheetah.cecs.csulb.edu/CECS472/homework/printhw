@@ -1,0 +1,8 @@
+#!/bin/csh
+# Homeworks
+#  pic -c {$topic}.pic > {$topic}.tex
+  set topic="$1"
+  tex  {$topic}.tex
+  dvips {$topic}.dvi 
+#  psnup -2 -d -pletter {$topic}.ps | lpr -h -Pecsprinter
+  rm {$topic}.log {$topic}.dvi

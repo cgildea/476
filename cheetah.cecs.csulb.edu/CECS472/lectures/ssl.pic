@@ -1,0 +1,363 @@
+\def\chapternumber{Secure Socket Layer --- SSL -- 4 January 2006}
+\input slides.tex
+\centerline{\bbf SSL--Secure Socket Layer}
+
+Basic SSL:
+\break
+Encrypt the data that is transmitted over the network.
+\break
+Operates on top of a normal socket.
+\break
+Make a normal connection.
+\break
+Use SSL over that connection.
+
+1) The client requests that the ssl layer be used on an existing
+connection.
+
+2) The server sends its public key with its certificate.
+
+3) The client, if it chooses, may check the certificate to
+ensure the identity of the server.
+
+4) The client generates a random symmetric encryption key, encrypts
+it using the server's public key and sends it to the server.
+\break
+This will be the session key
+
+5) The server decrypts the symmetric encryption key.
+\break
+Both client and server now have the session key.
+
+6) All future data transmitted over the net is encrypted with
+the session key
+\break
+(and decrypted by the receiver).
+
+\newslide
+\centerline{\bbf Certificates}
+
+The certificate (if used):
+\break
+Confirm the identify of the other machine.
+\break
+You need to know the other machine's certificate.
+\break
+Or the other machine's certificate needs to be
+signed (cryptographically) by a machine you trust.
+\break
+That machine signs using its certificate.
+\break
+A trusted central certificate authority (fee) is used.
+
+The client is not required to use the certificate.
+
+These go out of date when you reload.
+Note:
+\break
+On the web, most people click through the out-of-date/unknown certificate
+panels.
+
+\newslide
+\centerline{\bbf SSL overview}
+
+SSL needs to be initialized.
+\break
+The process takes several steps.
+
+0) Get a connected socket.
+\break
+1) Initialize the libraries.
+\break
+2) Set up a context.
+\break
+3) Set up an SSL environment from the context
+\break
+4) Use the SSL environment to initiate an ssl connection
+over the socket.
+\break
+5) Use the SSL environment to read/write over the socket.
+
+\vf
+\centerline{\bbf Initializing the libraries}
+
+{\ltt{}SSL_library_init()}
+
+Must precede all other SSL calls.
+
+Registers the ciphers and digests that are available in the library
+
+\newslide
+
+\centerline{\bbf Setting up the Context}
+
+A context consists of:
+\break
+allowable methods of encryption
+\break
+allowable methods of generating/exchanging a session keys.
+\break
+Contexts are used to establish SSL environments.
+\break
+SSL allows serveral contexts to be in use
+at the same time (on different sockets).
+
+\vt
+
+{\ltt{}SSL_METHOD* SSLv23_method()}
+
+This call returns a pointer to an SSL method.
+\break
+Flavors: version 2 only, version 3 only, version 2 or 3.
+\break
+As shown: a context created with this method will understand
+both SSLv2 and SSLv3 protocols
+\break
+A series of calls is required to set up a context.
+
+\vt
+
+{\ltt{}SSL_CTX* SSL_CTX_new(SSL_METHOD *)}
+
+Creates a context.
+\break
+Pass the result of the method call.
+\break
+The allocator is used, you will need a free().
+
+\newslide
+\centerline{\bbf Setting up the Context}
+
+\vt
+
+% man SSL_CTX_use_certificate
+
+{\cprogram
+SSL_CTX_use_certificate_chain_file(SSL_CTX*,
+             char* file)
+@endprogram}
+
+Specifies the file in which the certificate (public key) to be used with
+this context is found.
+\break
+SSL gives out the public key to the other machine so the other machine
+can use it to encrypt what it sends to us.
+\break
+Usually only the session key (and some related data) is encrypted
+with this.
+
+\vt
+
+{\ltt{}SSL_CTX_set_default_passwd_cb(SSL_CTX*,passwd_cb);}
+
+You don't want the private key sitting in a file on your disk,
+someone could steal it.
+\break
+A password should be used to encrypt/decrypt the private keys.
+\break
+The {\ltt{}passwd_cb} function wil return the password.
+\break
+The public key is usually not encrypted.
+
+If you do not set up the callback you will be prompted for the password.
+\break
+This isn't good if your program runs in the background.
+
+\newslide
+\centerline{\bbf Setting up the Context}
+
+The function passed as the callback must have the following profile.
+
+{\cprogram
+int passwd_cb(char *buf, int len, int rwflag,
+              void* userdata)
+@endprogram}
+
+
+The password will be returned in {\ltt{}buf}.
+\break
+When called it should be passed an array whose length
+is at least {\ltt{}len}.
+\break
+This function is called automatically when the SSL environment
+needs to decrypt a private key.
+
+\vf
+
+{\cprogram
+SSL_CTX_use_PrivateKey_file(SSL_CTX*,
+          char* file,SSL_FILETYPE_PEM);
+@endprogram}
+
+Specifies the file in which the private key is found. 
+\break
+If there are multiple keys in the file,
+the first key found is decrypted and added to the context.
+\break
+This is the private key corresponding to the public key we
+issue to the other machine.
+\break
+Since a password will be needed to access the key, make sure the
+callback has already been set up.
+\break
+There are a couple different formats the key file can take,
+the most common is {\ltt{}pem}.
+
+\newslide
+
+\centerline{\bbf Using an SSL environment}
+
+\vt
+
+{\ltt{}SSL* SSL_new(SSL_CTX*);}
+
+Use a context up to create an ssl environment (object).
+\break
+Warning: this copies the context, so any changes to the context
+made after this will not modify the SSL.
+
+\vf
+
+{\ltt{}SSL_set_fd(SSL* ssl, int sock)}
+
+Associate a socket with the SSL ssl enviroment.
+\break
+The socket must be already connected.
+\break
+When we do SSL stuff it will be done over the connection represented
+by this socket.
+
+\newslide
+
+\centerline{\bbf Establishing an SSL session}
+
+{\ltt{}int SSL_connect(SSL*)}
+
+Turns an ordinary client socket/connection into an SSL connection
+by initiating an SSL handshake with a server.
+\break
+A connected socket (established by an ordinary {\ltt{}connect})
+must already have been associated with the SSL.
+
+return values:
+\hfill\break
+{\ltt{}1}: The handshake was successful
+\hfill\break
+{\ltt{}0}: controlled error
+\hfill\break
+{\ltt{}<0}: fatal error
+
+\vf
+
+{\ltt{}int SSL_accept(SSL *ssl)}
+
+Turns an ordinary server conection into an SSL connection
+by responding to an SSL hand shake.
+\break
+Waits for the client to initiate the SSL handshake.
+\break
+A connected socket (created by an ordinary {\ltt{}accept})
+must already have been associated with the SSL.
+
+return values: the same as connect.
+
+The socket value is NOT returned.
+
+\newslide
+\centerline{\bbf Write}
+
+{\ltt{}SSL_write(SSL *ssl, const void *buffer, int num);}
+
+Behaves like write.
+{\ltt{}num} bytes will be written.
+
+The {\ltt{}ssl} needs to be attached to a socket.
+
+If a SSL session has not been negotiated 
+({\ltt{}SSL_connect} or {\ltt{}SSL_accept}), it will try to negotiate.
+
+Returns:
+\hfill\break
+1) the number of bytes written
+\hfill\break
+2) 0 or negative on error
+
+Action: encrypts and writes to the attached socket.
+
+\newslide
+\centerline{\bbf Read}
+
+{\ltt{}SSL_read(SSL *ssl, void *buffer, int num);}
+
+Action: decrypts and places
+up to {\ltt{}num} bytes into the buffer.
+
+Be sure to pass it a real buffer (not a dangling pointer).
+
+The {\ltt{}ssl} needs to be attached to a socket.
+
+If an SSL session has not been negotiated 
+({\ltt{}SSL_connect} or {\ltt{}SSL_accept}), it will try to negotiate.
+
+Returns
+\hfill\break
+1) the number of bytes read.
+\hfill\break
+2) 0 on EOF
+\hfill\break
+3) negative on error
+
+Action, reads from the attached socket and decrypts.
+
+\newslide
+\centerline{\bbf SSL clean up}
+
+If the program is continuing it should free the
+memory allocated by the {\ltt{}SSL} and the {\ltt{}SSL_CTX}
+
+{\ltt{}SSL_free(SSL *ssl)}
+
+Frees memory associated with the ssl.
+
+\vt
+{\ltt{}SSL_CTX_free(SSL_CTX *ctx)}
+
+Frees memory associated with the context
+
+\newslide
+
+\centerline{\bbf SSL error information}
+
+{\ltt{}int SSL_get_error(SSL *ssl, int errorVal)}
+
+Use to get specific information about an error.
+
+Given the {\ltt{}ssl} and the value returned (by read/write)
+this will return an integer indicating what error condition
+occurred.
+\break
+If handed a positive it returns {\ltt{}SSL_ERROR_NONE}
+The list of error definitions is found in {\ltt{}ssl.h}.
+\break
+The {\ltt{}ssl} is examined for extra information on the error value.
+
+\newslide
+\centerline{\bbf Keys and certificate.}
+
+You can create your own public/private pairs.
+
+\vt
+{\ltt{}openssl req -new -x509 -keyout server.pem -out server.pem}
+
+Creates an new private key and self-signed certificate with 
+corresponding public key.
+\break
+Both are placed in the file {\ltt{}server.pem}
+
+\vt
+
+{\ltt{}openssl x509 -text -in server.pem}
+
+Examines the contents of the certificate/public key.
+The private key is encrypted in this file, the certificate is not.
+\bye

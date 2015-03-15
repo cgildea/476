@@ -1,0 +1,47 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476 \hfill Homework 15 \hfill Fall 2004}}
+\footline{Dennis Volper \hfill 25 October 2004 (Week 9 Lecture 1)\hfill 
+Due: 27 October 2004 (Week 9 Lab 2)}
+\parindent 0pt
+
+{\bf Syslog--}
+
+Set up your machine so that it logs {\it  all} mail activity 
+on your machine to a file
+called {\ltt{}/var/log/maillog}.
+Send from your machine and make sure the log records this.
+
+1) Report: the line you put into the syslog.conf that did this.
+
+Set up your machine so that it logs {\it all mail} activity 
+on your machine to 
+{\ltt{}jaguar.net.cecs.csulb.edu}.
+(Please don't swamp jaguar by logging everything.)
+
+Send mail from your machine and make sure the log records this works.
+Note: On {\ltt{}jaguar}, you will need to examine the {\ltt{}syslog.conf}
+to see what file that {\ltt{}jaguar} puts this log information into.
+The name of the log file on jaguar is deliberately slightly different from
+the name of the logfile I've asked you to use on your machine.
+
+2) Report: the line you put into the syslog.conf that did this.
+
+Clean up: Remove the {\ltt{}jaguar} entry from your {\ltt{}syslog.conf}.
+
+
+{\bf Printers---}
+
+{\bf printcap:}
+Add a line to your printcap so that your machine can
+print to the printer on jaguar.
+This printer attached to {\ltt{}jaguar.net.cecs.csulb.edu} is
+as {\ltt{}jaguar} and as {\ltt{}lp}.
+Make the printer on {\ltt{}jaguar} the default printer for the system 
+({\ltt{}lp}).
+
+3) Report: the line that you added to the printcap. 
+Do not submit the entire printcap.
+
+\bye

@@ -1,0 +1,77 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Assignment 9 \hfill Spring 2010}}
+\footline{Dennis Volper \hfill 18 February 2010 (Week 4 Lecture 2)\hfill 
+Due: 23 February 2010 (Week 5 Lab 1)}
+\parindent 0pt
+% This assignment moved forward temporarily because I'm not ready for
+% #8 (X windows)
+
+This assignment covers building a new system kernel.
+WARNING: this may take a while.
+WARNING: be careful, you can easily erase your operating system.
+
+Build and boot with a new installation of the kernel.
+
+A copy of the configuration file used for your standard kernel
+is found in {\ltt{}/boot/config}. Use this file only
+to copy it down as {\ltt{}.config}, do not modify it.
+
+I recommend you compile and install to make sure it works.
+(I.e., skip the ``eliminate" part of step A for now and compile and
+install a "stock" kernel to
+make sure you know the procedure).
+This kernel should be almost the same size as the stock kernel and should
+work exactly like the stock kernel
+
+A) Configure the kernel. 
+
+Desirable:
+Eliminate any unnecessary drivers and/or components so that your kernel is
+as small as possible.
+Minimal: Eliminate at least one unnecessary kernel component so your kernel
+is smaller than the stock kernel.
+
+%Add any drivers necessary for enabling your networking.
+
+Your machine has:
+an IDE hard drive, a PCI bus, a PS/2 mouse
+and
+a intel PRO/100 on board network adapter.
+
+If you get into trouble in step B, copy it in as {\ltt{}.config}
+and start again.
+
+B) Build a new kernel ({\ltt{}bzImage}).
+
+1) Report: the elapsed time to do the build.
+
+Note: do a date before you start, write it down and look at
+the date stamp on the {\ltt{}bzImage} file (which is created at
+the end or the build).
+
+C) Modify the {\ltt{}lilo.conf} file to have a second linux
+bootable configuration.
+Duplicate the 4 lines and two comment lines (total of 7 lines),
+change the image to {\ltt{}bzImage} and the label to {\ltt{}bz}.
+Make sure the original bootable configuration entry stays first so that
+it is the default.
+
+D) Move the new kernel so that it is {\ltt{}/boot/bzImage}.
+(Do NOT under ANY circumstances remove or replace {\ltt{}vmlinuz})
+
+E) Run lilo, it should show two ``Added" reports.
+
+F) Reboot, shift key down; select bz.
+
+Make sure your kernel is working by,
+i) can bob login (and ls his home dir)
+ii) can your personal account login (and ls your home dir). 
+
+2) Report: the contents of {\ltt{}/proc/sys/kernel/version} 
+
+3) Report: the size of you new kernel and the size of the stock kernel.
+
+After you have done this, you may reboot to the standard kernel.
+\bye

@@ -1,0 +1,185 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2004, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook. No digital or communitcations devices.
+All questions 4 points.
+
+\ques
+% Project 22
+Explain how you would allow http access to nothing in
+{\ltt{}/home} except things under {\ltt{}/home/httpusers}.
+Give the file name and contents.
+\vskip 2.8in
+\ques
+% Project 22
+On your machine, where does the user need to place html files,
+and what entry from what file makes this so?
+\vskip 1.0in
+\ques
+% Project 16
+How do you disable http (temporarily) after doing an install?
+\vskip 0.8in
+\ques
+% Project 17
+For a blank harddrive,
+give the sequence of {\ltt{}fdisk} commands to
+set {\ltt{}hdb1} (cylinders 0-100)
+to be a Linux swap partition
+and {\ltt{}hdb2} (cylinders 101-1500)
+to be a bootable (active) Linux native (ext2) partition.
+%\vskip 3.0in
+\vfill\eject
+\ques
+% Project 17
+In what order are the following performed during inatallation:
+ADDSWAP, CONFIGURE, INSTALL, SELECT catagories, SOURCE, TARGET.
+\vskip 1.8in
+\ques
+% Project 18
+You want NIS accounts to be able to ftp.
+What file do you need to modify and what modification do you need to make?
+\vskip 1.0in
+\ques
+% Project 20
+Describe when you would use {\ltt{}chmod4711} on a program?
+\vskip 1.5in
+\ques
+% Project 15
+How would you make the printer {\ltt{}lj1} from
+{\ltt{}psvr413.cecs.csulb.edu} available to users on your machine.
+(Give the file name(s) and contents.)
+\vskip 1.0in
+\ques
+% Project 15
+You want to send all messages from {\ltt{}lpd} (facility {\ltt{}lpr})
+to a file called {\ltt{}/var/log/lpd}.
+How would you do this?
+Give the file name, the modification you would make to that file;
+and describe the command you would use to activate that modification.
+\vskip 1.0in
+\vfill\eject
+\ques
+% Project 21
+You wish to set up a news group called {\ltt{}classes.476}.
+What files will need to be modified
+and what modifications would be made to those files
+(include modifications that are done by {\ltt{}ctlinnd}).
+Also, what directory will need to be created?
+\vskip 2.5in
+\ques
+% Project 21
+You want your machine to send and receive news articles from
+the news server on {\ltt{}cougar}.
+What files need to be modified and what modifications are done
+to those files.
+Also, after these modifications have been made and activated,
+what file will appear (and in what directory) when you post news.
+\vskip 2.0in
+\ques
+% Project 13
+You want all user accounts distributed using NIS from cheetah
+to be valid accounts on your machine.
+What files do you need to change and for each file, what change do
+you need to make?
+\vskip 1.0in
+\ques
+% Project 25
+What are the 3 special sections in {\ltt{}smb.conf}?
+\vskip 1.0in
+\vfill\eject
+\ques
+% Project 24
+What are the things (not including the distfile) that need to be
+enabled and or set up to allow {\ltt{}rdist} to work.
+Give the file names and contents.
+\vskip 2.0in
+\ques
+% Project 18
+How do you find out which dynamic libraries {\ltt{}smbd} uses?
+\vskip 0.5in
+\ques
+% Project 19
+In {\ltt{}sendmail.cf}:
+If you are looking for where the macro P is {\it used} what do you look for?
+If you are looking for where the class Q is {\it defined} what do you look for?
+\vskip 1.0in
+\ques
+% Project 24
+You as {\ltt{}news} wish to install the contents
+of {\ltt{}innd-2-2-3.tgz}
+into {\ltt{}~news/bin} on {\ltt{}lab21}
+(this directory is owned by the user {\ltt{}news}.
+You will copy (push) the file over the network from {\ltt{}panther},
+call it {\ltt{}webupdate.tgz} and extract the files from
+the archive (the extraction is done on {\ltt{}lab21}).
+Assuming permissions have already been set up;
+a command file needs to be built on {\ltt{}panther};
+give the exact contents of that file.
+\vskip 2.5in
+\vfill\eject
+\ques
+% Project 14
+Describe how you would allow
+the {\ltt{}/var/spool/news/articles} directory on your machine to be mounted
+on {\ltt{}jaguar} read/write
+and on {\ltt{}cheetah} read only?
+Give the file name, and the line in that file that would be
+necessary to do this; and give the command to activate this change.
+\vskip 1.7in
+\ques
+% Project 14
+Give the {\ltt{}fstab} entry that would mount
+the {\ltt{}/slackware} directory from {\ltt{}jaguar.net.cecs.csulb.edu}
+on the {\ltt{}/mnt} directory of your machine.
+\vskip 0.8in
+\ques
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}a.quest.org} (245.122.33.1) and 
+{\ltt{}b.quest.org} (245.122.33.2).
+Give the entire forward zone file for the zone {\ltt{}quest.org},
+including the SOA, if the DNS server for that zone
+is {\ltt{}dns.quest.org} ({\ltt{}245.122.1.1}).
+\vskip 3.5in
+\ques
+% Project 23
+For the pervious question, give just the {\ltt{}PTR} entries
+that would occur in the reverse zone file.
+\vfill\eject
+Analysis section. After the homework 17 reinstall
+several things were not done correctly on {\ltt{}lab88}...
+
+\ques
+You can login to {\ltt{}lab88} using the
+{\ltt{}bob} account, but not using your {\ltt{}csa476xx}.
+What are the first 2 things would you check on {\ltt{}lab88}.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+You can ftp to {\ltt{}lab88} using the {\ltt{}bob} account,
+but not using the anonymous account.
+What are the first 2 things would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+From {\ltt{}jaguar} your telnet to {\ltt{}lab88} works, but
+rlogin to {\ltt{}lab88} fails.
+What are the first 2 things on {\ltt{}lab88} would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+The drives from {\ltt{}cheetah} didn't get mounted.
+What are the first 2 things on {\ltt{}lab88} would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\bye

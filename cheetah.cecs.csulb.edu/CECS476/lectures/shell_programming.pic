@@ -1,0 +1,483 @@
+\def\chapternumber{Shell Programming -- 1 May 2012}
+\input slides.tex
+\centerline{\bbf Using the C-Shell}
+
+You can redirect the input output of a program
+
+{\ltt{}ps aux | grep biod}
+\break
+the output of the {\ltt{}ps} command
+\break
+is the input to the {\ltt{}grep} command.
+
+{\ltt{}ps aux > save.ps}
+\break
+the output of the {\ltt{}ps} command
+\break
+goes to the file {\ltt{}save.ps}
+
+{\ltt{}mail joe </etc/printcap}
+\break
+the input of the {\ltt{}mail} command
+\break
+is from the file {\ltt{}/etc/printcap}
+
+{\ltt{}ps aux >> save.ps}
+\break
+Append to the file
+
+{\ltt{}ps aux | tee save.ps | less}
+\break
+{\ltt{}tee} duplicates the input stream
+\break
+One copy goes into a file (for permanent record)
+\break
+the other goes to the pager (for convenient viewing)
+\newslide
+Standard error--error messages and some other information
+goes to {\ltt{}stderr} instead of {\ltt{}stdout}.
+\break
+{\ltt{}stderr} is not redirected by the above.
+\break
+{\ltt{}stderr} can be redirected
+
+{\ltt{}studentprog |& less }
+\break
+everything, including {\ltt{}stderr} is redirected
+
+{\ltt{}studentprog >& save.me }
+\vt
+\centerline{\bbf Job Control}
+
+Most commands can be successfully run in the background:
+
+{\ltt{}ps aux  >& Look &}
+
+You get to enter more commands while the {\ltt{}ps} is running. 
+
+{\ltt{}jobs}--what is running in the background.
+
+{\ltt{}^Z}--stop (suspend)  the current job
+
+{\ltt{}bg}--background the suspended job.
+\break
+{\ltt{}bg \%3}--backgroung job 3 on the jobs list
+
+{\ltt{}fg}--foreground the job
+\break
+{\ltt{}fg \%2}--foregroung job 2 on the jobs list
+\newslide
+\centerline{\bbf Shell Programming Overview}
+
+Principle:
+Commands can be placed into a file and run.
+
+Good when you have something you do repeatedly.
+
+Each of the different shells has a slightly different syntax.
+
+Must specify the shell to use for the program.
+\break
+Defaults to the Bourne Shell ({\ltt{}sh}).
+\break
+(the first shell for Unix.)
+
+Notes:
+\break
+The default shell for an account (for typing) is specified
+in the password file;
+\break
+if the shell field is left blank your login shell
+is the Bourne shell.
+
+The file should be marked executable.
+
+The file can be run by naming the file
+\break
+(if marked executable)
+\break
+or by starting a shell and using the file as input.
+
+Anything you can put in a shell file can be typed 
+at the command line.
+
+We will cover C Shell programming.
+\newslide
+\centerline{\bbf Simple Example}
+
+Create a file with a shell program in it (use {\ltt{}vi})
+
+File Name: {\ltt{}runme}
+
+File Contents:
+
+{\cprogram
+#!/bin/csh
+# save the output of the ps to a file
+ps aux >> save.ps
+@endprogram}
+
+Mark executable: {\ltt{}chmod a+x runme}
+
+Three ways to run:
+\break
+{\ltt{}runme} \qquad (uses search path)
+\break
+{\ltt{}./runme} \qquad (in current directory)
+\break
+{\ltt{}csh < runme}
+
+The last way does not require the file to be executable.
+
+\vf
+
+Note the syntax a comment.
+
+The shell is specified using a special form of the comment syntax.
+
+\newslide
+\centerline{\bbf Shell Variables}
+
+The {\ltt{}set} command declares a variable.
+
+{\ltt{}set count=5}
+\break
+{\ltt{}set message=Hello}
+\break
+{\ltt{}set msg2="Hi There"}
+
+Variables are stored a strings.
+\break
+Strings with spaces in them must be quoted.
+\break
+Spaces around the {\ltt{}=} are wrong.
+
+The variable may be set from the keyboard:
+\break
+{\ltt{}set msg3=$<}
+\break
+Reads form keyboard up to the first space.
+
+Variables are used with the {\ltt{}$}:
+\break
+{\ltt{}echo $count}
+\break
+{\ltt{}echo $\char123{}message\char125{}show}
+
+Braces may be used,
+\break
+needed if a non-space follows the variable name
+
+Variables can be set from other variables:
+\break
+{\ltt{}set icount=$count+1}
+\break
+{\ltt{}icount} is now the string {\ltt{}5+1}
+
+\newslide
+\centerline{\bbf Using Command Line}
+
+Command line parameters can be accesses
+
+Example: {\ltt{}parm hi there}
+
+Contents of file {\ltt{}parm}:
+
+{\program
+#!/bin/csh
+echo $0
+echo $1
+echo $argv
+echo $#
+\endprogram}
+
+{\ltt{}$0} the command name: {\ltt{}parm}
+\break
+{\ltt{}$1} the first parameter name: {\ltt{}hi}
+\break
+{\ltt{}$#} the number of parameters name: {\ltt{}2}
+\break
+{\ltt{}$argv} all the parameters: {\ltt{}hi there}
+
+Other notations
+
+{\ltt{}$argv[1]} same as {\ltt{}$1}
+\break
+{\ltt{}#argv} same as {\ltt{}$#}
+
+
+\newslide
+\centerline{\bbf Shell Numeric Operations}
+
+Since variables are strings special notations are necessary.
+
+{\ltt{}@ icount = $count + 1}
+
+{\ltt{}count} was the string 5,
+\break
+{\ltt{}icount} is set using a numeric operation
+\break
+{\ltt{}icount} gets the value 6.
+
+Allowed operators: {\ltt{}+ - * / % ++ -- += -= *= /=}
+
+\vf
+
+Numeric comparison operators: {\ltt{} < <= > >=}
+
+String comparision operators: {\ltt{} == !=}
+\break
+Note: {\ltt{}03} is not equal to {\ltt{}3}
+
+The comparisons are used with branches and loops
+
+\vf
+\vf
+
+\centerline{\bbf Booleans}
+
+Boolean operators: {\ltt{} ! && ||}
+
+\newslide
+\centerline{\bbf Branches}
+
+``if" and ``switch" type branches are available
+
+{\cprogram
+if ($icount < $count) then
+  echo max is $count
+else
+  echo max is $icount
+endif
+@endprogram}
+
+The ``else" part may be omitted
+
+\vt
+
+{\cprogram
+switch ($count)
+ case 0:
+  echo not there
+  breaksw
+ case 5:
+  echo have a five
+  breaksw
+ default:
+  echo defaulting
+  breaksw
+endsw
+@endprogram}
+
+Like C, only no semi-colon and different spellings.
+\break
+and the switch uses string compares.
+
+\newslide
+\centerline{\bbf Loops }
+
+Boolean test loop
+
+{\cprogram
+set sum = 0
+echo -n "Enter a number:"
+set num = $<
+while ($num != "")
+  @ sum += $num
+  echo -n "Enter a number:"
+  set num = $<
+end
+echo sum is $sum
+@endprogram}
+
+Note the use of the string compare here.
+
+Could do: {\ltt{}($num > 0)} for an integer compare
+
+\vt
+for type loop 
+
+{\cprogram
+foreach i ( 1 2 hi 4 )
+  echo $i Hello
+end
+@endprogram}
+
+Notice it uses strings.
+
+\newslide
+\centerline{\bbf Exit Status}
+
+Unix (C) program use an exit status, for example
+\break
+{\ltt{}exit(3);}  or {\ltt{}return 3;}
+\break
+This status can be used by scripts.
+\break
+C Shell has a special variable called {\ltt{}status}
+that contains the exit/return value of the last program that ran.
+\break
+Suppose {\ltt{}returnit} is an executable (compiled C program).
+It's return value can be used in a script:
+
+{\cprogram
+#!/bin/csh
+returnit
+if ($status == 0) then
+  echo returned 0
+else
+  echo returned something else
+endif
+@endprogram}
+
+Most Unix programs are careful about what they return.
+For example the search program ({\ltt{}grep}) will return
+0 if it finds a match and non-zero otherwise. This allows
+you to branch on whether or not you find something in a file.
+
+Note: {\ltt{}grep} generates string output (which will be sent
+to the screen by default). So you often see such a program called
+in a script as:
+\break
+{\ltt{}grep "sam" /tmp/homework >& /dev/null}
+\break
+This discards the string output,
+but status is still valid.
+
+\newslide
+\centerline{\bbf The Unix Program {\ltt{}test}}
+
+The {\ltt{}test} program is used in many scripts.
+\break
+It is designed to return 0 if something is true;
+non-zero otherwise.
+
+For example:
+
+{\ltt{}test -f findme}
+\break
+returns 0 if {\ltt{}findme} is a regular file
+
+{\ltt{}test -d finddir}
+\break
+returns 0 if {\ltt{}finddir} is a directory
+
+The manual entry for test shows all the options (and there are many).
+
+In Unix the program ``{\ltt{}[}" is an alias (actually a hardlink)
+for {\ltt{}test}.
+
+\newslide
+\centerline{\bbf The grave}
+
+A command is run if appears as the left most thing on a line.
+
+To run a command elsewhere the grave is used
+
+Examples:
+
+{\ltt{}set found=`grep joe myfile`}
+\break
+{\ltt{}found} will contain the ``screen" output of grep.
+\break
+Note: returns become spaces so this is a long string.
+
+{\cprogram
+foreach i ( `ls` )
+  echo $i
+end
+@endprogram}
+
+Uses the output of {\ltt{}ls} (the file names)
+as the loop variables.
+It uses {\ltt{}echo} to prints the directory
+
+\vt
+
+Summary: if it is the left item on the line, it runs it,
+otherwise use the graves to run it.
+
+\vt
+
+\centerline{\bbf Exit}
+
+The {\ltt{}exit} command leaves the shell. Usually found in a branch statement.
+
+\newslide
+\centerline{\bbf Sample Shell Program}
+
+Add a user.
+Basic commands:
+Add a password entry.
+Create home directory.
+Change ownership
+\break
+Needed information, user, uid, group, home location, User Name
+
+Sample usage:
+
+{\ltt{}add_user george 1001 30 /home/george  "Big George"}
+
+The program
+
+{\cprogram
+#!/bin/csh
+grep $1 /etc/passwd >/dev/null
+if ($status == 0) then
+ echo account name exists
+ exit
+endif
+
+test -d $4
+if ( $status == 0 ) then
+  echo directory exists
+  exit
+endif
+echo $1":"x":"$2":"$3":"$5":"$4":"/bin/csh \
+     >> /etc/passwd
+cp -pr /usr/skel $4
+chown -R $2.$3 $4
+@endprogram}
+\newslide
+
+\newslide
+\centerline{\bbf Sample Shell Program}
+
+Show how many lines are in each of the files in the current directory
+
+{\cprogram
+#!/bin/csh
+foreach name ( `ls` )
+  test -f $name
+  if ( $status == 0 ) then
+     wc -l $name
+  endif
+end
+@endprogram}
+
+Note:
+{\ltt{}wc} prints the number of lines followed by the
+file name 
+
+\newslide
+\centerline{\bbf Sample Shell Program}
+
+Kill those processes with a '?' on the TT column and 'gcc' on the 
+command column when the command {\ltt{}ps aux} is executed.
+
+{\cprogram
+set pid=`ps aux | grep 'gcc' | grep '?' | \
+  grep -v 'grep' | cut -c10-14`
+kill -9 $pid 
+@endprogram}
+
+Set a variable {\ltt{}pid} to contain a list of process numbers
+\break
+use that variable list to kill processes
+
+{\ltt{}ps} for all processes, select those with {\ltt{}gcc} and {\ltt{}?}
+and without the word {\ltt{}grep} (don't kill this process).
+\break
+It cuts out the pid columns of lines that match the above conditions.
+
+\bye

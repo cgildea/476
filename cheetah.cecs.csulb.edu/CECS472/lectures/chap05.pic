@@ -1,0 +1,474 @@
+\def\chapternumber{Chapter 5 --- Socket Interface -- 14 December 2011}
+\input slides.tex
+\centerline{\bbf Chapter 5}
+\centerline{Socket Interface}
+\centerline{\bbf Overview of Berkeley Unix Sockets}
+
+.PS
+boxwid=3i
+boxht=0.5i
+A: box "Application Layer"
+B: box with .n at last box .s + (0,-0.1i) "Transport Layer"
+box with .n at last box .s + (0,-0.1i) "Internet Layer"
+box with .n at last box .s + (0,-0.1i) "Network Interface"
+C: line <- right from 1/2 between A.se and B.ne
+" Socket interface" at C.end ljust
+box invisible wid 3i with .w at C.end
+.PE
+\centerline{\box\graph}
+
+An interface to the transport layer.
+
+An end-point of network communication.
+
+Unix file style (open--read/write--close; untyped)
+
+Client/Server startup.
+
+Select communications style
+\break (connection oriented/connectionless).
+
+Transport layer can be: TCP/IP, OpenTransport,
+\break
+OSI, "Unix",...
+
+Complicated (Internet layer shows through)
+
+Sockets are Unix, not TCP/IP
+\newslide
+\centerline{\bbf Socket Types}
+\vt
+Stream
+\ind{---}Sequenced, reliable, bi-directional delivery of bytes
+\ind{---}A telephone connection
+\ind{---}Transmission Control Protocol: TCP
+\vt
+Datagram
+\ind{---}Unreliable, unsequenced message
+\ind{---}Sending a letter
+\ind{---}User Datagram Protocol: UDP
+\vt
+Raw
+\ind{---}User defines the protocol
+\ind{---}Lumber supplied for construction
+\ind{---}Interface with IP, must be root
+\newslide
+\centerline{\bbf Unix file descriptors}
+
+Sockets use file descriptors:
+
+Unix Descriptor Structure
+
+.PS
+boxwid=2.0i
+boxht=0.4i
+D0: box
+D1: box with .n at last box.s
+D2: box with .n at last box.s
+D3: box with .n at last box.s
+D4: box with .n at last box.s
+"File Descriptor Table" at D0.n above
+"0: " at D0.w rjust
+"1: " at D1.w rjust
+"2: " at D2.w rjust
+"3: " at D3.w rjust
+"4: " at D4.w rjust
+A0: arrow right 2i from D0.c
+" structure for file 0 (stdin)" at A0.e ljust 
+box invis wid 3i with .w at A0.e
+A1: arrow right 2i from D1.c
+" structure for file 1 (stdout)" at A1.e ljust 
+A2: arrow right 2i from D2.c
+" structure for file 2 (stderr)" at A2.e ljust 
+A3: arrow right 2i from D3.c
+" structure for file 3 (user file)" at A3.e ljust 
+A4: arrow right 2i from D4.c
+" structure for file 4 (user file)" at A4.e ljust 
+.PE
+\centerline{\box\graph}
+
+Unix: a file descriptor is an index ({\ltt{}int}) in to the table
+
+The table contains a pointer to the file/socket/pipe data structure.
+Null pointer indicates no descriptor/file.
+
+Typical socket data structure
+\break
+(exact contents depend on socket type):
+
+.PS
+boxwid=2.0i
+boxht=0.4i
+D0: box "INET"
+D1: box with .n at last box.s "Sock\_Stream"
+D2: box with .n at last box.s "cheetah"
+D3: box with .n at last box.s "lynx"
+D4: box with .n at last box.s
+"Protocol type: " at D0.w rjust
+"Connection type: " at D1.w rjust
+"Local Machine: " at D2.w rjust
+"Remote Machine: " at D3.w rjust
+.PE
+\centerline{\box\graph}
+\newslide
+\centerline{\bbf Descriptor Table and Unix Processes}
+
+Each process has its own descriptor table.
+\ind{--}each process can have its own files open.
+
+fork: both parent and child get a copy of the variables
+\ind{--}both have a copy of the descriptors
+\ind{--}if you have a file/socket/pipe open when you fork, 
+both processes have it
+open afterward
+\ind{--}one of the processes probably wants to close its access to the 
+file/socket/pipe
+
+Generic terminology: close the descriptor
+
+End of file ({\bit warning}): A reader will not see end of file unless all
+potential writers have closed the descriptor.
+\break
+(Including the reader!)
+\newslide
+\centerline{\bbf Ports}
+
+Each machine provides serveral services.
+
+Problem: Addressing a remote service.
+
+Solution: Assign each service a 16-bit number (port).
+
+Well-Known Ports: Identifiers fixed {\ltt{}/etc/services}\break
+ftp, telnet, www, login
+
+It doesn't matter where you telnet from.
+
+Internet reserves ports 0--512\break
+Unix reserves ports 513--1024\break
+Available 1025--65535
+
+{\ltt{}getservbyname} given a service name looks up the port number
+
+port numbers are found in {\ltt{}/etc/services}
+\vt
+An internet connection is between a machine/port pair and
+another machine/port pair.
+\newslide
+\centerline{\bbf Socket Structure}
+
+Sockets can interface to TCP/IP, XNS, OSI, ...
+
+{\ltt{}struct sockaddr}: general form of the data structure.
+\break
+first field indicates the family (TCP/IP, XNS),
+\break
+remaining fields depend on which family it is
+\vt
+We use internet sockets (TCP/IP)
+
+We use the internet version of {\ltt{}sockaddr}
+
+Internet Socket Structure:
+
+{\program
+#include <netinet/in.h>
+struct sockaddr_in {
+  u_char  sin_len;
+  u_short sin_family;
+  u_short sin_port;
+  struct  in_addr sin_addr;
+  char    sin_zero[8];
+};
+\endprogram}
+
+{\ltt{}sin_len} total size of the structure\break
+{\ltt{}sin_family} will always be {\ltt{}AF_INET}\break
+{\ltt{}sin_port} is the port number\break
+{\ltt{}sin_addr} indicates the machine (internet number)\break
+
+{\program
+struct in_addr { _u32 s_addr;};
+\endprogram}
+\newslide
+
+%Client server picture (5.4) on separate slide
+\newslide
+\centerline{\bbf Connection-Oriented}
+\centerline{\bbf Socket Calls Overview}
+
+.PS
+boxwid=1i
+boxht=0.3i
+Css:box invisible "CLIENT"
+Cs:box invisible with .n at last box.s + (0,-boxht) "socket"
+Cc:box invisible with .n at last box.s + (0,-boxht) "connect"
+Cw:box invisible with .n at last box.s + (0,-boxht) "write"
+Cr:box invisible with .n at last box.s + (0,-boxht) "read"
+Ccl:box invisible with .n at last box.s + (0,-boxht) "close"
+arrow from Cs.s to Cc.n
+arrow from Cc.s to Cw.n
+arrow from Cw.s to Cr.n
+arrow from Cr.s to Ccl.n
+arc rad 0.3i -> from Cr.e to Cw.e
+Sss:box invisible with .w at Css.e + (1.5i,0) "SERIAL" "SERVER"
+Ss:box invisible with .n at last box.s + (0,-boxht) "socket"
+Sc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Sl:box invisible with .n at last box.s + (0,-boxht) "listen"
+Sa:box invisible with .n at last box.s + (0,-boxht) "accept"
+Sr:box invisible with .n at last box.s + (0,-boxht) "read"
+Sw:box invisible with .n at last box.s + (0,-boxht) "write"
+Scl:box invisible with .n at last box.s + (0,-boxht) "close"
+arrow from Ss.s to Sc.n
+arrow from Sc.s to Sl.n
+arrow from Sl.s to Sa.n
+arrow from Sa.s to Sr.n
+arrow from Sr.s to Sw.n
+arrow from Sw.s to Scl.n
+arc rad 0.3i -> from Sw.e to Sr.e
+arc rad 0.9i -> from Scl.e to Sa.e
+Pss:box invisible with .w at Sss.e + (2i,0) "CONCURRENT" "SERVER"
+Ps:box invisible with .n at last box.s + (0,-boxht) "socket"
+Pc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Pl:box invisible with .n at last box.s + (0,-boxht) "listen"
+Pa:box invisible with .n at last box.s + (0,-boxht) "accept"
+Pf:box invisible with .n at last box.s + (0,-boxht) "fork"
+Pcla:box invisible with .n at last box.s + (0,-boxht) "close"
+Pr:box invisible with .e at Pcla.w + (-0.3i,0) "read"
+Pw:box invisible with .n at last box.s + (0,-boxht) "write"
+Pcl:box invisible with .n at last box.s + (0,-boxht) "close"
+arrow from Ps.s to Pc.n
+arrow from Pc.s to Pl.n
+arrow from Pl.s to Pa.n
+arrow from Pa.s to Pf.n
+arrow from Pf.s to Pcla.n
+arrow from Pf.sw to Pr.ne
+arrow from Pr.s to Pw.n
+arrow from Pw.s to Pcl.n
+arc rad 0.3i -> from Pw.e to Pr.e
+arc rad 0.6i -> from Pcla.e to Pa.e
+.PE
+\centerline{\box\graph}
+
+\newslide
+\centerline{\bbf Client Summary}
+\vt
+Connect to a service on a server.
+\break
+Must indicate the server (internet number) and the service (port number).
+\break
+This creates an open descriptor (i.e., an open socket).
+
+Talk to server (using the descriptor)
+
+Write to server 
+\break
+Read from server
+
+Close the connection (descriptor)
+\vt
+\centerline{\bbf Server Summary}
+\vt
+Listen on a well known port waiting for a client to request service.
+
+Accept a connection from a client
+\break
+This creates a new open descriptor
+
+Talk to the client (fork a child to talk to the client)
+\break
+Read from client
+\break
+Write to client
+
+Close the connection
+
+Accept another connection from a client ...
+
+\newslide
+\centerline{\bbf Socket Types}
+
+Connection-Orient Server: has two types of sockets.
+
+Master Socket:  This socket is used only for accepting connections from
+clients.
+\break
+There is one master socket per server.
+\break
+Master socket is never used for talking to clients.
+
+Slave Socket: A new slave socket is created for each client that is
+accepted.
+\break
+There is one slave socket per client.
+\break
+Slave sockets are used for talking to clients,
+they are never used for accepting new clients.
+\vt
+Connectionless Server: has only one socket
+\break
+Socket is used to send and receive messages.
+
+Client: has only one socket
+\newslide
+\centerline{\bbf Connection-Oriented}
+\centerline{\bbf Socket Calls Summary}
+
+Socket:\qquad (client/server)
+\ind{}Creates a socket.
+\ind{}Returns a socket descriptor.
+
+Bind:\qquad (server) (Build a master socket.)
+\ind{}Bind (associate) the socket to a port on a machine.
+\ind{}The server uses this to associate itself with a well-known port.
+\ind{}Specify the servers interfaces and port number.
+
+Listen:\qquad (server)
+\ind{}Wait for a client to {\ltt{}connect} to this socket.
+\ind{}Listen is only done once on the master socket.
+
+\newslide
+\centerline{\bbf Socket Calls Summary (con'd)}
+Accept:\qquad (server) (Get a slave socket)
+\ind{}Accept a connection from a client.
+\ind{}Returns a new socket associated with this particular client/server 
+connection.
+
+Close:\qquad (client/server)
+\ind{}Breaks a client server connection.
+\ind{}Server doesn't close the master socket.
+
+Connect:\qquad (client)
+\ind{}Makes a connection to a particular port on a particular machine.
+\ind{}Client uses this to connect to a server.
+\ind{}Specify the servers internet address and port number
+\ind{}Client is assigned any available (unreserved) port number.
+
+\newslide
+\centerline{\bbf Socket Calls Summary (con'd)}
+Read/Write:\qquad (client/server)
+\ind{}Read from or write to a socket that has been connected (by client) and 
+accepted (by server).
+\ind{}If the client writes to the socket, 
+the server can read that data from the slave socket.
+\ind{}If the server writes to the slave socket, 
+the client can read that data from the socket.
+\newslide
+\centerline{\bbf Primitive Client}
+
+{\program
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+void main() {
+  int s;
+  char message[80];
+  struct sockaddr_in      srv_addr;
+  /* Get a socket. */
+  s = socket(PF_INET, SOCK_STREAM, 0);
+  /* Put server's address into a socket structure */
+  memset(&srv_addr, 0, sizeof(srv_addr));
+  srv_addr.sin_addr.s_addr = htonl(0x868bf811);
+    /*134.139.248.17*/
+  srv_addr.sin_family = AF_INET;
+  srv_addr.sin_port = htons(7654);
+  /* Request the connection to the server */
+  connect(s, (struct sockaddr *) &srv_addr, 
+    sizeof(srv_addr));
+  strcpy(message,"Client speaks");
+    /*Send a message to server*/
+  write(s, message, 80);
+    /*Get server's reply*/
+  read(s, message, 80);
+  close(s);
+}
+\endprogram}
+\newslide
+\centerline{\bbf Primitive Server}
+
+{\program
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+void main(){
+  int master, client, len; char message[80];
+  struct sockaddr_in my_addr, his_addr;
+  /* get a socket allocated */
+  master = socket(PF_INET, SOCK_STREAM, 0);
+  /* bind to the well-known port on our machine */
+  memset(&my_addr, 0, sizeof(my_addr));
+  my_addr.sin_family = AF_INET;
+  my_addr.sin_addr.s_addr = INADDR_ANY;
+  my_addr.sin_port = htons(7654);
+  bind(master, (struct sockaddr *) &my_addr, 
+    sizeof(my_addr));
+  listen(master, 5);
+  len=sizeof(his_addr);
+  /* get the connection to the client */
+  client = accept(master, 
+    (struct sockaddr *) &his_addr, &len);
+    /* get the message from the client */
+  read(client,message,80);
+  strcpy(message,"Server replies");
+  write(client, message, 80); /* send reply */
+  close(client); close(master);
+}
+\endprogram}
+\newslide
+\centerline{\bbf Connectionless Socket Calls}
+
+The client does not connect to the server.
+
+The clients connect, does not do a connect,
+\break
+it sets up a default destination for write and send and
+\break
+it restricts the source of any read.
+
+The server does not do an accept,
+\break
+It does a read.
+\break
+If the server wants to reply,
+\break
+it must remember (save) the return address.
+
+read/write are available for connectionless
+\vf
+Special procedures for reading/writing of connectionless sockets:
+
+send, sendmsg, sendto: send a packet/message to another machine
+\break
+write, send: send to default destination
+\break
+sendmsg: specify address in header
+\break
+sendto: specify address in separate parameter
+
+
+recv, recvmsg, recvfrom: get a packet/message from another machine
+\break
+read, recv: forget return address
+\break
+recvmsg: source address is in message header
+\break
+recvfrom: source address delivered in separate parameter
+\newslide
+\centerline{\bbf Other Utility Calls}
+
+{\ltt{}getpeername}: who am I talking to
+
+{\ltt{}getsockopt}, {\ltt{}setsockopt}:
+gives you control over the socket options
+
+{\ltt{}gethostbyname:} find internet numbers from the computer's name.
+
+{\ltt{}getservbyname}: find port number from the services name.
+
+{\ltt{}inet_addr}: converts a dotted IP string into a 4 byte
+internet number in network order.
+
+{\ltt{}inet_ntoa}: converts an internet adress structure into
+a dotted IP string.
+
+\bye

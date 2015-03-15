@@ -1,0 +1,232 @@
+\def\chapternumber{Advanced Sockets -- 24 November 2003}
+\input slides.tex
+\centerline{\bbf Industrial Socket Capabilities}
+
+There are a number of issues that occur in commercial programs that
+we haven't had to handle in this course, because our homeworks have
+been student size.
+
+Issue: TCP can run out of buffer space.
+\break
+Only a limited amount of system/network buffer space is made allocated by
+the system; if you exceed that, the write may fail.
+
+If the data transfers to the server are large, the
+server can become clogged and the client can stop at
+the {\ltt{}write}.
+
+If the client is using blocking I/O,
+it can pause at the {\ltt{}write} forever.
+\newslide
+\centerline{\bbf Example}
+Client:
+
+{\cprogram
+  // send data to server
+  write(ssock,buf,sizeof(buf);
+  // read config
+  n = read(ssock,buf,sizeof(buf);
+  // ...
+  // read reply
+  n = read(ssock,buf,sizeof(buf);
+@endprogram}
+
+Server:
+
+{\cprogram
+  // send config
+  write(ssock,buf,sizeof(buf);
+  // read client data
+  n = read(ssock,buf,sizeof(buf);
+  // ...
+  // read to client
+  n = write(ssock,buf,sizeof(buf);
+@endprogram}
+
+Solution 0: avoid having both client and server do writes.
+\break
+May not be possible in context of some programs.
+\newslide
+Solution 1: the system allocates the default size, you can change that.
+({\ltt{}man 7 socket})
+\vt
+
+{\cprogram
+int bufferSize = 8388608; //8M
+// Also can do with SO_RCVBUF
+int buffSizeResult = setsockopt(ssock, SOL_SOCKET,
+  SO_SNDBUF, (char *)&bufferSize,
+  sizeof(bufferSize));
+int getsize;  // See what it gave us.
+int getsizesize = sizeof(getsize);
+int result = getsockopt(ssock, SOL_SOCKET,
+   SO_SNDBUF, (char *)&getsize, &getsizesize);
+@endprogram}
+
+The maximum amount that can be allocated is set by the {\ltt{}sysctl}s
+{\ltt{}rmem_max} and {\ltt{}wmem_max}.
+
+Note: on a buffer back up, the data is either in `your' send buffer or `his'
+recieve buffer.
+With a single process concurrent server ({\ltt{}mutd}), increasing
+the send buffer distributes the data backup amoung the clients;
+\break
+increasing the receive buffer doesn't scale with the number of clients.
+
+Note: You can still clog, it just takes bigger writes.
+\newslide
+Solution 2: system buffer space will be freed when someone does a read,
+so trying again later works.
+
+More general idea, I/O is normally blocking,
+\break
+the program waits until the read/write is done.
+\break
+You can set I/O to be non-blocking
+\break
+If the I/O would block an error ({\ltt{}< 0}) is returned
+and {\ltt{}errno} is set to {\ltt{}EAGAIN}
+
+The {\ltt{}fcntl} command is used to set the non-blocking flag on
+a socket (or any descriptor).
+
+Example (spinlock loop):
+
+{\cprogram
+fcntl(ssock,F_SETFL,O_NONBLOCK);
+int result;
+while (1){
+   result = read(ssock,buf,sizeof(buf));
+   if (result < 0){
+     if (errno != EAGAIN) {
+       errexit();
+     }
+     else sleep(1); //blocked, wait and try again
+   }
+   else break; // good read
+}
+@endprogram}
+
+{\ltt{}select} is a better way to go with reads.
+\newslide
+\centerline{\bbf Non-blocking writes}
+
+{\cprogram
+int sendsize = 999;
+int strt = 0;
+int result;
+fcntl(ssock,F_SETFL,O_NONBLOCK);
+while (sendsize > strt) {
+  result = write(ssock,&(buf[strt]),sendsize);
+  if (result < 0){
+     if (errno != EAGAIN) {
+         errexit();
+     }
+  }
+  else strt += result;
+}
+@endprogram}
+
+Non-blocking write:
+\break
+On {\ltt{}EAGAIN} we sent nothing, send again.
+\break
+On {\ltt{}result>=0} might have written less than {\ltt{}sendsize}
+so track ({\ltt{}strt}) where the unsent portion of the buffer begins
+and send the remainder of the buffer on later writes.
+\newslide
+\centerline{\bbf Interrupt driven I/O}
+
+You can set a descriptor so a signal is sent when I/O is available.
+
+{\cprogram
+// Send me an SIGIO signal on I/O events
+fcntl(ssock,F_SETFL,O_ASYNC);
+// instead of SIGIO, send this sig
+fcntl(ssock,F_SETSIG,SIGHUP); 
+@endprogram}
+
+Asynchronous I/O must use the sigaction form of the
+signal handler.
+
+{\cprogram
+void ioHdlr(int sig);
+struct sigaction act;
+act.sa_handler = ioHdlr;
+act.sa_mask = SIGHUP;
+act.sa_flags = 0;
+sigaction(SIGIO,&act,NULL);
+@endprogram}
+
+Call the function {\ltt{}ioHdlr} when a {\ltt{}SIGIO} happens.
+\break
+Mask {\ltt{}SIGHUP} (in addition to {\ltt{}SIGIO}).
+
+Do the {\ltt{}sigaction} before the {\ltt{}fcntl}.
+
+Simplistic handler:
+
+{\cprogram
+void ioHdlr(int sig) {
+  read(ssock, buf,sizeof(buf));
+};
+@endprogram}
+\newslide
+\centerline{\bbf Unix (local) domain sockets}
+
+A non-network socket implementation is available under Unix.
+\break
+These are called Unix domain or local domain sockets.
+\break
+They doesn't go through the net so they are faster.
+\break
+They are invisible from outside your machine.
+
+{\ltt{}AF_LOCAL} \qquad or \qquad {\ltt{}AF_UNIX}
+\break
+{\ltt{}PF_LOCAL} \qquad or \qquad {\ltt{}PF_UNIX}
+\vt
+
+{\cprogram
+int msock = socket(PF_LOCAL, SOCK_STREAM, 0);
+struct sockaddr_un serveraddress;
+serveraddress.sun_family = AF_LOCAL;
+serveraddress.sun_path = "/tmp/socketfile" ;
+bind(msock, (struct sockaddr *)&serveraddress,
+  SUNLEN(&serveraddress));
+@endprogram}
+
+The Unix version of {\ltt{}sockaddr} is used.
+A path (file name) replaces the internet address/port pair.
+
+Client side:
+
+{\cprogram
+int ssock = socket(PF_LOCAL, SOCK_STREAM, 0);
+serveraddress.sun_family = AF_LOCAL;
+serveraddress.sun_path = "/tmp/socketfile" ;
+connect(ssock,&serveraddress,SUNLEN(serveraddress));
+@endprogram}
+
+\newslide
+\centerline{\bbf Other IP protocols}
+
+These are available although implementations may be limited
+
+{\ltt{}socket(PF_LOCAL,SOCK_SEQPACKET,0)}
+
+TCP with boundaries preserved.
+\break
+Your {\ltt{}read} be big enough to read the whole packet.
+\break
+Not available with {\ltt{}AF_INET}.
+\vt
+
+{\ltt{}socket(PF_INET,SOCK_RDM,0)}
+
+Reliable UDP. 
+\break
+Packets delivery guaranteed.
+\break
+Order of delivery is not guaranteed.
+\bye

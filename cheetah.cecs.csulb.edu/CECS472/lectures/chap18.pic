@@ -1,0 +1,165 @@
+\def\chapternumber{Chapter 18 --- Tunneling -- 6 January 2009}
+\input slides.tex
+\centerline{\bbf Chapter 18}
+\centerline{Tunneling}
+
+\centerline{\bbf Data Packets--Theory}
+
+Protocol Data Unit:
+\ind{}Transferred between level $N$ and level $N-1$.
+\ind{}Includes headers
+
+.PS
+boxht=0.8i
+Napdu: box wid 5.5i "Level $N-1$" "data"
+Lable: box invisible wid 1i with .e at Napdu.w "Level" "$N-1$"
+Headera: box wid 1.25i with .w at Napdu.w "header"
+Trailera: box wid 1.25i with .e at Napdu.e "trailer"
+Nbpdu: box wid 3i with .s at Napdu.n + (0, 0.5i) "data"
+line down dotted 0.5i from Nbpdu.sw
+line down dotted 0.5i from Nbpdu.se
+Headerb: box wid 1i with .w at Nbpdu.w "header"
+Trailerb: box wid 1i with .e at Nbpdu.e "trailer"
+box invisible wid 1i with .s at Lable.n + (0, 0.5i) "Level" "$N$"
+.PE
+\centerline{\box\graph}
+\vt
+Send: adds headers and trailers and
+pass to the next level down.
+
+Receive: remove headers and trailers and
+pass it to the next level up.
+
+\newslide
+\centerline{\bbf Data Packets -- Actual}
+\vt
+Packet size at some levels may be smaller.
+\vt
+
+{\font\railroadfont
+.PS
+boxht=0.8i
+Napdu: box wid 5.5i
+Headera: box wid 1.25i with .w at Napdu.w "header" "N-1"
+Trailera: box wid 1.25i with .e at Napdu.e "trailer" "N-1"
+Headerb: box wid 1.i with .w at Headera.e "header" "N"
+box invis wid 2i with .w at Headerb.e "data" "N"
+Napdub: box wid 5.5i with .n at Napdu.s + (0,-0.2i)
+Headerab: box wid 1.25i with .w at Napdub.w "header" "N-1"
+Trailerab: box wid 1.25i with .e at Napdub.e "trailer" "N-1"
+box invis wid 2i with .w at Headerab.e "data" "N"
+Trailerb: box wid 1.i with .w at last box.e "trailer" "N"
+.PE
+\centerline{\box\graph}}
+\newslide
+
+\centerline{\bbf Unix--TCP/IP Implementation}
+\vt
+{\railroadfont
+.PS
+boxwid = 3.0i
+boxht = 0.3i
+circlerad = 0.4i
+Sl: box
+"Data" at 7/8 between Sl.w and Sl.e
+line from 3/4 between Sl.nw and Sl.ne to 3/4 between Sl.sw and Sl.se
+Tl: box with .nw at Sl.sw + (0,-1i)
+"TCP" at 5/8 between Tl.w and Tl.e
+"Data" at 7/8 between Tl.w and Tl.e
+line from 2/4 between Tl.nw and Tl.ne to 2/4 between Tl.sw and Tl.se
+line from 3/4 between Tl.nw and Tl.ne to 3/4 between Tl.sw and Tl.se
+Nl: box with .nw at Tl.sw + (0,-1i)
+"IP" at 3/8 between Nl.w and Nl.e
+"TCP" at 5/8 between Nl.w and Nl.e
+"Data" at 7/8 between Nl.w and Nl.e
+line from 1/4 between Nl.nw and Nl.ne to 1/4 between Nl.sw and Nl.se 
+line from 2/4 between Nl.nw and Nl.ne to 2/4 between Nl.sw and Nl.se
+line from 3/4 between Nl.nw and Nl.ne to 3/4 between Nl.sw and Nl.se
+Nil: box with .nw at Nl.sw + (0,-1i)
+"Ether" at 1/8 between Nil.w and Nil.e
+"IP" at 3/8 between Nil.w and Nil.e
+"TCP" at 5/8 between Nil.w and Nil.e
+"Data" at 7/8 between Nil.w and Nil.e
+line from 1/4 between Nil.nw and Nil.ne to 1/4 between Nil.sw and Nil.se 
+line from 2/4 between Nil.nw and Nil.ne to 2/4 between Nil.sw and Nil.se
+line from 3/4 between Nil.nw and Nil.ne to 3/4 between Nil.sw and Nil.se
+"Socket Layer" at Sl.w + (-1i,0)
+"Transport Layer" at Tl.w + (-1i,0)
+"Network Layer" at Nl.w + (-1i,0)
+"Network-Interface" "Layer" at Nil.w + (-1i,0)
+So: circle with .c at 1/2 between Sl.w and Tl.w + (-1i,0) "socket"
+arrow from So.ne to Sl.sw
+arrow from Tl.nw to So.se
+Pq: circle with .c at 1/2 between Nl.w and Nil.w + (-1i,0) "input" "queue"
+arrow from Pq.ne to Nl.sw
+arrow from Nil.nw to Pq.se
+arrow from Nl.nw to Tl.sw
+Int: line <- down 0.3i from Nil.se
+" device interrupt" at Int.c ljust
+line right 0.5i from Int.s
+line left 0.5i from Int.s
+"Ethernet" at Int.s below
+.PE
+\centerline{\box\graph}}
+\vt
+{\bit Tunneling:}
+Sending one protocol using another.
+
+Send internet using ethernet (almost).
+\newslide
+\centerline{\bbf Tunneling Example}
+
+VPN client (CSULB) to server (CSUF)
+
+\vt
+{\railroadfont
+.PS
+boxwid = 3.0i
+boxht = 0.3i
+circlerad = 0.4i
+Sl: box invis
+box wid 0.5*boxwid with .ne at Sl.ne
+"data" at 7/8 between Sl.w and Sl.e
+line from 3/4 between Sl.nw and Sl.ne to 3/4 between Sl.sw and Sl.se
+"header" at 5/8 between Sl.w and Sl.e
+Tl: box invis with .nw at Sl.sw + (0,-1i)
+box wid 0.75*boxwid with .ne at Tl.ne
+"TCP/IP" at 3/8 between Tl.w and Tl.e
+line from 2/4 between Tl.nw and Tl.ne to 2/4 between Tl.sw and Tl.se
+line from 3/4 between Tl.nw and Tl.ne to 3/4 between Tl.sw and Tl.se
+Nl: box with .nw at Tl.sw + (0,-1i)
+"ATM" at 1/8 between Nl.w and Nl.e
+line from 1/4 between Nl.nw and Nl.ne to 1/4 between Nl.sw and Nl.se 
+line from 2/4 between Nl.nw and Nl.ne to 2/4 between Nl.sw and Nl.se
+line from 3/4 between Nl.nw and Nl.ne to 3/4 between Nl.sw and Nl.se
+Nil: box invis with .nw at Nl.sw + (0,-1i)
+box wid 0.75*boxwid with .ne at Nil.ne
+"TCP/IP" at 3/8 between Nil.w and Nil.e
+line from 2/4 between Nil.nw and Nil.ne to 2/4 between Nil.sw and Nil.se
+line from 3/4 between Nil.nw and Nil.ne to 3/4 between Nil.sw and Nil.se
+Nf: box invis with .nw at Nil.sw + (0,-1i)
+box wid 0.5*boxwid with .ne at Nf.ne
+"header" at 5/8 between Nf.w and Nf.e
+"data" at 7/8 between Nf.w and Nf.e
+line from 3/4 between Nf.nw and Nf.ne to 3/4 between Nf.sw and Nf.se
+"Standard packet" "CSULB private subnet" at Sl.w + (-1i,0)
+"TCP/IP packet" "CSULB network" at Tl.w + (-1i,0)
+"ATM" "CSU statewide net" at Nl.w + (-1i,0)
+"TCP/IP packet" "CSUF network" at Nil.w + (-1i,0)
+"Standard packet" "CSUF private subnet" at Nf.w + (-1i,0)
+So: circle with .c at 1/2 between Sl.e and Tl.e + (1i,0) "VPN" "gateway"
+arrow from Sl.se to So.nw
+arrow from So.sw to Tl.ne
+Pl: circle with .c at 1/2 between Nl.e and Tl.e + (1i,0) "CSULB" "gateway"
+arrow from Tl.se to Pl.nw
+arrow from Pl.sw to Nl.ne
+Pq: circle with .c at 1/2 between Nl.e and Nil.e + (1i,0) "CSUF" "gateway"
+arrow from Nl.se to Pq.nw
+arrow from Pq.sw to Nil.ne
+Pf: circle with .c at 1/2 between Nil.e and Nf.e + (1i,0) "VPN" "gateway"
+arrow from Nil.se to Pf.nw
+arrow from Pf.sw to Nf.ne
+.PE
+\centerline{\box\graph}}
+
+\bye

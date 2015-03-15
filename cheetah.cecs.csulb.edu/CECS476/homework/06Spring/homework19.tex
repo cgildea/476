@@ -1,0 +1,38 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 19 \hfill Spring 2006}}
+\footline{Dennis Volper \hfill  5 April 2006 (Week 11 Lecture 2)\hfill 
+Due: 17 April 2006 (Week 12, Lab 1)}
+\parindent 0pt
+
+This project is about configuring mail.
+
+1) Send mail from your lab machine to your account on {\ltt{}cheetah}
+using the verbose options ({\ltt{}-v}).
+You will notice the conversation between the two machines.
+
+2) On your lab machine send mail from your account to bob (on the
+local machine) using the verbose option.
+
+Examine the two outputs closely.
+
+Report: what how do these two outputs differ?
+(The difference is very small.)
+
+For the remaining questions, examine the {\ltt{}sendmail.cf}
+file on {\ltt{}panther}.
+
+3) sendmail is set to forward to a smart host.
+Report: the line in the {\ltt{}cf} that does this.
+
+4) mail for {\ltt{}bob} and {\ltt{}root} is to be delivered locally and
+not to the smart host.
+Report: the line in the {\ltt{}cf} that does this.
+
+5) The masquerade macro ({\ltt{}M}) is used in what ruleset?
+Report the name of the ruleset and give one of the lines
+in which the macro is used with the macro circled (or
+somehow highlighted).
+(That is, indicate where in the line the macro is being used.)
+\bye

@@ -1,0 +1,132 @@
+\def\chapternumber{Introduction to Linux  -- January 2014}
+\input slides.tex
+\centerline{\bbf Introduction to Linux}
+
+Linux: A version of Unix.
+
+1) Copyrighted. The authors own it. 
+
+2) Gnu Public License. 
+\break
+Full source is supplied.
+\break
+New source is publicly posted on the internet.
+\break
+You can use it, change it, sell it, copy it, give it away,
+\break
+--but, you must supply source to your changes.
+\break
+You may build and sell proprietary software that runs on it.
+
+3) Multi-platform support.
+\break
+x86, AMD64, MIPS, Alpha, Power PC, SPARC, Itanium, ARM
+
+4) Virtual memory.
+\break
+Swap space (disk) acts as slow RAM.
+\break
+Each process runs in its own virtual address space,
+\break
+Linux maps virtual to physical memory, physically
+the process could be running in any part of RAM (or disk).
+
+5) Network support. (TCP/IP, NIS, NFS)
+
+6) Multi-process support.
+\newslide
+7) Documentation.
+\break
+Unix manual entries,
+\break
+How-To files (CDROM),
+\break
+FAQ (Frequently Asked Questions),
+\break
+Linux Documentation project
+(http://sunsite.unc.edu/mdw/linux.html).
+
+8) Usenet support.
+(comp.os.linux.*)
+
+9) X Window System support. XOrg.
+
+\newslide
+\centerline{\bbf Linux/Unix Operating System Organization}
+
+{\bbf Kernel:} Central utilities of the operating system.
+
+Size and content varies.
+
+Implements Virtual memory (memory management) and
+
+process control (loads and runs programs).
+
+Multi-process support (context switching, prioritization).
+
+Supports concept of multiple users, groups of users, privilege.
+
+Device drivers and low-level perpherial I/O
+
+File systems 
+
+Networking support
+
+Pentium/Core: the kernel runs in protected mode.
+
+MACH (micro) kernels (not Linux): 
+\break
+device drivers, networking software, are privileged ``user" programs
+\newslide
+\centerline{\bbf Linux Components}
+
+Many programs run priviledged processes in user mode:
+
+System programs:
+\break
+nfsd:  network file system server
+\break
+lpd: line printer controller
+\break
+inetd: network controller
+
+Applications (priviledged):
+\break
+X11R6: window system.
+
+Most user programs run with standard priviledges: 
+\break
+xfileman: file system manager.
+\newslide
+\centerline{\bbf Services}
+
+System services provide alot of system functionality
+
+{\ltt{}init}--
+\break
+Controls start up and shutdown.
+\break
+Controlled by configuration files in {\ltt{}/etc/rc.d} directory
+\break
+Starts and terminates user programs
+
+{\ltt{}agetty}--controls start of the login process
+
+{\ltt{}inetd}--controls the starting of network utilities
+
+{\ltt{}klogd, syslogd}--controls the log files
+
+{\ltt{}nfsd, mountd}--controls the network file system
+Your home directory is there, if the sysadmin did the setup right.
+
+{\ltt{}ypbind}--controls network databases, including the
+login/password database.
+
+{\ltt{}kswapd}--controls virtual memory (paging)
+
+{\ltt{}kflushd}--controls file buffering 
+
+
+{\ltt{}portmap}--necessary for any rpc service
+
+\bye

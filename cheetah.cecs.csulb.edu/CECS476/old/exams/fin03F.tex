@@ -1,0 +1,220 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 2003, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook. No digital or communitcations devices.
+
+\ques
+(4 points)
+% Project 22
+Explain how you would allow http access to all directories in
+{\ltt{}/home/*/html} but nothing else in
+{\ltt{}/home}.
+Give the file name and contents.
+\vskip 2.8in
+\ques
+(4 points)
+% Project 22
+Give the exact command you used to start the web server
+\vskip 0.5in
+\ques
+(4 points)
+% Project 16
+What is the difference between the boot and the root floppies.
+\vskip 1.5in
+\ques
+(4 points)
+% Project 17
+For a blank harddrive,
+give the sequence of {\ltt{}fdisk} commands to
+set {\ltt{}hda1} (cylinders 0-1100)
+to be a bootable (active) Linux native (ext2) partition
+and {\ltt{}hda2} (cylinders 1101-1175)
+to be a Linux swap partition.
+%\vskip 3.0in
+\vfill\eject
+\ques
+(4 points)
+% Project 17
+List 3 of the installation disk sets and give a brief description of what
+is in each of those three sets.
+\vskip 1.8in
+\ques
+(4 points)
+% Project 18
+Who should own {\ltt{}/home/ftp/pub}?
+\vskip 0.5in
+\ques
+(4 points)
+% Project 18
+How do you find out which dynamic libraries {\ltt{}httpd} uses?
+\vskip 0.5in
+\ques
+(4 points)
+% Project 20
+The {\ltt{}getgrade} command allows a student to look at their line
+in the file that contains the grades, but that file is protected
+from everyone except the instructor.
+Assuming that {\ltt{}getgrade.c} contains the program that displays the
+information for a student;
+describe the steps the instructor took to install the program.
+Include all commands the instructor needed to use
+(start with the {\ltt{}gcc} command).
+\vskip 1.0in
+\ques
+(4 points)
+% Project 15
+You want to send all messages from {\ltt{}innd} (facility {\ltt{}news})
+to a file called {\ltt{}/var/news/news.all}.
+How would you do this?
+Give the file name, the modification you would make to that file;
+and describe the command you would use to activate that modification.
+\vskip 1.3in
+\vfill\eject
+\ques
+(4 points)
+% Project 21
+You wish to set up a new news group called {\ltt{}local.476c}.
+What files will need to be modified
+and what modifications would be made to those files
+(include modifications that are done by {\ltt{}ctlinnd}).
+Also, what directory will need to be created?
+\vskip 2.5in
+\ques
+(4 points)
+% Project 21
+You want your machine to send and receive news articles from
+the news server on {\ltt{}panther}.
+What files need to be modified and what modifications are done
+to those files.
+Also, after these modifications have been made and activated,
+what file will appear (and in what directory) when you post news.
+\vskip 2.0in
+\ques
+(4 points)
+% Project 25
+What is the difference between {\ltt{}security=server}
+and {\ltt{}security=share}?
+\vskip 1.0in
+\ques
+(4 points)
+% Project 25
+You want to share the directory {\ltt{}/home/bob/windows},
+read-only, to other computers that are running Windows. 
+Give the configuration file name that would need to be
+changed and the contents that would need to be in that file.
+\vskip 1.0in
+\vfill\eject
+\ques
+(4 points)
+% Project 24
+A network facility needs to be enabled for {\ltt{}rdist} to work.
+Give the name file of the file that you would need to modify to enable this
+facility, give the line that would need to be in that file
+and the command to enable the facility.
+\vskip 2.0in
+\ques
+(4 points)
+% Project 24
+You {\ltt{}http} wish to put install the contents
+of {\ltt{}httpd-2-1.tgz}
+into {\ltt{}~apache/bin} on {\ltt{}lab12}
+(this directory is owned by the user {\ltt{}apache}.
+You will copy (push) the file over the network from {\ltt{}lab99}
+it across, call it {\ltt{}webupdate.tgz} and extract the files from
+the archive (the extraction is done on {\ltt{}lab12}).
+Assuming permissions have already been set up;
+a command file needs to be built on {\ltt{}lab12};
+give the exact contents of that file.
+\vskip 2.5in
+\ques
+(4 points)
+% Project 15
+How would you make the printer {\ltt{}laser1} from
+{\ltt{}panther} available to users on your machine.
+(Give the file name(s) and contents.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 19
+In {\ltt{}sendmail.cf}:
+If you are looking for where the macro X is {\it defined} what do you look for?
+If you are looking for where the class Z is {\it used} what do you look for?
+\vskip 1.0in
+\vfill\eject
+\ques
+(4 points)
+% Project 14
+Describe how you would allow
+the {\ltt{}/apache} directory on your machine to be mounted on
+{\ltt{}cougar} read/write
+and on {\ltt{}panther} read only?
+Give the file name, and the line in that file that would be
+necessary to do this; and give the command to activate this change.
+\vskip 1.7in
+\ques
+(4 points)
+% Project 14
+Give the {\ltt{}fstab} entry that would mount
+the {\ltt{}/patch} directory from {\ltt{}lynx.net.cecs.csulb.edu}
+on the {\ltt{}/mnt} directory of your machine.
+\vskip 0.8in
+\ques
+(4 points)
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}one.post.org} (196.201.33.1) and 
+{\ltt{}two.post.org} (196.201.33.2).
+Give the entire forward zone file for the zone {\ltt{}post.org},
+including the SOA, if the DNS server for that zone
+is {\ltt{}cheetah.test.edu} ({\ltt{}134.140.1.1}).
+\vskip 3.5in
+\ques
+(4 points)
+% Project 23
+For the pervious question, give just the {\ltt{}PTR} entries
+that would occur in the reverse zone file.
+\vfill\eject
+Analysis section. After the homework 17 reinstall
+several things were not done correctly on {\ltt{}lab88}...
+
+\ques
+(4 points)
+When you login to {\ltt{}lab88} using your
+{\ltt{}csc476xx} account the login works,
+but you get the message:
+``No home directory".
+What are the first 2 things would you check on {\ltt{}lab88}.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+(4 points)
+From {\ltt{}jaguar} your attempt to rdist to {\ltt{}lab88} fails.
+What could be misconfigured on {\ltt{}lab88}?
+What are the first 2 things would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+(4 points)
+From {\ltt{}jaguar} your attempt to telnet to {\ltt{}lab88} fails.
+A connection to {\ltt{}lab88} is made but you get the error message
+`Connection closed by foreign host."
+What are the first 2 things on {\ltt{}lab88} would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\vfill
+\ques
+When you run the command, ``{\ltt{}nslookup 122.112.1.1}"
+on {\ltt{}lab88} you get the message ``{\ltt{}server not found}".
+What are the first 2 things on {\ltt{}lab88} would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, how you would perform the check.)
+\bye

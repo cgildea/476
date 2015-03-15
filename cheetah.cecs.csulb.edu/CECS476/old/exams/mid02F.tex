@@ -1,0 +1,124 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 2002, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open book, open notebook. (All question 8 points, 104 total points possible)
+
+\ques
+% Homework 6
+How would you find out the resident set size of {\ltt{}rpc.mountd}?
+\vskip 0.5in
+Give the steps to set up a 4MB swap file.
+\vskip 1.5in
+% Homework 2
+You want to check if {\ltt{}joe} has changed his password recently.
+How would you do this?
+\vskip 1.2in
+A file in bob's home directory belongs to the group {\ltt{}faculty}.
+How would you check to see if this is appropriate.
+\vskip 0.8in
+\ques
+% Homework 13
+How would you get a list of the accounts whose password information
+is coming in over the network?
+\vskip 0.5in
+How would you determine what machine they were coming from?
+(Give a command, not a file name.)
+\vskip 0.5in
+\ques
+% Homework 4
+Write a script that counts the number of files in
+the home directory of {\ltt{}bob} that are owned by the user
+{\ltt{}sue}.
+\vfill\eject
+\ques
+% Homework 3
+Give the steps to set up an account for {\ltt{}bob}.
+\vskip 2.0in
+\ques
+% Homework 5
+How do you find out the time the last {\ltt{}fsck} was run on {\ltt{}/dev/hda3}?
+\vskip 1.0in
+Show the {\ltt{}fstab} entry for {\ltt{}/dev/hda3} that would NOT cause
+an {\ltt{}fsck} to be done for that partition at boot.
+\vskip 0.5in
+Give the command to build a Unix files system on a floppy.
+\vskip 0.5in
+\ques
+% Homework 7
+You upgrade from {\ltt{}agetty} to {\ltt{}bgetty}
+What file do you need to change?
+\vskip 0.5in
+You want to run the command {\ltt{}/bin/rm /tmp/*},
+every morning at 1AM.
+Describe how you do this?
+\vfill\eject
+\ques
+% Homework 10
+I want to backup the contents of all files on your computer
+to the file {\ltt{}!djv/bak.tgz}.
+Give the exact {\ltt{}cd} and {\ltt{}tar} commands to do this.
+\vskip 1.0in
+You want the key that kills a program ({\ltt{}intr}) to
+be control-Y instead of control-C.
+Give the exact command to make this change.
+\vskip 0.5in
+\ques
+% Homework 8
+In what section of the {\ltt{}XF86Config} file is
+your mouse protocol defined?
+\vskip 0.5in
+What command would you run to test the {\ltt{}XF86Config} on your machine?
+(Do not {\ltt{}startx}.)
+\vskip 0.5in
+How would you find out the amount of RAM on your video card?
+\vskip 0.7in
+\ques
+% Homework 9
+Give the steps to build (not install) a new kernel.
+\vskip 1.8in
+Name 3 things that can safely be removed from the standard
+network kernel without impairing the ability of your
+machine to run.
+\vfill\eject
+\ques
+% Homework 1
+In what directory  would you look to find out the speed of the
+CPU on your machine?
+\vskip 0.5in
+The manual tells you that the capabilities of an advanced audio card
+are accessed through a file called {\ltt{}pcmixer}.
+In what directory would you find that file?
+\vskip 0.5in
+You are looking for the command to configure your GPS card.
+How would find that command?
+\vskip 0.5in
+\ques
+% Homework 11
+Give the full path to the directory containing the source code for the
+drivers for the network cards.
+\vskip 0.5in
+Give the exact command you would use to find out
+the fully qualified domain name ({\ltt{}fqdn}) of your machine.
+\vskip 0.5in
+How do you find out the netmask on the loopback interface?
+\vskip 0.5in
+\ques
+% Homework 12
+What command would you use to set up your machine so
+it can get through the gateway to the rest of the net?
+(Assume you are already configured correctly to use the
+local cable.)
+\vskip 0.5in
+Give the exact command the network card on the machine
+that {\it you} administer.
+\vskip 0.5in
+Describ how {\ltt{}.rhosts} works.
+\vskip 0.5in
+\bye

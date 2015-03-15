@@ -1,0 +1,71 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 16 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 3 April 2002 (Week 9 Lecture 2)\hfill 
+Due: 8 April 2002 (Week 10, Lab 1)}
+\parindent 0pt
+
+This assignment covers the boot/root disks, and what is on the release CD.
+
+\bigskip
+1) {\bf fdisk}:
+For the disk you administer describe the partitions that are on the disk?
+For each partition {\it report}, where it starts, where it ends, and what kind
+of a partition it is (Linux, DOS, swap).
+Be very careful with this one, you have to be root to run fdisk,
+DO NOT MODIFY or WRITE anything with fdisk; 
+you can easily erase the disk.
+Record the information very carefully, you have to use this information
+to rebuild after your disk crash.
+
+2) {\bf pkgtool}:
+What packages are installed on the machine you administer.
+{\it Report} just the first 6. Don't bother to record the others, you will
+be told what to install in the instructions for the install project.
+
+\bigskip
+3) {\bf boot sets}:
+For each of the following configurations select a boot disk.
+For each (a,b,c) {\it report} which boot disk you would select.
+Assume that your machine has both the equipment listed as "To" and the
+equipment listed as "from".
+List one of the disks found on the CD rom that came with the book.
+For your convenience, my copy of the CD is mounted on {\ltt{}jaguar} under
+{\ltt{}/slak8}. 
+One of the following configurations is {\it not} listed in the book,
+you {\it must} read the documentation on the CD to determine the correct
+boot disk.
+
+a) Install to an Adaptec 1542 SCSI controller (and SCSI disks) from another
+machine on the network.
+
+b) Install to an IDE hard drive from floppy disks. (ouch!)
+
+c) Install to an IDE hard drive from a Sanyo CD-ROM.
+
+\bigskip
+4) {\bf boot disks}:
+Build two 3.5" 1.44Mdisks from the appropriate files from the Linux CD.
+One of these disks is to be a boot disk.
+It must contain a kernel that supports IDE drives
+and networking ({\ltt{}net.i}).
+The other should be a root disk ({\ltt{}color.gz}).
+
+You can find the disks under the {\ltt{}~djv}
+directory (visible from the machine you administer).
+
+{\it Report:} the exact commands you used to build the disks.
+
+Test: Making sure that all other users are off the machine,
+place your boot disk in the A: drive and
+reboot the machine using the shutdown command.
+Follow the instructions, paying careful attention for when to swap disks.
+Once you have booted from floppy, examine the {\ltt{}/bin} directory
+(see next report section).
+Remove your disks from the drive and reboot using the shutdown command.
+
+{\it Report:} the number of executables you found in {\ltt{}/bin}.
+(Note: some of the things in {\ltt{}/bin} are not executables, they are links.)
+
+\bye

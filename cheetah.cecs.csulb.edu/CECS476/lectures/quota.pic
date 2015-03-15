@@ -1,0 +1,273 @@
+\def\chapternumber{quota -- 3 May 2012}
+\input slides.tex
+\centerline{\bbf Setting Disk Quotas}
+
+Concept:
+\break
+Limit the amount of disk a user is allowed.
+
+Soft quota --- Root and/or the user get warning messages
+\break
+Hard quota --- Actions that put you over this limit abort.
+
+Quotas are optional.
+\break
+They may be set for users, groups, both or not set at all.
+\break
+By default, they are not set.
+
+\vt
+
+Must build a kernel with quota support.
+
+\vt
+
+Quota's are applied to a partition/file system.
+
+For each partition/file system that implements quotas
+\break
+there are files in the base directory containing the quota information
+
+Quotas for a partition, like mounts and swapping,
+\break
+can be turned on and off by hand or
+\break
+can be turned on at boot, off at reboot using {\ltt{}fstab}.
+
+\newslide
+\centerline{\bbf Quota Entries For fstab}
+
+The allowable entries are: {\ltt{}grpquota}, {\ltt{}usrquota}, {\ltt{}quota},
+{\ltt{}noquota}
+
+Sample {\ltt{}fstab}:
+
+{\program
+/dev/sdb1 /u1 ext2 rw,quota 1 1
+/dev/sdc1 /u2 ext2 usrquota 1 1
+/dev/sdd1 /u3 ext2 grpquota 1 1
+/dev/sde1 /u4 ext2 ro,noquota 1 1
+\endprogram}
+
+{\ltt{}u1}: quotas are set for both users and groups
+\break
+The {\ltt{}rw} is redundant since it is the default.
+
+{\ltt{}u2}: quotas are set for users
+\break
+There are no quotas on groups
+
+{\ltt{}u3}: quotas are set for groups
+\break
+There are no quotas on individual users
+
+{\ltt{}u4}: no quotas are set
+\break
+Since this the default it could be omitted
+\break
+Read only is set
+
+\newslide
+\break
+
+\centerline{\bbf The Quota Files}
+
+The quota files are in the base directory of the file system.
+
+Example: for the {\ltt{}/u3} file system,
+\break
+the quota files must be in {\ltt{}/u3}.
+\break
+Note: the base directory also always has a {\ltt{}lost+found}
+subdirectory that is used by {\ltt{}fsck}.
+
+Files: {\ltt{}quota.user}, {\ltt{}quota.group}:
+\break
+the quota files for version 1 of quota.
+
+Files: {\ltt{}aquota.user}, {\ltt{}aquota.group}:
+\break
+the quota files for version 2 of quota.
+
+The files are binary (not text).
+\break
+The files are owned by {\ltt{}root}.
+\break
+They track quota and disk usage.
+\break
+The files are often mode 600 (readable only by root).
+\break
+If you want the user to look at their own quota,
+\break
+change them to mode 644.
+
+Creating these files: run {\ltt{}quotacheck}
+\break
+It will create one or both files depending on what it finds
+in the {\ltt{}fstab}.
+
+Modifying these files: use {\ltt{}edquota}
+
+\newslide
+
+\centerline{\bbf The quota Command}
+
+Display disk usage and limits
+\break
+for user or group(s).
+
+You may only display your quota and quotas of groups to which you belong.
+
+Example: {\ltt{}qouta -g}
+\break
+Display the usage for all groups the user belongs to.
+
+\vt
+
+Root may display any quota.
+\break
+Example: {\ltt{}quota -u bob}
+\break
+Display the usage for the user {\ltt{}bob}.
+
+
+\vt
+
+The quota display format is similar to that of {\ltt{}edquota}.
+\break
+Sizes of the hard and soft quotas and disk usage for the user are give
+in blocks.
+
+\newslide
+\centerline{\bbf The quotacheck Command}
+
+Normally this command is run at boot.
+\break
+It will check, update and repair; or create the quota files.
+
+You should not update/repair quota files while the file system can modified
+because the disk usage could be miscalculated.
+\break
+At boot the file system is mounted read-only so that {\ltt{}fsck} and
+{\ltt{}quotacheck} may run correctly.
+
+When creating the quota files (empty) this command may be run as:
+\break
+{\ltt{}qoutacheck -a -m}
+\break
+Since there are no files to check,
+it will create the empty files required by the {\ltt{}fstab} entries.
+\break
+{\ltt{}-a} option: use {\ltt{}fstab}
+\break
+{\ltt{}-m} option: ignore the read-only requirement
+\break
+{\ltt{}-c} option: force creation of the quota files,
+\break
+i.e., ignore any existing quota files.
+
+\newslide
+
+\centerline{\bbf The edqouta Command}
+
+Edit the quota for a user or group.
+\break
+You must be {\ltt{}root} to edit a quota.
+
+{\ltt{}edquota -u joe sam }
+\break
+Edit the quotas of the specified users.
+\break
+The {\ltt{}-u} is optional.
+\break
+Use {\ltt{}-g} (instead of {\ltt{}-u}) to edit groups.
+\break
+Extracts the quota information into a text file. 
+Invokes an editor on that text file.
+When done editing, inserts the new information into the quota files.
+
+{\ltt{}edquota -p john -u joe sam }
+\break
+Use a prototype. 
+\break
+The specified users (groups) get the same quota as the prototype.
+\break
+{\ltt{}joe} and {\ltt{}sam} get the same quota as {\ltt{}john}
+\break
+This format does not invoke an editor.
+
+You may set soft and/or hard quotas in units of blocks.
+\break
+Hence what the number means depends on the block size.
+
+\newslide
+\centerline{\bbf The quotaon and quotaoff Commands}
+
+Quotas on a file system are not in effect until they are
+turned on.
+
+Example: {\ltt{}quotaon /u3}
+\break
+Turn on quotas for the file system {\ltt{}u3}
+\break
+Precondition: the quota file(s) must exist in {\ltt{}/u3}.
+
+{\ltt{}fstab} may be used
+\break
+Command: {\ltt{}quotaon -a}
+\break
+Turn on quotas for every file system listed in {\ltt{}fstab}
+as having quotas.
+\break
+In effective if the quota file(s) do not exist in those file systems.
+
+Note: {\ltt{}qoutaon -a} is run as part of the boot scripts.
+
+\vf
+
+{\ltt{}quotaoff} turns off quotas.
+\break
+You may name a files system or use the {\ltt{}-a} option.
+
+Note: {\ltt{}qoutaoff -a} is run as part of shutdown.
+
+\newslide
+
+\centerline{\bbf Disk Usage Report}
+
+{\ltt{}root} may get a summary of quota information for a filesystem.
+
+Either the mount point or {\ltt{}-a} may be specified.
+
+
+Example: {\ltt{}repquota /u2}
+\break
+Report the quota summary for the {\ltt{}/u2} file system.
+
+\newslide
+
+\centerline{\bbf Network (NFS) Support}
+
+Quotas are not directly part of NFS.
+\break
+Quotas are implemented only on local drives.
+
+An NFS server may implement quotas on the drives it exports.
+
+However,
+an NFS client may not implement quotas on the drives it mounts (imports).
+
+You can have quotas even with NFS, but you must do it on the server side.
+
+{\ltt{}rpc.rquota} (aka {\ltt{}rquotad})
+\break
+An NFS server daemon that will read and report quotas to NFS clients.
+
+{\ltt{}quota}:
+\break
+Checks to see if the file system is local or NFS
+\break
+Local: reads the quota file
+\break
+NFS: calls {\ltt{}rpc.quota} on the NFS server
+\bye

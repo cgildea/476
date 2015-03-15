@@ -1,0 +1,215 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 2002, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(4 points)
+% Project 16
+What is on the boot floppy and what is on root floppy?
+\vskip 1.3in
+\ques
+(4 points)
+% Project 17
+For a blank harddrive,
+give the sequence of {\ltt{}fdisk} commands to
+set {\ltt{}hda1} to contain cylinders 0-900
+and be a Linux partition
+and {\ltt{}hda2} to contain cylinders 901-1200
+and be a swap partition.
+\vskip 3.0in
+\ques
+(4 points)
+% Project 17
+Give the five top level steps in the install process.
+(I.e., what 5 selections did use from the main menu.)
+\vskip 2.3in
+\ques
+(4 points)
+% Project 17
+During the install you selected a source.
+What is a source and
+what source did you select?
+\vskip 0.5in
+\vfill\eject
+\ques
+(4 points)
+% Project 18
+What does {\ltt{}chroot} do?
+\vskip 1.3in
+\ques
+(4 points)
+% Project 18
+What will the {\ltt{}ldd} command tell you about
+a program?
+\vskip 0.8in
+\ques
+(4 points)
+% Project 19
+Suppose {\ltt{}Z} is the macro that designates an archive
+log for mail and {\ltt{}Z} is a class that designates
+users whose mail is not to be archived.
+If you want to archive mail for users other than
+{\ltt{}root}, {\ltt{}bob} and {\ltt{}sue} to the file {\ltt{}/var/mail/arch};
+show the lines that will need to put intto {\ltt{}sendmail.cf}
+\vskip 1.2in
+\ques
+(4 points)
+% Project 20
+A faculty memember wants to allow students to submit homework;
+and have that homework deposted in the faculty member's
+{\ltt{}submissions} directory.
+Describe how would you set up such a capability? (Include the mods
+and ownership).
+\vskip 2.5in
+\ques
+(4 points)
+% Project 21
+You wish to set up a new news group.
+What files and directories will be changed when
+you set it up?
+\vskip 1.0in
+\vfill\eject
+\ques
+(4 points)
+% Project 21
+You want your machine to send news articles to {\ltt{}cheetah}.
+What do you need to do?
+(Give file(s) and modifications.)
+\vskip 1.9in
+\ques
+(4 points)
+% Project 22
+Explain how the {\ltt{}/Directory} directive works.
+Your explanation should include how multiple directives interact.
+\vskip 1.5in
+\ques
+(4 points)
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}mork.occc.edu} (172.3.3.2) and 
+{\ltt{}mindy.occc.edu} (172.3.3.3).
+Give the entire reverse zone file for the zone {\ltt{}ventura.edu},
+including the SOA, if the DNS server for that zone
+is {\ltt{}dns.ventura.edu} ({\ltt{}172.3.3.5}).
+\vfill\eject
+\ques
+(4 points)
+% Project 23
+How would you set up {\ltt{}named} so that the forward and reverse
+files are located in {\ltt{}/var/etc/named}?
+\vskip 1.2in
+\ques
+(4 points)
+% Project 24
+What is the difference between the {\ltt{}.rhosts} file and
+the {\ltt{}hosts.equiv} file.
+\vskip 1.8in
+\ques
+(4 points)
+% Project 24
+User {\ltt{}sam} wishes to put install the contents
+{\ltt{}apache.tgz} from his home directory on {\ltt{}cheetah}
+into {\ltt{}~apache/bin} on {\ltt{}lab99}. Copy
+it accross, call it {\ltt{}newapache.tgz}) and extract the files from
+the archive (the extraction is done on {\ltt{}lab99}).
+Assuming permissions have already been set up;
+what does {\ltt{}sam} do? (Give files, contents and command.)
+\vskip 2.0in
+\ques
+(4 points)
+% Project 25
+You want Windows 95 users to be able to access a public share
+that contains the starting files for their homework.
+You have those files in {\ltt{}/windows/coursestuff}
+on your Linux machine.
+What files would you need to change and what
+changes would you need to make to those files.
+(Assume the appropriate software is already installed.)
+\vskip 1.3in
+\vfill\eject
+\ques
+(4 points)
+% Project 13
+If a machine is running a yp client, what determines where
+the machine get it's password information? Give file names
+and indicate which lines in those files.
+\vskip 1.2in
+\ques
+(4 points)
+% Project 13
+Give the commands you would use to determine if
+account information was being delivered using yp?
+\vskip 1.1in
+\ques
+(4 points)
+% Project 14
+Describe how you would
+export the {\ltt{}/mnt} directory on your machine to
+puma read/write
+and to jaguar read only?
+(Give the file name(s) and contents.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 14
+Give the {\ltt{}fstab} entry that would mount
+the {\ltt{}/slak} directory from {\ltt{}jaguar.cecs.csulb.edu}
+on your machines {\ltt{}/cdrom} directory.
+\vskip 0.8in
+\ques
+(4 points)
+% Project 15
+How would you make the printer {\ltt{}lp} from
+{\ltt{}puma} available to users on your machine.
+(Give the file name(s) and contents.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 15
+Describe how you would have
+critical ({\ltt{}notice}) messages (or higher) from the printer daemon 
+({\ltt{}mail})
+go into the file {\ltt{}/var/log/mail}
+and
+send notice ({\ltt{}crit}) (only, no higher or lower)
+messages from the mail system ({\ltt{}mail}) to {\ltt{}puma}.
+(Give the file name(s) and contents.)
+\vskip 1.5in
+\vfill\eject
+Analysis section. 
+
+\ques
+(4 points)
+{\ltt{}linux122} won't users log in.
+When root logs in, you see the message
+``{\ltt{}Can't find /net/charlotte/mail}".
+What are the first 3 things would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, give the command you would use to do the check.)
+\vskip 0.5in
+\vfill
+\ques
+(4 points)
+When logging into {\ltt{}lab99} (in ECS 413)
+as {\ltt{}csv476z5} you receive the message
+``Setting home to /".
+What could be misconfigured on {\ltt{}lab99}?
+What are the first 3 things would you check.
+(Give them in order of the most likely to find the problem.)
+(For each item, give the command you would use to do the check.)
+\vfill
+\ques
+(4 points)
+From {\ltt{}trn} {\ltt{}lab88} you get the message ``500 post not allowed".
+Assuming {\ltt{}lab88} is a news server, what things could be misconfigured
+on {\ltt{}lab88} that could cause this?
+List exactly 3 things. (There are more, just list 3 of them.)
+\bye

@@ -1,0 +1,7 @@
+#include <winsock.h>
+
+WSADATA data;
+WSAStartup(0x0101,&data);
+WSACleanup();
+
+Note: fd_set is a STL vector (but you won't notice.

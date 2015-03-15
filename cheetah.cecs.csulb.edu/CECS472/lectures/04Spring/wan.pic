@@ -1,0 +1,480 @@
+\def\chapternumber{Lecture Slides, Metropolitan --- Volper -- 28 January 1999}
+\input slides.tex
+\centerline{\bbf Metropolitan Networks}
+
+Design: Group of buildings -- plant site -- campus -- business complex
+
+Tension: Data vs. voice/video
+
+Decision: separate or integrated
+\break
+Integrated: less cable, single company, multi-media capable
+\break
+Separate: greater efficiency and throughput
+
+Implementation: 
+\break
+Data: Packet switched
+\break
+Voice/video: Circuit switched
+\newslide
+\centerline{\bbf FDDI}
+\centerline{Fiber Distributed Data Interface}
+
+100 Mbps, fiber, token ring (802.5 with modifications for ``high speed")
+\vt
+\centerline{\bbf 4B/5B encoding}
+
+Goals: self-synchronizing data, control patterns
+\break
+Self-synchronizing: transition at least every 4th bit.
+\break
+Control patterns: some ``flags" that do not represent data.
+
+Method: 10 bits/byte; 5 bits/half-byte
+\break
+Achieves: 32 patterns, 16 data, 8 control, 8 illegal
+\break
+Method: NRZI (non return to zero inverted) 
+\break
+-transition indicates 1
+\break
+Encode: never have 4 consecutive zeros
+\break
+Tricks: bit 1 or 2 is a 1; last 3 bits are never 0
+\break
+-J is always followed by K
+\break
+-quiet doesn't hold synchronization
+
+Note: discussion is given in pre-encoded quantities. 
+
+\newslide
+{\program
+11110        0
+01001        1
+10100        2
+10101        3
+01010        4
+01011        5
+01110        6
+01111        7
+10010        8
+10011        9
+10110        A   (hex)
+10111        B
+11010        C
+11011        D
+11100        E
+11101        F
+00000        Q   quite (sync lost)
+11111        I   idle (sync)
+00100        H   halt (go quiet)
+11000        J   Start delimiter (1)
+10001        K   Start delimiter (2)
+01101        T   Stop delimiter
+00111        R   0 (Frame status signal)
+11001        S   1 (Frame status signal)
+\vt
+(Table 6-2, page 232)
+\endprogram}
+\newslide
+\centerline{\bbf FDDI Data Frame}
+
+Preamble: 16 I's (may vary)
+\break
+(64 data bits all 1's)
+\break
+--80 edges (4B/5B fake bits)
+
+Start delimiter: JK {\ltt{}1100010001}
+\break
+-sequences of three 0's $\Rightarrow$ easy to recognize
+
+Frame control: 8 bits {\ltt{}CLFFZZZZ}
+\break
+{\ltt{}C}: sync/async frame (reserved/walk-in)
+\break
+{\ltt{}L}: 16/48 bit addressing
+\break
+{\ltt{}FF}: Frame type,  data (LLU), control (MAC), reserved
+\break
+{\ltt{}ZZZZ}: MAC control frame type (unused on other frames)
+
+Destination and Source Addresses:
+\break
+16 or 48 bits.
+
+Data: optional, size varies
+
+Frame check sequence (CRC check sum)
+
+End delimiter: {\ltt{}T}
+
+Frame status: 3 {\ltt{}R}/{\ltt{}S} signals (12/15 bits)
+\break
+Error: (set if one was detected during transit)
+\break
+Recognized (A): Set if destination address was valid
+\break
+Copied (F): Set if destination kept copy of data
+\newslide
+\centerline{\bbf FDDI Token Frame}
+
+Preamble: 16 I's (may vary)
+\break
+Start delimiter: JK {\ltt{}1100010001}
+\break
+Frame control: {\ltt{}FF} indicates token (control) frame
+\break
+End delimiter: {\ltt{}TT}
+\vt
+\centerline{\bbf Token Handling}
+
+) Absorb entire token.
+\break
+2) Transmit data frame(s)
+\break
+3) Emit token
+\break
+4) When frames return, remove from ring (and note status)
+
+Delay is more than 1 bit
+\break
+Several stations can have frames on the ring at a time
+
+Each station: reserves some capacity
+\break
+-may send additional data in unreserved or reserved but unused time
+\break
+-complex reservation scheme (details follow)
+\newslide
+\centerline{\bbf Token Handling Algorithms}
+
+Reserved -- Synchronous ($SA_i$)
+\break
+Unreserved -- Asynchronous
+
+At station:
+\break
+Token is delayed by $SA_i$ +
+\break
+Token frame transmission time
+
+Ring delay adds ring propagation time
+
+Target Token Rotation Time: Rotation time may temporarily exceed this
+(at most double). 
+\break
+Must be less than consumed by synchrous allocations
+
+Allow one frame tolerance
+
+$DMax + FMax + TokenTime + \sum SA_i \le TTRT$
+
+Idea: if token is rotating faster than TTRT
+\break
+$\Rightarrow$ may send asynchronous frames
+\break
+Asynchronous amount ($THT$) = Target time - actual
+\break
+Max usage = $SA_i + THT$ may push rotation over target
+
+Actual rotation time ($TRT$) measured receive to receive
+\break
+Asynchronous: round robin (when busy)
+\break
+Should set $TTRT$ to allow multiframe bursts
+\break
+Asynchronous: really an 802.4 priority scheme
+\break
+Restricted token: async dialog between two stations
+\newslide
+\centerline{\bbf Jitter}
+
+Your clock rate differs from sender.
+\break
+Difficult to change rate of high speed clocks
+
+Solution: use buffer and adjust size of preamble
+\break
+-Buffer can hold 10 bits, normally contains 5 bits
+
+Data arriving faster than unit can send
+\break
+-buffer size grows toward 10 bits
+\break
+$\Rightarrow$ send only 15 I signals 
+\break
+--reduces buffer size by 5 bits
+
+Data arriving slower than unit can send
+\break
+-buffer size shrinks toward 0 bits
+\break
+$\Rightarrow$ send 17 I signals 
+\break
+--increases buffer size by 5 bits
+
+Packet size and clock accuracy:
+\break
+4500 octets = 45000 4B/5B bits
+\break
+0.005\% clock = 0.00005 drift
+\break
+2.25 bits drift
+
+1300 nm $\approx 10^{14}$ Hz; Assume single-mode:
+\break
+-signal capacity $> >$ encode/decode equipment
+\break
+100Mbps: 1 bit spans $10^6$ wave forms
+\newslide
+\centerline{\bbf FDDI Topology}
+
+Dual counter rotating ring: 
+\break
+-handles a single break 
+\break
+--reroutes traffic to counter rotating ring
+
+Dual attached station: standard attachment device
+\break
+-used for computers, gateways, concentrators
+\break
+-Physically: dual ring cabling
+\break
+-Layout: usually ring 
+
+Concentrator: attachment device with a long delay
+\break
+-Allows connection of single attached devices
+\break
+-Dual attached / Single attached
+
+Single attached station/concentrator:
+\break
+-Physically: single ring cabling
+\break
+-Layout: usually tree
+
+Concentrator passes data/token to each attached device in turn, 
+\break
+-handles any problems
+\break
+-passes token/data on to next dual attachment
+\newslide
+\centerline{\bbf Rerouting and Error Protocols}
+
+1) initialize a new ring (start token)
+\break
+2) add/modify a machine (new target rotation time TTRT)
+\break
+3) detect break and reroute
+
+2) wait for token
+\break
+-send new TTRT control message around ring
+\break
+-send data (probably a broadcast)
+\break
+-send token
+
+1, 3) Time out occurs
+
+A) claim token: establish 
+\break
+-who gets to issure
+\break
+-TTRT
+\break
+Send claim frame: TTRT, address
+\break
+-rebroadcast best claim
+\break
+--yours
+\break
+--received from ring
+\break
+lowest TTRT, longest address length, biggest address
+\break
+Winner eventually sees own claim frame
+\break
+Winner sends timing token 
+\break
+-establish actual (best) rotation time
+\newslide
+\centerline{\bbf Beacon Frames}
+
+Status: ring is broke
+\break
+Goal: Use counter ring to re-establish largest working subset
+
+Broke ring detection
+\break
+1) token time-out
+\break
+2) Claim frame protocol time-out
+
+Beacon process: send beacon frame
+\break
+-use ring and counter ring
+\break
+Top: nothing recevied on ring
+\break
+Bottom: nothing recevied on counter ring
+
+Bottom: reroute to counter ring
+\break
+Top: route from counter ring to ring
+
+Occasionally: Bottom beacons on broken ring
+\newslide
+\centerline{\bbf FDDI-II}
+
+Goal: Phone compatibility 
+\break
+-8000 cps, virtual circuits, steady data flow
+
+Implementation:
+\break
+-8000 packets per second ($\le 12500$ bits per packet)
+\break
+16 channels, 96 octets/channel (12288 data bits)
+\break
+12 octet packet header (96 bits)
+\break
+12 octet dedicated packet group (96 bits)
+\break
+5 ``I" preample (4 to 6 because of jitter) (20 bits)
+\break
+total: 12500 bits
+\break
+-Ring master, controls virtual circuit allocation
+\break
+-unallocated channels used for ``FDDI" packets
+
+Packets--no preamble; spans available channel space, spans II frames
+
+VC allocated channels--negotiated using packets;
+\break
+a channel is allocated
+\break
+space in that channel is allocated for the ``connection"
+
+Dedicated channel--96 octets (6.144 Mbps)
+\break
+video (5-6 Mbps): 1 per channel
+\break
+voice (64 Kbps = 1 octet): 96 per channel
+\break
+can allocate 1 bit per cycle (channel)
+\newslide
+\centerline{\bbf DQDB}
+\centerline{Distributed Queue Dual Bus}
+
+Partially developed standard.
+
+Goals: Voice compatible, reserved channels, good burst usage
+
+Media: 8kHz multiple (phone compatible)
+\break
+-53 octet frames
+\break
+-DSP3 (45Mbps), SONET (155Mbps),...
+\break
+-frames per cycle depends on bps.
+
+Dual bus, one in each direction
+\break
+Access by reservation (no contention/collision)
+\break
+Heads generate empty frames (8Hz)
+\break
+Stations place data in empty frames
+\break
+-repeater (bus) can flip bits as they go by
+\break
+Reserved frames: prearbitrated (PA)
+\break
+Normal frames: queued arbitrated (QA)
+
+Frame format: 1 octet Access control, 52 octet segment
+Access control: empty/full bit, QA/PA bit, request bit(s)
+
+Getting a bus slot (simplified):
+\break
+Set the request bit (opposite bus)
+\break
+Use next empty QA slot
+\newslide
+\centerline{\bbf Getting a Slot}
+
+Fairness: must pass empty slots for downstream requests
+
+Take your fair turn
+\break
+-pass slots for previous requests
+\break
+-take next slot
+\break
+-counters: {\bit before}, {\bit after}
+
+Not wanting to send a frame:
+\break
+Count-up requests downstream in {\bit before}
+\break
+Count-down {\bit before} for each empty slot passed
+
+Wanting to send a frame:
+\break
+At any time: turn first available request slot
+\break
+Count-down {\bit before} for each empty slot passed
+\break
+Count-up requests downstream in {\bit after}
+\break
+When {\bit before} reaches 0
+\break
+-send data in next empty slot
+\break
+-transfer {\bit after} to {\bit before}
+
+Performance notes:
+\break
+Effective on burst mode (100\%) of bus (in correct direction)
+\break
+Holds under load: no collisions, everyone gets access
+\newslide
+\centerline{\bbf DQDB Issues}
+
+First sender effect:
+\break
+-Send request, send data (loop)
+\break
+-Has several requests or packets already moving
+\break
+Second sender:
+\break
+-fraction of bus depends on distance (number of frames)
+\break
+-Downstream: one reservation, must wait for empty packet
+\break
+-Upstream: Can have high {\bit before} count
+\break
+Pass occasional extra empty frame
+\break
+Pass occasional empty request
+
+Reserved channels:
+\break
+-negotiate (using unreserved) with head-end
+\break
+-assigned a channel number
+\break
+PA frames with that channel number are yours
+
+44 usable bytes (44/53 = 83\%)
+\break
+one (of two) usable channel (42\%)
+\bye

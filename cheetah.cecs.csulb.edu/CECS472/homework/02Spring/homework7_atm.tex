@@ -1,0 +1,94 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Project 6 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 18 March 2002 (Week 8 Lecture 1) \hfill Due: 10 April 2002 (Week 10 Lecture 2)}
+\parindent 0pt
+
+Purpose: To gain an in-depth understanding of
+remote procedure calls.
+
+You will build a remote program and a client that makes remote procedure calls 
+to that program.
+Your remote procedure calls will use TCP.
+
+Your remote program (server) will provide three remote procedures.
+Your rpc client will allow the user to call any of these procedures.
+For the remote program you must use your personal RPC program
+number.
+Compile and run the {\ltt{}Uniq_Id.c} program 
+(from {\ltt{}~volper/classes/472/programs/rpc_example})
+to get your program number.
+
+\bigskip
+\noindent
+{\it THE RPC SERVER PROGRAM}
+
+The server program will be called {\ltt{}atmd} (automated teller machine).
+The RPC server will provide three services called 
+{\ltt{}deposit}, {\ltt{}withdraw} and {\ltt{}summarize}.
+
+The atm has an array of two accounts (account 0 and account 1).
+Initially {\ltt{}atmd} starts with all balances equal to 0.
+All numbers are integers (no reals).
+
+{\ltt{}deposit} must be called with two parameter, the first parameter
+indicates how much the rpc client wants to deposit and
+the second parameter indicates which account.
+When called, {\ltt{}deposit} increases the balance of the appropriate
+account by the amount the rpc client has deposited.
+
+{\ltt{}withdraw} must be called with two parameters, the first parameter
+indicates how much the rpc client wishes to withdraw and
+the second parameter indicates which account.
+When called, {\ltt{}withdraw} decreases the appropriate balance count by the 
+amount the rpc client wants to withdraw, but the balance never is reduced 
+below 0.
+If the rpc client asks for more money than {\ltt{}atmd} currently
+has, {\ltt{}atmd} delivers all the remaining balance (balance goes to 0).
+
+{\ltt{}withdraw} returns an integer indicating the amount that the
+rpc client was allowed to withdraw.
+This integer is either equal to the amount the client asked for, or the
+balance that {\ltt{}atmd} had left (if the client asked for too much).
+
+{\ltt{}summarize} has no parameters.
+When called, {\ltt{}summarize} returns the values in the balances array of
+the {\ltt{}atmd}.
+
+All integers are {\ltt{}long} and all rpc integer parameters and return
+values will be {\ltt{}long}.
+(This is to force you to xdr, you can't use strings!).
+
+\bigskip
+\noindent
+{\it THE RPC CLIENT}
+
+The rpc client will be called {\ltt{}atmc}.
+It will take one parameter, the name of the host to which it is to make
+its rpc calls.
+Example: {\ltt{}atmc cheetah}
+
+{\ltt{}atmc} provides the user interface.
+{\ltt{}atmc} repeats the following (until control-C).
+
+It prompts the user ``{\ltt{}a) deposit, b) withdraw or c) summarize: }".
+It reads the users response (which will be a, b or c).
+
+If the user selects (a) it asks how much the user wants to deposit,
+then it will ask for the account number.
+It then calls the {\ltt{}deposit} procedure of {\ltt{}atmd} with the amount
+of the deposit and the account number.
+
+If the user selects (b) it asks how much the user wants to withdraw.
+It then calls the {\ltt{}withdraw} procedure of {\ltt{}atmd} with the 
+number the user wants to withdraw,
+then it will ask for the account number.
+It then calls the {\ltt{}withdraw} procedure of {\ltt{}atmd} with the amount
+and the account number.
+It will print the number it was actually able to withdraw (i.e., the number
+returned by {\ltt{}withdraw}).
+
+If the user selects (c) it calls the {\ltt{}summarize} procedure of 
+{\ltt{}atmd}.
+It will print the numbers in the array returned by {\ltt{}summarize}.
+\bye

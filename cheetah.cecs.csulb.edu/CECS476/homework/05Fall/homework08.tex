@@ -1,0 +1,53 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 8 \hfill Fall 2005}}
+\footline{Dennis Volper \hfill 26 September 2005 (Week 5 Lecture 1)\hfill 
+Due: 28 September 2005 (Week 5 Lab 2)}
+\parindent 0pt
+
+This assignment covers the X Window system.
+
+On your machine examine the x configuration file found in {\ltt{}/etc/X11}.
+\hfill\break
+1) How many different mouse protocols available?
+List two of the protocols that apply to Mouseman products.
+\hfill\break
+2) What device does your config specify for the mouse?
+
+Examine the device file system:
+\hfill\break
+3) what device does {\ltt{}/dev/mouse} link to?
+
+On your system probe your X11 setup (use a command, don't use
+the files).
+Report:
+\hfill\break
+4) The exact command you ran.
+\hfill\break
+5) The version of the X11 system on your machine and its release date.
+\hfill\break
+6) The ``Vendor" of your video card.
+\hfill\break
+7) The "Total memory:" that was found on your card.
+\hfill\break
+8) What ``product" of that vendor was your card.
+\hfill\break
+9) How many video modes were searched for a match.
+
+Re-do your X11 configuration file.
+You know your video card (from above).
+Assume your monitor can do a standard SVGA (800x600), 30-69K horizontal,
+47-90 vertical.
+You need to get at least 2 working resolutions,
+you should be able to get 3.
+
+Try starting X and stepping through some modes. Pick your
+highest resolution and use {\ltt{}xvidtune} on it.
+
+\hfill\break
+10) Report the eleven numbers from the tuning program.
+Warning, if your setup is not fully correct,
+this program gets a floating-point error.
+
+\bye

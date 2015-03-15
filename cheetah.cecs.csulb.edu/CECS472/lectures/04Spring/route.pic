@@ -1,0 +1,922 @@
+\def\chapternumber{CECS 472, Internet Routing --- Volper -- 13 August 2003}
+\input slides.tex
+\input cstuff.tex
+\centerline{\bbf Post Office Routing}
+
+Goal: get letters to their destination.
+
+Post Office Operation:
+
+\ind{1)} Use the zip code to get the letter to the correct local post office.
+\ind{2)} The local post office uses the zip + 4 to get 
+the letter to the correct house.
+\vt
+Local Post Office Algorithm:
+
+zip code matches ours:
+\break
+--we are responsible for direct delivery
+\break
+--(use the + 4)
+
+zip code doesn't match ours:
+\break
+--send it to the correct local post office
+\break
+--(they will do the delivery, we don't use the + 4)
+\newslide
+\centerline{\bbf Internet Routing}
+
+Goal: get internet messages to their destination.
+
+Internet Operation:
+
+Divide the internet number into two parts,
+\break
+a cable part and a host part
+
+\ind{1)} Use the cable part of the internet number to get the packet to the 
+correct internet cable. 
+\ind{2)} On the local cable use the host part of the internet number to get the 
+packet to the correct machine. 
+\break
+(Actually this step uses the whole number.)
+\vt
+Internet Algorithm:
+
+Cable part matches our cable:
+\break
+we are responsible for direct delivery.
+
+Cable part does not match ours:
+\break
+send it to the correct cable.
+\break
+(Actually forward it toward the correct cable,
+\break
+it may need to be forwarded several times.)
+
+Terminology: a cable is called a subnet.
+\newslide
+\centerline{\bbf Sending Packets}
+
+Packets always move from a host to another host on the same cable.
+
+At a host, a packet can enter the host on one cable and leave on another.
+\break
+(Provided the host is connected to two cables and the packet is to be
+forwarded.)
+
+We describe packet transport in 3 steps.
+
+1) How to tell if the destination of a packet is on the same cable.
+
+2) How to get a packet from one host to another host on the same cable.
+
+3) What to do if you need to get a packet to a host on a different cable.
+\vf
+Definition: a host that is connected to more than one cable
+is called a {\bit gateway}.
+\newslide
+\centerline{\bbf Determining if a Host is on the Local Cable}
+
+Packets from: 134.139.45.15
+
+Local machines addresses:\quad 134.139.45.x
+
+Gateway (forwarding location):\quad 134.139.45.1
+
+If it's local send packet direct.
+
+If not, send to gateway
+\break
+(forward it to the gateway).
+
+Examples: 
+
+\halign{#\quad\hfil&#\hfil\cr
+Address&Decision\cr
+{\ltt{}134.139.45.4}&local\cr
+{\ltt{}134.139.45.6}&local\cr
+{\ltt{}134.139.49.2}&forward\cr
+{\ltt{}128.195.1.1}&forward\cr}
+
+Needed: a way to distinguish the cable part from the host part.
+\break
+Solution: netmasks
+
+Needed: a way to specify forwarding.
+\break
+Solution: routing tables
+\newslide
+\centerline{\bbf Cable Numbers}
+
+Analogy: an address has two parts,
+\break
+street name part --- house number part
+
+267 Atherton
+
+All houses on the same street have the same street-name-part:
+467 Atherton, 512 Atherton
+\break
+467 Seventh -- on a different street
+\break
+Everything with street-part Atherton is on the same street
+
+Internet numbers have two parts, cable part--host part
+
+134.139.45.15: 134.139.45.0  --- 0.0.0.15
+
+All hosts on the same cable have the same cable part:
+\break
+134.139.45.6, 134.139.45.4
+\break
+Everything with cable-number 134.139.45.0 is on the same cable.
+
+\newslide
+\centerline{\bbf Netmasks and Simple Subnet Routing}
+
+The {\bit netmask} is used to determine if other address is on same
+subnet.
+
+Sample netmask 255.255.255.192  (0xffffffc0)
+\break
+Meaning: the first 26 bits are the cable part,
+\break
+ the last 6 bits are the host part.
+
+Lynx internet number: {\ltt{}134.139.45.15}
+
+If the destination internet number is the same in the cable part, then
+it is on the same cable.
+
+Same cable:
+{\ltt{}134.139.45.6},
+{\ltt{}134.139.45.4}
+
+Different cable:
+{\ltt{}128.195.1.1},
+{\ltt{}134.139.49.2},
+{\ltt{}134.139.45.72}
+
+Method: (by hand)
+Write the numbers out in binary, compare the first 26 bits.
+
+\halign{#\quad\hfil&#\hfil\cr
+134.139.45.15&10000110 10001001 00101101 00-001111\cr
+134.139.45.4 &10000110 10001001 00101101 00-000100\cr
+134.139.49.2 &10000110 10001001 00110001 00-000010\cr
+134.139.45.72&10000110 10001001 00101101 01-001000\cr}
+
+Method: zero the host part, then compare for equality
+\break
+Detail: {\ltt{}AND} with netmask to zero the host part
+\newslide
+\centerline{\bbf Simple Subnet Routing}
+
+Apply the netmask to your address and the destination address, then compare.
+
+Example: 134.139.45.15  sends to 134.139.45.4
+
+\halign{#\hfil\qquad&#\hfil\qquad&#\hfil\cr
+original&134.139.45.15&134.139.45.4\cr
+after mask&134.139.45.0&134.139.45.0\cr}
+
+Conclusion: Same cable, send direct
+
+\vt
+Example: 134.139.45.15 sends to 134.139.49.2
+
+\halign{#\hfil\qquad&#\hfil\qquad&#\hfil\cr
+original&134.139.45.15&134.139.49.2\cr
+after mask&134.139.45.0&134.139.49.0\cr}
+
+Conclusion: forward to another cable
+
+\vt
+Example: 134.139.45.15 sends to {\ltt{}134.139.45.72}
+
+\halign{#\hfil\qquad&#\hfil\qquad&#\hfil\cr
+original&134.139.45.15&134.139.45.72\cr
+after mask&134.139.45.0&134.139.45.64\cr}
+
+Conclusion: forward to another cable
+\newslide
+\centerline{\bbf Transmitting a Packet Over Ethernet}
+
+Each ethernet card has a unique ethernet address 
+\break
+On an ethernet cable,
+\break
+-- packets must be sent by ethernet number.
+\break
+Simplified Ethernet Packet:
+
+{\font\railroadfont
+.PS
+boxht=0.7i
+Da: box wid 1.8i "Dest." "Address"
+"6 bytes" at Da.n above
+Sa: box wid 1.8i with .w at last box.e "Source" "Address"
+"6 bytes" at Sa.n above
+Ft: box wid 0.8i with .w at last box.e "Frame" "Type"
+Dt: box wid 2.0i with .w at last box.e "IP" "Packet"
+Ip1: box wid 6.4i with .nw at Da.sw + (0, -0.8i)
+Hdr: box wid 6.4i with .w at Ip1.w "IP Header"
+Ipsa: box wid 6.4i with .nw at Hdr.sw "IP source address"
+Ipda: box wid 6.4i with .nw at Ipsa.sw "IP destination address"
+Data: box wid 6.4i with .nw at Ipda.sw "Data ..."
+line -> from Dt.sw to Ip1.nw
+line -> from Dt.se to Ip1.ne
+.PE
+\centerline{\box\graph}}
+\vt
+Internet Packet is enclosed in an ethernet packet.
+\break
+Ethernet addresses are required.
+\newslide
+\centerline{\bbf The ARP Table}
+
+Address Resolution Problem:
+\break
+Find out the ethernet address of a particular host.
+\break
+Given an internet number (on the same cable)
+\break
+what is the number of the ethernet card.
+
+Solution: Keep a table. (Address Resolution Protocol table).
+
+Sample ARP table
+
+\halign{#\hfil&\qquad\hfil#\hfil\cr
+Internet&Ethernet\cr
+Number&Number\cr
+134.139.49.1&00:00:ef:01:ba:50\cr
+134.139.49.3&00:00:0f:01:02:70\cr
+134.139.49.4&00:20:af:71:cb:f6\cr}
+
+your own number doesn't appear in the table
+\break
+(it's kept separately)
+\newslide
+\centerline{\bbf Simple Routing Example 1}
+
+machine: 134.139.45.15
+\break
+netmask: 255.255.255.192 (0xffffffc0)
+\break
+ethernet card:  8:0:20:d:ca:9e
+\break
+gateway: 134.139.45.1
+
+ARP Table
+\halign{#\hfil&\qquad\hfil#\hfil\cr
+Internet Number&Ethernet Number\cr
+134.139.45.1&8:0:2b:16:47:14\cr
+134.139.45.4&0:0:f:0:6c:26\cr}
+
+Send to xyzzy:
+\break
+1) gethostbyname -- xyzzy: 134.139.45.4
+\break
+2) Apply netmask -- on same cable send direct
+\break
+3) Look up ethernet number--  0:0:f:0:6c:26
+\break
+4) send packet (to panther)
+
+{\font\railroadfont
+.PS
+boxht=0.7i
+Da: box wid 1.6i "Dest." "0:0:f:0:6c:26"
+Sa: box wid 1.6i with .w at last box.e "Source" "8:0:20:d:ca:9e"
+Ipsa: box wid 1.6i with .w at last box.e "IP source" "134.139.45.15"
+Ipda: box wid 1.6i with .w at last box.e "IP dest" "134.139.45.4"
+.PE
+\centerline{\box\graph}}
+
+xyzzy gets packet.
+\break
+xyzzy examines IP destination and notices it is for itself.
+\newslide
+\centerline{\bbf Simple Routing Example 2}
+
+machine: 134.139.45.15
+\break
+netmask: 255.255.255.192 (0xffffffc0)
+\break
+ethernet card:  8:0:20:d:ca:9e
+\break
+gateway: 134.139.45.1
+
+Arp Table
+\halign{#\hfil&\qquad\hfil#\hfil\cr
+Internet Number&Ethernet Number\cr
+134.139.45.1&8:0:2b:16:47:14\cr
+134.139.45.4&0:0:f:0:6c:26\cr}
+Send to plough:
+\break
+1) gethostbyname -- plough: 134.139.49.2
+\break
+2) Apply netmask -- on different cable send to gateway
+\break
+3) Look up gateway -- 134.139.45.1
+\break
+4) Look up ethernet number (of gateway) --  8:0:2b:16:47:14
+\break
+5) send packet (to gateway)
+
+{\font\railroadfont
+.PS
+boxht=0.7i
+Da: box wid 1.8i "Dest." "8:0:2b:16:47:14"
+Sa: box wid 1.6i with .w at last box.e "Source" "8:0:20:d:ca:9e"
+Ipsa: box wid 1.6i with .w at last box.e "IP source" "134.139.45.15"
+Ipda: box wid 1.6i with .w at last box.e "IP dest" "134.139.49.2"
+.PE
+\centerline{\box\graph}}
+
+Gateway gets packet.
+\break
+Gateway examines IP destination and notices it is to another machine
+(134.139.49.2), so,
+\break
+gateway forwards packet.
+\newslide
+\centerline{\bbf Routing at a Gateway}
+
+Host is connected to 2 or more cables.
+
+1) destination on a directly connected cable
+\break
+send direct on correct cable.
+
+2) not directly connected
+\break
+send to another gateway.
+
+{\railroadfont
+.PS
+boxht=0.3i
+boxwid=0.3i
+taplength=0.4i
+circlerad=boxht/2
+gatedist=2*taplength+boxht
+Agate: box "H6"
+Bgate: box with .c at Agate.c + (-1.0i, -gatedist) "H4"
+Dgate: box with .c at Bgate.c + (-1i, -gatedist) "H2"
+Mgate: box with .c at Agate.c + (2.0i, 0) "H1"
+Mntab: line up taplength from Mgate.n
+Astab: line down taplength from Agate.s
+Antab: line up taplength from Agate.n
+Bstab: line down taplength from Bgate.s
+Bntab: line up taplength from Bgate.n
+Dntab: line up taplength from Dgate.n
+Bus1: line right 2i from (Bgate.w.x,Astab.end.y)
+Bus2: line right 2i from (Dgate.w.x,Bstab.end.y)
+Bus6: line right 2.5i from (Agate.w.x,Antab.end.y)
+"134.139.22.6" at Dgate.n + (0.01, 0.1i) ljust
+"134.139.22.7" at Bgate.s + (0.01, -0.1i) ljust
+"134.139.24.13" at Bgate.n + (0.01, 0.1i) ljust
+"134.139.24.11" at Agate.s + (0.01, -0.1i) ljust
+"134.139.25.9" at Agate.n + (0.01, 0.1i) ljust
+"134.139.25.2" at Mgate.n + (0.01, 0.1i) ljust
+.PE
+\centerline{\box\graph}}
+
+H4 sends to H2--send direct on lower cable
+
+H4 sends to H1--send to H6 (gateway) on upper cable
+
+Required: a routing table to say where to send things.
+
+Internet numbers are associated with network interfaces.
+\break
+If a host is attached to 3 cables (using 3 interfaces),
+\break
+it will have 3 internet numbers (one on each cable).
+\newslide
+\centerline{\bbf Routing at a Gateway}
+
+Principle: if local send direct on correct cable, 
+\break
+if not send to correct gateway (routing).
+
+interfaces: 134.139.45.1, 134.139.4.2
+\break
+netmasks 255.255.255.192, 255.255.255.192
+
+sends to (134.139.4.10)
+
+src original: 134.139.45.1 134.139.4.2
+\break
+src after mask: 134.139.45.0 134.139.4.0
+\break
+dest original: 134.139.4.10
+\break
+dest after mask: 134.139.4.0
+
+Conclusion: Matches 134.139.4.2 interface, send direct using that interface.
+
+\vt
+
+sends to (134.139.49.2)
+
+src after mask: 134.139.45.0 134.139.4.0
+\break
+dest after mask: 134.139.49.0
+
+No match: must check the routing tables.
+\newslide
+\centerline{\bbf Routing Tables}
+
+sample route table for
+\halign{#\hfil&\quad#\hfil&\quad#\hfil&\quad#\hfill\cr
+type&destination&gateway&mask\cr
+net&134.139.40.0&134.139.4.10&255.255.255.192\cr
+net&134.139.41.0&134.139.4.31&255.255.255.192\cr
+net (direct)&134.139.4.0&134.139.4.2&255.255.255.192\cr
+net (direct)&134.139.45.0&134.139.45.1&255.255.255.192\cr
+&default&134.139.4.1&0.0.0.0\cr}
+
+Destinations are given after application of subnet mask.
+\break
+Example:
+\break
+134.139.4.10 is the gateway to subnet 134.139.40.0.
+
+to 134.139.41.2
+
+Apply subnetmask to mech1 (134.139.41.0)
+
+Search table (finds 134.139.4.31 entry)
+
+Send packet to 134.139.4.31
+
+\vt
+
+cheetah to aardvark (134.139.49.2)
+
+Apply subnet mask (134.139.49.0)
+
+Table search shows no match, send to default (134.139.4.1)
+\newslide
+\centerline{\bbf Routing Table Example}
+
+{\tt
+
+.PS
+boxht=0.25i
+boxwid=1.25i
+taplength=0.25i
+circlerad=boxht/2
+gatedist=2*taplength+boxht
+Agate: box "gate.occ.edu"
+Bgate: box with .c at Agate.c + (-2.0i, -gatedist) "hawk.occ.edu"
+Cgate: box with .c at Agate.c + (2.0i, -gatedist) "dove.occ.edu"
+Dgate: box with .c at Bgate.c + (-1i, -gatedist) "jay.occ.edu"
+Egate: box with .c at Bgate.c + (1i, -gatedist) "robin.occ.edu"
+Fgate: box with .c at Cgate.c + (-1i, -gatedist) "wren.occ.edu"
+Astab: line down taplength from Agate.s
+Antab: line up taplength from Agate.n
+Bstab: line down taplength from Bgate.s
+Bntab: line up taplength from Bgate.n
+Cstab: line down taplength from Cgate.s
+Cntab: line up taplength from Cgate.n
+Dntab: line up taplength from Dgate.n
+Estab: line down taplength from Egate.s
+Entab: line up taplength from Egate.n
+Fntab: line up taplength from Fgate.n
+Bus1: line from (Bgate.w.x,Astab.end.y) to (Cgate.e.x,Astab.end.y)
+Bus2: line from (Dgate.w.x,Bstab.end.y) to (Egate.e.x,Bstab.end.y)
+Mac2: box with .c at Egate.c + (-0.25i, -gatedist) "eagle.occ.edu"
+Tap2: line up taplength from Mac2.n
+Taps2: line down taplength from Mac2.s
+Mac3: box with .c at Fgate.c + (0.25i, -gatedist) "emu.occ.edu"
+Tap3: line up taplength from Mac3.n
+Bus5: line from (Egate.w.x,Estab.end.y) to (Mac3.e.x,Estab.end.y)
+Mac5: box with .c at Fgate.c + (1.5i, 0) "crow.occ.edu"
+Tap5: line up taplength from Mac5.n
+Bus3: line from (Fgate.w.x,Cstab.end.y) to (Mac5.e.x,Cstab.end.y)
+Mac6: box with .c at Mac2.c + (1.5i, -gatedist) "kiwi.occ.edu"
+Tap6: line up taplength from Mac6.n
+Mac7: box with .c at Mac2.c + (-1.5i, -gatedist) "dodo.occ.edu"
+Tap7: line up taplength from Mac7.n
+Bus6: line from (Mac6.e.x,Taps2.end.y) to (Mac7.w.x,Taps2.end.y)
+Def: line from (Antab.end.x-1.0i,Antab.end.y) to (Antab.end.x+0.5i,Antab.end.y)
+"cable off campus to the internet" at Def.c above
+"177.203.1.1" at Antab.c ljust
+"177.203.2.1" at Astab.c ljust
+"177.203.2.2" at Cntab.c ljust
+"177.203.2.3" at Bntab.c ljust
+"177.203.3.1" at Cstab.c ljust
+"177.203.3.2" at Fntab.c ljust
+"177.203.3.3" at Tap5.c ljust
+"177.203.4.1" at Bstab.c ljust
+"177.203.4.2" at Dntab.c ljust
+"177.203.4.3" at Entab.c ljust
+"177.203.5.1" at Estab.c ljust
+"177.203.5.2" at Tap2.c ljust
+"177.203.5.3" at Tap3.c ljust
+"177.203.6.1" at Taps2.c ljust
+"177.203.6.2" at Tap6.c ljust
+"177.203.6.3" at Tap7.c ljust
+.PE
+\centerline{\box\graph}
+
+}
+
+\vskip 1in
+at hawk:
+
+\halign{#\hfil&\quad#\hfil&\quad#\hfil\cr
+type&destination&gateway\cr
+net&177.203.3.0&177.203.2.2\cr
+net&177.203.5.0&177.203.4.3\cr
+net&177.203.6.0&177.203.4.3\cr
+net (direct)&177.203.2.0&177.203.2.3\cr
+net (direct)&177.203.4.0&177.203.4.1\cr
+net&default&177.203.2.1\cr}
+
+\newslide
+\centerline{\bbf RIP}
+\centerline{Routing Information Protocol (routed)}
+
+Goal: Automatically maintain the routing tables.
+
+Description: When a new subnet is added, information about the location
+of the subnet is propagated.
+
+Topology principle:
+\break
+{\program
+A --- B --- C --- D --- E --- F --- G ---
+   A'    B'    C'    D'    E'    F'    G'
+\endprogram}
+
+If {\ltt{}B} can get to subnet {\ltt{}G'} in $n$ hops,
+\break
+{\ltt{}A} can get to subnet {\ltt{}G'} in $n+1$ hops
+\break
+(by sending to {\ltt{}B}).
+
+Implementation:
+
+{\ltt{}G} broadcasts, ``I can get to {\ltt{}G'} in 0 hops".
+\break
+{\ltt{}F} knows, ``I can get to {\ltt{}G} in 1 hop".
+\break
+{\ltt{}F} broadcasts, ``I can get to {\ltt{}G'} in 1 hop".
+\break
+{\ltt{}E} knows, ``I can get to {\ltt{}F} in 1 hop".}
+\break
+and {\ltt{}F} can get to {\ltt{}G'} in 1 hop".
+\break
+{\ltt{}E} broadcasts, ``I can get to {\ltt{}G'} in 2 hops".
+
+Principle: RIP is designed for small networks,
+\break
+16 hops = $\infty$, 15 hops is maximum allowed
+\newslide
+\centerline{\bbf RIP Issues}
+
+Suppose a gateway dies.
+
+Solution: timeout.
+
+{\ltt{}X} hasn't heard from {\ltt{}Y} in a while,
+\break
+{\ltt{}X} assumes {\ltt{}Y} is dead 
+\break
+{\ltt{}X} removes routes to {\ltt{}Y}
+
+{\ltt{}W} knows a route of length 3 (through {\ltt{}X})
+\break
+{\ltt{}X} has a (false) route of length 4 (through {\ltt{}W}).
+\break
+{\ltt{}W} a route of length 3 becomes a route of length 5 
+(through {\ltt{}X} or {\ltt{}V}).
+
+Eventually {\ltt{}X} reach length 16 (no route).
+
+{\ltt{}W} gets to 16 slightly later.
+
+good news spreads fast, bad news spreads slowly.
+
+\vt
+Solution: don't advertise on the cable you got it from.
+
+{\ltt{}W} got route to {\ltt{}Z} from {\ltt{}X}.
+\break
+{\ltt{}W} does {\bit not } report route to {\ltt{}X}'s cable.
+
+Makes the bad news travel faster.
+\newslide
+\centerline{\bbf RIP Problems}
+
+Slow propagation of bad news.
+
+Solved by:
+\break
+selective propagation or
+\break
+poison routes
+
+When a route goes bad,
+\break
+slow to find an alternate route
+
+Cause of problem:
+\break
+Maintains only (at most) one route per subnet.
+
+Solution:
+\break
+a better protocol
+\newslide
+\centerline{\bbf OSPF}
+\centerline{Open Shortest Path First}
+
+A routing protocol for more complex topologies.
+
+Allows multiple routes to destination to be known at a time.
+
+Allows different types of route (quick, slow).
+
+Allows load balancing (sending across several routes).
+
+Allows areas (delegation of routing).
+
+Allows authentication (security procedures when dealing with other gateways).
+\vt
+Get connection information
+
+Build a map of the net (edge lists)
+
+Apply shortest path algorithm (Dijkstra)
+
+Slowly info: attached to
+\break
+Rapid info: Hello, I am alive
+
+Problem: Map is too large.
+
+Areas: know only how to get to the correct area 
+(do not need map of interior of area).
+\newslide
+\centerline{\bbf BGP}
+\centerline{Border Gateway Protocol}
+
+Attaching a set of autonomous systems
+
+Autonomous System: a group of networks with a gateways attached
+to other ASs.
+\break
+Our AS: CSUnet (includes all cal states)
+\break
+BGP does not do traffic inside an AS
+
+Autonomous system example:
+
+{\railroadfont
+.PS
+boxht=0.5i
+boxwid=1.5i
+dropdist=1.5i
+Mci: box "MCI"
+Sprint: box with .c at Agate.c + (-2.0i, 0i) "Sprint"
+Barrnet: box with .c at 1/2 between Sprint.c and Mci.c + (0i, dropdist) "BARRnet"
+Csunet: box with .c at Mci.c + (0i, -dropdist) "CSUnet"
+Cerf: box with .c at Sprint.c + (0i, -dropdist) "CERFnet"
+line <-> from 1/2 between Sprint.sw and Sprint.s to Cerf.n
+line <-> from 1/2 between Mci.se and Mci.s to Csunet.n
+line <-> from Sprint.n to 1/2 between Barrnet.sw and Barrnet.s
+line <-> from Mci.n to 1/2 between Barrnet.se and Barrnet.s
+line <-> from Mci.nw to Sprint.ne
+line <-> from Mci.w to Sprint.e
+line <-> from Mci.sw to Cerf.ne
+.PE
+\centerline{\box\graph}}
+
+Traffic types:
+\break
+local: inside AS
+\break
+transit: through AS to another AS
+
+AS types:
+\break
+stub: one connection out of AS
+\break
+multihomed: serveral connections out, 
+doesn't do transit
+\break
+transit: serveral connections out of AS, 
+does transit
+\newslide
+BGP speaker node: one for each AS
+\break
+Advertises networks with in AS
+\break
+Advertises networks through AS (transit)
+
+Border Gateway: connected to another AS 
+\break
+may be several
+
+{\railroadfont
+.PS
+boxht=1.5i
+boxwid=2.5i
+dropdist=1.5i
+Sprint: box
+"Sprint" at Sprint.n above
+Csunet: box with .c at Sprint.c + (3.5i, 0i)
+"CSUnet" at Csunet.n above
+Sgate: box wid 1.5i ht 0.5i with .c at 1/2 between Sprint.c and Sprint.s "204.78.48.5"
+Cgate: box wid 1.5i ht 0.5i with .c at 1/2 between Csunet.c and Csunet.s "130.150.102.30"
+line <-> from Sgate.e to Cgate.w
+.PE
+\centerline{\box\graph}}
+
+\vt
+BGP goal: a path to destination with no loops
+
+BGP allows ``prefer AS1 to AS2" routing decisions.
+
+BGP speaker protocols:
+\break
+Advertise route
+\break
+Withdraw route
+\newslide
+\centerline{\bbf CIDR}
+\centerline{Classless Internet Domain Routing}
+
+Goal: reduce the size of the routing tables
+\break
+Method: Aggregate licenses and routes
+\break
+Detail: A mask for each table entry
+
+Also called {\bit supernetting}
+
+Example: suppose 194.200.0.0 through 194.203.255.0 are availble
+through the gateway 204.70.3.133
+
+Route table entry:
+
+{\program
+Desitination  Length   Gateway
+194.200.0.0   14       204.70.3.133
+\endprogram}
+
+Length is number of bits in mask
+\break
+(masks are left justified)
+
+Used by BGP-4
+
+Implication: regional assignment of addresses reduces routing table size.
+
+\newslide
+\centerline{\bbf Getting an Ethernet Number (ARP)}
+\vt
+You really can't send to an internet number\break
+you must send to a ethernet address.
+\vt
+ARP---Address Resolution Protocol
+
+Use Ethernet's broadcast option.\break
+Question: ``Who has this internet number"\break
+Answer: ``I do (this is my ethernet number)"\break
+Cache the answer.
+
+Broadcast an ARP (IP) packet for the destination.
+\break
+Ethernet header: source/destination ethernet address
+\break
+IP header: source/destination IP address
+
+Destination sends back an IP packet.
+
+Sending an ARP tells everyone your ethernet and IP address.
+
+Sending any packet tells the receiver your ethernet and IP address.
+
+Broadcast and ARP work only within a subnet\break
+(cable or cables connected with repeaters).
+\newslide
+\centerline{Other Networks}
+\vt
+\centerline{\bbf proNET}
+
+proNET---network connection number
+\vt
+Uses a ``mask" paradigm: \break
+proNET numbers are 1..32, \break
+use the proNET number as the last 5 bits of internet number.
+\vf
+\centerline{\bbf X25NET}
+
+Each DTE (router) must agree to do IP.
+
+Each DTE maintains a map of other DTE's and their IP addresses.
+
+Each PAD also maintains this map.
+\vf
+\centerline{\bbf Token Ring}
+
+Use broadcast for arp
+\newslide
+\centerline{\bbf RARP}
+\centerline{Reverse Address Resolution Protocol}
+
+Diskless systems know only their ethernet address
+
+Broadcast ``who am i"
+
+Boot server has table {\ltt{}/etc/bootptab}  
+
+\halign{\quad\hfil#\hfil\quad&\hfil\quad#\hfil\quad&\hfil\quad#\hfil\quad&\hfil\quad#\hfil\cr
+host&ethernet&internet&bootfile\cr
+name&address&address\cr}
+\vt
+Server answers: ``you are x.x.x.x",
+\ind{}``here is your OS"
+
+{\ltt{}/etc/ethers}: holds ``permanent" table.
+\vt
+RARP note:
+\break
+machines display their ethernet number during boot
+\newslide
+\centerline{\bbf DHCP}
+\centerline{Dynamic Host Configuration Protocol}
+
+It's a pain to give IP numbers to all those PCs.
+
+Broadcast ``I need an IP number"
+
+Server:
+\break
+1) list of number's it can allocate from
+\break
+2) table of which numbers it has already given out.
+
+Server reply: Here use this IP number.
+\break
+(until they turn you off)
+
+Issue: needs ``are you alive" interaction to reclaim
+numbers when the PC is powered down.
+\newslide
+\centerline{\bbf Packet Transport}
+
+How does a packet get to its destination?
+
+Directly connected machine: 
+\ind{1)} send arp packet, 
+\ind{2)} get arp reply, 
+\ind{3)} send datagram packet direct
+\vt
+Distant machine (routing):
+
+\ind{a)} find a directly connected machine that's closer to the destination.
+\ind{b)} send the packet to that directly connected machine.
+\newslide
+\centerline{\bbf ICMP}
+
+Internet Control Message Protocol
+\break
+%Comer: Chapter 9
+
+Reporting errors and exchanging information 
+
+Echo request, echo reply -- used by ping
+
+Timestamp request/reply --- used by traceroute and for RTT estimation
+
+Address mask request/reply --- need to know what address mask your
+network is using so we can route correctly.
+
+Source Quench --- slow down...don't send me packets so fast.
+Used for local congestion.
+
+Redirect --- destination is directly attached to your cable,
+please send direct and not to this gateway.
+
+Destination unreachable,
+Time exceeded, parameter problem ---
+used to report errors.
+\break
+I can't get there (unreachable),
+\break
+this packet is going in circles (time exceeded),
+\break
+this packet got garbaged (parameter problem)
+
+\newslide
+\bye

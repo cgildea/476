@@ -1,0 +1,143 @@
+\def\chapternumber{cron/at -- 7 January 2008}
+\input slides.tex
+\centerline{\bbf Cron and At}
+
+You can schedule regular jobs 
+or run a job at a specified time.
+
+{\ltt{}crond} -- system deamon that starts jobs as commanded
+
+{\ltt{}/var/spool/cron/crontabs} -- crontab directory
+\break
+A file for each user having cron service 
+
+{\ltt{}root}: things root wants run
+\break
+{\ltt{}john}: thing john wants run
+
+cron entries:
+
+{\program
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * frequent
+40 14 * * *       updatedb
+30 5 * * 6        /var/adm/weekly
+0 12 1 4 *         postjoke
+5 */2 * * mon-wed  logprinter
+\endprogram}
+
+Format: time info, what to run.
+
+minute hour day-of-month month weekday
+
+frequent: every 5 minutes, {\ltt{}*/5} would do the same thing
+\break
+updatedb: 2:40 pm each day
+\break
+weekly: 5:30 am each Saturday
+\break
+postjoke: noon every April 1st
+\break
+logprinter: every 2 hours: M,Tu,W
+\newslide
+\centerline{\bbf Submitting crontabs}
+
+crontabs must be submitted
+
+{\ltt{}crontab} {\bit file}
+\break
+the file is submitted to crontab.
+\break
+Checks to see if you are allowed
+\break
+Copies into {\ltt{}/var/spool/cron/crontabs}
+\break
+Informs {\ltt{}crond} of new file
+\break
+Note: the file {\bit replaces} any/all old crontab entries. 
+
+{\ltt{}crontab -e}
+\break
+Get a copy of current crontab, invoke editor
+\break
+and submit when saved.
+\break
+Note: Use this one to {\bit update} an existing crontab.
+
+{\ltt{}crontab -l}
+\break
+what is in your crontab entry
+
+{\ltt{}crontab -d}
+\break
+remove your crontab entry
+
+Admin can use two files to control access to cron
+\break
+{\ltt{}cron.allow} -- these users are allowed access
+\break
+{\ltt{}cron.deny} -- only these users are denied access
+\break
+Linux default (no files): anyone can cron
+\newslide
+\centerline{\bbf At}
+
+Execute a command once (at the specified time).
+
+{\ltt{}at noon 04/01/97 < foolfile}
+\break
+{\ltt{}at 21:30 -f cmdfile}
+
+Commands are taken from the file.
+\break
+The will be run at the specified time.
+
+{\ltt{}atq} what jobs do I have scheduled
+\vt
+Admin can control access using two files
+\break
+{\ltt{}at.allow}, {\ltt{}at.deny}
+\break
+default: anyone can at
+
+{\ltt{}at} jobs are started by {\ltt{}atd}
+
+\bye
+\centerline{\bbf Sample Cron Entry}
+
+cheetah:
+
+{\cprogram
+# Remove one week old Ada student binaries.
+59 1 * * * /usr/bin/find /u1/s /u2/c -name \*.out -mtime +7 -exec rm -f {} \;
+@endprogram}
+
+At 1:59 the find command is run on the classes and student subdirectories.
+
+For anything that has a name ending in {\ltt{}.out} and
+\break
+was modified (created) over 7 days ago
+\break
+execute the command {\ltt{}rm}
+
+{\bbf find}:
+
+1) list of directories to search
+
+2) options
+
+{\ltt{}-exec}: usually last, run the command that follows
+\break
+{\ltt{}-name}: a name matching
+\break
+{\ltt{}-mtime}, {\ltt{}-atime}: modify/create time
+\break
++7 more than 7 days
+\break
+-7 less than 7 days
+\break
+{\ltt{}-o}: Boolean or
+\break
+{\ltt{}-a}: Boolean and (default)
+\break
+{\rtt{}\(}, {\rtt{}\)}: parenthesis
+\newslide

@@ -1,0 +1,195 @@
+\def\chapternumber{dhcp -- 30 April 2013}
+\input slides.tex
+\centerline{\bbf BOOTP}
+
+Used by a diskless client to boot from a machine on the same cable.
+
+1) Broadcast a bootp request.
+
+2) Server receives a request packet.
+\break
+Packet has senders ethernet address and ``blank" source IP address.
+
+Server has a table:
+
+Ethernet address \quad IP address \quad File to send
+
+Server ships to client:
+\break
+IP address and operating system loader
+
+Operating system loader:
+\break
+downloads and unpacks the kernel
+\break
+sets up a RAM disk
+\break
+downloads the initrd into the ram disk.
+
+Client boots, then usually NFS mounts stuff from the server.
+\newslide
+\centerline{\bbf DHCP}
+\centerline{Dynamic Host Configuration Protocol}
+
+Backwards compatible with {\ltt{}BOOTP}
+
+Dynamically configure your IP number.
+\break
+Client can boot, but doesn't know about it's IP.
+\break
+Useful for client machines that move between subnets.
+
+Simple setup (single cable) needs:
+
+Broadcast ``I need an IP address"
+
+DHCP responds server: IP address, netmask.
+
+Address is leased for a period of time.
+\break
+Permanent leases are allowed.
+
+DHCP server also sends client the IP numbers for
+\break
+default router and DNS server
+\newslide
+\centerline{\bbf Linux Client}
+
+{\cprogram
+# File /etc/rc.d/rc.inet1
+# The following is not necessary and can be dangerous
+# HOSTNAME=`cat /etc/HOSTNAME`
+# Attach the loopback device.
+/sbin/ifconfig lo 127.0.0.1
+/sbin/route add -net 127.0.0.0 netmask 255.0.0.0 lo
+#/sbin/ifconfig  ---eliminated
+#/sbin/route     ---eliminated
+/usr/sbin/dhcpcd
+@endprogram}
+
+Note: {\ltt{}dhcpcd} is a daemon, every 3 hours it will contact the server
+to renew the IP address lease.
+
+{\ltt{}mkdir /etc/dhcpc}
+\break
+In this directory {\ltt{}dhcpcd} builds files it got from the dhcp server.
+\break
+One file is {\ltt{}resolv.conf}
+\break
+Setting your DNS server
+\break
+{\ltt{}rm /etc/resolv.conf}
+\break
+{\ltt{}ln -s /etc/dhcpc/resolv.conf /etc/resolv.conf}
+\break
+You use the dhcp specified resolver.
+\newslide
+Server:
+needs kernel: enable multicast.
+\break
+possibly by: {\ltt{}route add -host 255.255.255.255 eth0}
+
+{\ltt{}dhcpd} gets data from {\ltt{}dhcpd.conf}
+
+For each subnet servered there must be a subnet record.
+
+{\cprogram
+subnet 134.139.137.0 netmask 255.255.255.192 {
+  option routers 134.139.137.1;
+  range 134.139.137.40 134.139.137.62;
+}
+@endprogram}
+
+The range is mandatory.
+\break
+These numbers may be assigned.
+\break
+If the subnet is behind a gateway,
+\break
+you must list the gateway (router).
+
+diskless boot
+
+{\cprogram
+group {
+  filename "lightclient.os"
+  next-server 134.139.45.7
+  host lab101 { hardware ethernet 0:0:1d:93:6:a6;}
+  host lab102 { hardware ethernet 0:0:1d:93:6:c3;}
+}
+@endprogram}
+
+Must name file that has the operating system and server with that file.
+\break
+If no server name is given, the DHCP server has the file.
+\newslide
+\centerline{\bbf DHCP Across Gateways}
+
+DHCP server must assign an address on the appropriate subnet.
+
+Client does not have the subnet number,
+\break
+but the router does.
+
+1) DHCP relay: the router sees the DHCP broadcast
+\break
+attachs the ``subnet of origin" 
+\break
+includes clients ethernet number in packet
+\break
+forwards packet to the DHCP server
+\break
+DHCP server assigns address and returns answer to router.
+\break
+Router sends to local machine (by ethernet number).
+
+2) DHCP router: router does DHCP and it knows the subnet of origin.
+
+\newslide
+\centerline{\bbf Trivial File Transfer Protocol}
+
+A small version of ftp for remote booting.
+
+Client: {\ltt{}tftp}
+\break
+Server: {\ltt{}in.tftpd}
+
+The client is simple enough to be built into the operating system loader
+and/or the boot ROM.
+
+The server has little security (be cautious).
+\break
+{\ltt{}-l} use if you are not running from inetd.
+\break
+{\ltt{}-s} chroot to this directory when you run
+\break
+{\ltt{}-v} verbose logging
+\break
+{\ltt{}-r} don't allow clients to set this option
+
+\newslide
+\centerline{\bbf PXE}
+
+The operating system loader: {\ltt{}pxelinux.0}
+
+Usually found in {\ltt{}/tftpboot}.
+\break
+Config files found in {\ltt{}pxelinux.cfg} directory
+
+Config file search:
+\break
+1) My ethernet (MAC) address
+\break
+2) My shortened ethernet address (repeat)
+\break
+3) Default
+
+Config file:
+\break
+Similar to the lilo config.
+\break
+Boot menu is allowed.
+\break
+Text messages may be displayed
+
+\bye

@@ -1,0 +1,687 @@
+\def\chapternumber{Chapter 7 --- Client Software -- 22 April 2010}
+\input slides.tex
+\centerline{\bbf Chapter 7}
+\centerline{Client Software}
+\centerline{(code details)}
+
+Principle: Design small modules, then use them.
+
+Reason: You only have to figure it out once.
+\vt
+Principle: Build modules with parameters.
+
+Reason: You can build fewer of them.
+
+\newslide
+\centerline{\bbf Flexible Connection Maker}
+\centerline{(Detailed Comments)}
+
+See Sections 7.5-7.7
+
+Include file overview (p. 85):
+
+Include files are found in {\ltt{}/usr/include}
+\vt
+{\ltt{}types.h}:
+Short hand type names such as {\ltt{}u_long} for {\ltt{}unsigned long}
+\vt
+{\ltt{}socket.h}:
+Types and calls for sockets
+
+Identifier/number mappings for
+\break
+socket types ({\ltt{}SOCK_STREAM})
+\break
+socket options ({\ltt{}SO_BROADCAST})
+\break
+address families ({\ltt{}AF_INET})
+\break
+protocol families ({\ltt{}PF_INET})
+
+Structures for: 
+protocols ({\ltt{}sockproto}) , 
+addresses ({\ltt{}sockaddr}), 
+messages  ({\ltt{}msghdr})
+\newslide
+{\ltt{}in.h}:
+Constants and structures for IP
+
+Identifier/number mappings for
+\break
+protocol ({\ltt{}IPPROTO_IP})
+\break
+standard ports/sockets ({\ltt{}IPPORT_ECHO}, {\ltt{}IPPORT_LOGINSERVER})
+
+Internet version of structures ({\ltt{}sockaddr_in}, {\ltt{}in_addr})
+
+Conversion functions ({\ltt{}ntohs}, {\ltt{}htons}, {\ltt{}ntohl}, 
+{\ltt{}htonl})
+\vt
+{\ltt{}inet.h}: inet-to-ascii function {\ltt{}inet_ntoa}, 
+ascii-to-inet function {\ltt{}inet_addr}
+\vt
+{\ltt{}netdb.h}: Structures and function definitions for accessing the 
+network databases.
+
+Structures:
+\break
+{\ltt{}hostent}, 
+{\ltt{}servent}, 
+{\ltt{}protoent}
+
+Functions:
+\break
+{\ltt{}gethostbyname}, 
+{\ltt{}gethostbyaddr}, 
+{\ltt{}get net/serv/proto/rpc by name/addr}
+
+Error message meanings:
+\break
+{\ltt{}HOST_NOT_FOUND}
+\newslide
+\centerline{\bbf Making a Connection}
+
+{\ltt{}connectTCP} calls {\ltt{}connectsock} with
+a protocol of {\ltt{}"tcp"}.
+
+{\ltt{}connectUDP} calls {\ltt{}connectsock} with
+a protocol of {\ltt{}"udp"}.
+\vf
+{\ltt{}connectsock(host,service,protocol)}
+
+Parameters are strings.
+\break
+{\ltt{}host}: the name of the server machine
+\break
+{\ltt{}service}: the name of the service
+\break
+{\ltt{}protocol}: {\ltt{}"udp"} or {\ltt{}"tcp"}
+
+{\ltt{}memset(&sin,0,sizeof(sin));}:
+\break
+The address structure ({\ltt{}sin}) will be used to make
+the connection. Initialize it by clearing all bits.
+
+{\ltt{}sin.sin_family=AF_INET;}: address is for an IP connection 
+(not Decnet, Novell ...)
+\newslide
+\centerline{\bbf Getting a Port Number}
+
+First: guess it was the name of a service (e.g., {\ltt{}"time"})
+\break
+Second: guess it was a port number (e.g.,  {\ltt{}"7154"})
+\break
+Third: abort the program
+
+{\ltt{}if (pse=getservbyname(service))}: 
+Try looking up the service in the {\ltt{}/etc/services} file.
+\break
+if it finds a service it creates a {\ltt{}servent}
+structure and returns a pointer to that structure.
+If an entry is not found it returns {\ltt{}NULL}.
+\break
+C trick: not found = {\ltt{}NULL} = 0 = false.
+\break
+If a {\ltt{}NULL} is returned we will go to the {\ltt{}else}.
+
+{\ltt{}if} part (valid pointer returned)
+\break
+{\ltt{}sin.sin_port=pse->s_port}.
+\break
+Fill in the port number from the structure.
+It's already in network order.
+
+{\ltt{}else} part ({\ltt{}NULL} returned)
+\break
+{\ltt{}if((sin.sin_port=htons((ushort)atoi(service)))==0)}
+
+{\ltt{}atoi}: convert a string to a number.
+\break
+The number is converted to network order and stored in {\ltt{}sin_port}
+\break
+Trick: if the string wasn't a number {\ltt{}atoi} returns a zero
+\break
+A zero will cause {\ltt{}errexit} to be called, which will print
+a message and abort the program.
+\break
+{\ltt{}errexit("can't get...); }
+\newslide
+\centerline{\bbf Getting an Internet Number}
+
+First: guess that it was a name like {\ltt{}cheetah.cecs.csulb.edu}.
+\break
+Second: guess that it was a number like {\ltt{}134.139.248.17}
+\break
+Third: abort the program
+
+{\ltt{}if (phe=gethostbyname(host))} 
+Try looking up a host name. 
+If it was not a legal a {\ltt{}NULL} will be returned and we will
+end up at in the {\ltt{}else}
+
+{\ltt{}memcpy(&sin.sin_addr,phe->haddr,phe->h_length)};
+The name look up worked, copy the address from the {\ltt{}hostent} structure
+to the {\ltt{}sockaddr_in} structure.
+Note: the {\ltt{}sockaddr_in} assumes an internet address (4 bytes),
+but the {\ltt{}hostent} is a {\ltt{}*char}, it is using a ``string" 
+to store an arbitrary number of bytes (so it works for non-internet
+addresses).
+
+Not a hostname (the {\ltt{}else})
+\break
+{\ltt{}if ((sin.sin_addr.s_addr=inet_addr(host))==INADDR_NONE)}
+\break
+Assume it's a dotted notation internet address
+\break
+convert it to an address and store it in the 
+{\ltt{}sockaddr_in} structure.
+\break
+Trick: if it isn't a dotted notation, {\ltt{}inet_addr} returns
+{\ltt{}INADDR_NONE}
+and we do {\ltt{}errexit("can't get...")}
+
+\newslide
+\centerline{\bbf Setting the Protocol Field}
+{\ltt{}if ((ppe=getprotobyname(transport))==0)} If the protocol doesn't exist
+if returns {\ltt{}NULL} otherwise it returns a pointer to a protocol.
+\break
+Since we require tcp or udp this is really a spelling check.
+
+{\cprogram
+if (strcmp(transport,"udp"))
+  type = SOCK_DGRAM;
+else
+  type = SOCK_STREAM;
+@endprogram}
+
+if the protocol string was {\ltt{}"udp"} we are
+connectionless ({\ltt{}SOCK_DGRAM}),
+otherwise we are connection-oriented ({\ltt{}SOCK_STREAM}).
+\vt
+At this point the address structure has been correctly set up.
+
+Inside {\ltt{}connectsock}, 
+{\ltt{}transport} is the name of the third parameter (the protocol).
+\newslide
+{\ltt{}s=socket(PF_INET, type, ppe->proto);}
+\break
+get an internet socket of the appropriate type and protocol.
+
+{\cprogram
+if (connect(s,(struct sockaddr *)&sin,sizeof(sin)<0)
+  errexit(..., strerr(errno));
+return s;
+@endprogram}
+Try to connect to the correct server by using the address
+structure we have just filled in.
+\break
+Note: type conversion {{\ltt{}(struct sockaddr *)}
+\break
+connect is multiprotocol, it looks at the first byte 
+({\ltt{}AF_INET} for our connect) to know if it is Internet, Decnet, ...
+
+Connect fills in the socket descriptor ({\ltt{}s}) with information about
+the connection, including the server you are connected to and
+which port (protocol) on that server.
+\break
+or connect returns a negative number (error).
+\break
+On error: connect fills in the global variable {\ltt{}errno},
+\break
+{\ltt{}errno} is used to look up a message ({\ltt{}strerror})
+
+UDP note: connect sets up a default address (not a connection)
+\break
+TCP note: connect sets up a connection
+
+Summary: {\ltt{}connectsock} returns a socket connected to the right
+service and server.
+\newslide
+\centerline{\bbf The Switch}
+\centerline{(Section 7.10, page 89)}
+
+All clients use this {\ltt{}switch}.
+\break
+Goal 1: allow the user to specify the name or number of the server they want
+to connect to on the command line. If they don't specify a server, assume
+they want to use the local host.
+
+Goal 2: allow the user to specify the service on the server or 
+the port number on the server they is to be used. if they don't specify 
+a service or port number, assume they want the {\ltt{}daytime} service.
+
+The allowed formats for the command are:
+
+{\ltt{}a.out}
+\break
+{\ltt{}a.out cheetah.cecs.csulb.edu}
+\break
+{\ltt{}a.out 134.139.248.18}
+\break
+{\ltt{}a.out cheetah.cecs.csulb.edu ftp}
+
+The last form uses the time client to connect to the ftp service. 
+(Dumb idea if you are not an ftp client!)
+
+Notice: there are one, two are three arguments (counting the command)
+\newslide
+How many commandline arguments are there?
+\break
+1: use the default server and service
+\break
+2: user specified a server, use that string
+\break
+3: user specified a server and service, use both strings
+
+{\cprogram
+int main(int argc, char* argv[]) {
+  char *host = "localhost";
+  char *service = "time";
+  switch (argc) {
+    case 1:
+      break;
+    case 3:
+      service = argv[2];
+    case 2:
+      host = argv[1];
+      break;
+    default: fprintf(stderr,"goofed\n");
+  }
+  ServiceProcedure(host,service);
+  exit(0);
+};
+@endprogram}
+
+First, setup the defaults;
+then the switch overrides them.
+\break
+Note: Case 3 falls through to case 2.
+\break
+Note: the error is printed to standard error.
+\break
+(This method is flexible, i.e., good software engineering.)
+
+\newslide
+\centerline{\bbf UDP}
+
+Each write is atomic, a single message.
+
+If it goes in one write,
+\break
+it will be received in one read.
+
+If the read buffer isn't big enough,
+any excess is discarded (lost).
+
+Delivery is not guaranteed.
+\break
+If delivery fails, no one is notified,
+\break
+i.e., the data is lost.
+
+A UDP connect, sets up a default address
+for {\ltt{}write} and {\ltt{}send}.
+
+A UDP connect will accept replies only
+from the default address.
+\newslide
+\centerline{\bbf UDP Time}
+
+(section 7.15) Time service returns an unsigned integer representing the time.
+
+{\ltt{}s=connectUDP(host,service);}
+Not a connect.
+Associates the socket with a default address.
+\break
+The socket can be used to send messages to any address
+\break
+write sends a message to the default address
+\break
+read will only read replies from the default address.
+
+{\ltt{}write(s,MSG,strlen(MSG));}
+send a dummy message indicating we want the time
+
+{\ltt{}read(s,&now,sizeof(now));}
+\break
+Up do 4 bytes will be read.
+\break
+You need the destination address ({\ltt{}&now}.
+Remember, the name of an array is an address.
+\break
+A long integer comes back.
+\break
+UDP reads a complete message, i.e., reads one write
+\break
+If there are more than 4 bytes in the reply, the
+remainder are discarded.
+
+{\ltt{}now=ntohl(now);}
+By convention every number sent across the network is
+sent in network standard order.
+To do math and print the time, we need host order.
+\break
+Always use network standard order when sending data.
+\newslide
+
+{\ltt{}now-=UNIXEPOCH;}
+The time protocol specifies seconds since 1 January 1900,
+the time routines use seconds since 1 January 1970;
+To use the time routines on this machine,
+we convert from the 1900 format to the 1970 format.
+
+{\ltt{}printf("%s",ctime(&now));}
+The system routine {\ltt{}ctime} converts the time to a string.
+That string is printed.
+
+\vt
+Notes:
+
+1) To be consistant and the code should be put into a procedure.
+
+2) write specifies how much to write.
+\break
+The number of bytes actually written is returned.
+\break
+If it is not equal to the number of bytes you asked to be written;
+either a system limit has been exceeded, or the OS has a problem.
+
+3) read specifies the size of the buffer. Up to that much
+may be read.
+\break
+The number of bytes actually read is returned.
+\newslide
+\centerline{\bbf UDP Echo}
+
+writes a line, then reads the line.
+
+{\ltt{}char buf[LINELEN+1];}
+\break
+You need a real buffer, with real space,
+a {\ltt{}char*} will not do.
+
+{{\ltt{}s=connectUDP(host,service);}
+\break
+Sets default for write and focus for reply.
+
+{\ltt{}while (fgets(buf,sizeof(buf),stdin))}
+\break
+What the user types goes into {\ltt{}buf}.
+\break
+If the user types more than {\ltt{}sizeof(buf)} 
+the first {\ltt{}sizeof(buf)} letters are
+returned (immediately).
+\break
+Returns {\ltt{}NULL} on end of file from keyboard.
+The user gets this by typing control-D.
+A {\ltt{}NULL} will exit the loop.
+
+{\rtt{}buf[LINELEN]='\0';}
+\break
+The buffer will have a string terminator unless the {\ltt{}fgets}
+returned because the user typed more characters than the buffer
+will hold.
+In this case a string delimiter ({\rtt{}'\0'}) will be
+placed in the last position of the buffer, overwritting the
+last letter in the buffer.
+
+If the string is shorter than the buffer, it will have two
+delimiters, but only the first delimiter
+(the one set by {\ltt{}fgets})
+matters.
+\newslide
+
+{\ltt{}nchars=strlen(buf);}
+\break
+We don't need this, we could continue to use the {\ltt{}strlen} call.
+
+{\ltt{}(void) write(s,buf,nchars);}
+We write the meaningful part of the buffer (and not the whole thing).
+Notice the {\rtt{}'\0'} didn't get written, it would be better if
+it did, we'd get a delimiter back in the echo.
+Notice the cast, bad, should not cast and should check
+\break
+{\ltt{}if (write(...)<0)}
+\break
+for an error
+\vt
+
+{\cprogram
+if (read(s,buf,nchars)<0)
+  errrexit("socket read...);
+@endprogram}
+
+Read the echo backinto the buffer.
+The buffer should be big enough,
+because it should be the message that was sent from the buffer
+Good, check for an error here.
+If we needed to use the characters read, we could:
+
+{\cprogram
+if ((nchars=read(s,buf,nchars))<0)
+  errrexit("socket read...);
+@endprogram}
+
+{\ltt{}fputs(buf,stdout);}
+\break
+This might work, but the delimiter was forgotten.
+\break
+Could use
+\break
+{\ltt{}fwrite(buf,1,nchars,stdout);}
+\break
+or could add
+Note (again): UDP does not form a connection.
+\newslide
+\centerline{\bbf TCP Clients}
+
+1) A TCP connection is formed.
+The server knows there is a client because an accept happens.
+In UDP the client had to send a message for the server to
+know there was a client.
+\vt
+2) TCP delivery is reliable.
+If something goes wrong TCP calls return negative numbers.
+For example, we will never freeze at the read, read will
+return -1 if the server isn't there.
+\vt
+3) TCP is a stream.
+Message boundaries are not guaranteed.
+Even when the server sends the message in one chunk,
+it may arrive in several.
+This is particularly true of larger sends.
+Even if the server sends the message in two pieces,
+it may arrive in one.
+Reading has to be done more carefully than with UDP.
+
+\newslide
+\centerline{\bbf TCPDaytime}
+
+{\ltt{}char *service = "daytime";}
+\break
+This will be the default service.
+We don't recommend overriding.
+
+{\ltt{}char buf[LINELEN+1];}
+\break
+The daytime server returns a string.
+Real storage room to store that string
+
+The main program switch is the same so we concentrate on
+the {\ltt{}TCPdaytime} function.
+
+{\ltt{}TCPdaytime(const char *host, const char* service)}
+\break
+This passes in the host and service. The service is
+expected to be {\ltt{}"daytime"}.
+
+{\ltt{}s=connectTCP(host,service);}
+\break
+A connection is made.
+After this call
+{\ltt{}s} is now a descriptor which can be used to talk to
+the server.
+The server knows there is a connection request (accept).
+Since this is the daytime service, a connection
+is all that is necessary to cause the server to send the client the daytime.
+
+\newslide
+Important: the answer may arrive in parts.
+\break
+The parts may not correspond to record, string, or integer boundaries
+(TCP {\bit does not preserve boundaries})
+
+Also: type matching is the responsibility of the protocol (daytime)
+and not the socket/read.
+
+{\ltt{}while ((n=read(s,buf,LINELEN))>0)}
+\break
+Read from the socket.
+{\ltt{}n} is number of bytes actually read,
+\break
+0 is EOF, negative means read error.
+\break
+{\ltt{}buf}: is where it gets stored.
+\break
+{\ltt{}LINELEN}: is maximum number of bytes to read.
+\break
+Notice we go into the loop only if the read worked.
+\break
+We received a piece of the reply, so we loop until EOF.
+
+{\rtt{}buf[n]='\0';}
+\break
+As each piece of the message arrives we add a string terminator.
+That is so the print will work.
+Remember this could be a piece of the string.
+
+{\ltt{}(void)fputs(buf,stdout);}
+\break
+print the string to the screen.
+
+Note: The Daytime server sends one string in one write,
+it may arrive at the client in several reads.
+\newslide
+\centerline{\bbf TCP Echo}
+\centerline{(Section 7.17)}
+
+Although the input stream does not require different handling,
+an alternate method of handling is used by this example.
+
+In the previous example, each piece that was received was
+printed when it was received because it didn't matter if
+a half-line came in.
+When you receive half an integer, you have to save it until
+you receive the other half.
+
+Alternate tactic: assemble the entire echo, then print.
+\break
+The number of bytes to be read is equal to the number that
+were written. (This is an echo.)
+
+Again. the main program is the same except for (1) the default service
+is {\ltt{}"echo"} and (2) the call is to the {\ltt{}TCPecho} function.
+
+{\ltt{}char buf[LINLEN+1];}
+\break
+The user's input will go here, then will be written to the echo
+server.
+After that, the reply from the echo server will be assembled
+in this buffer.
+I recommend different buffers, because it makes it easier to
+distinguish what the user has input from what has been echo'ed.
+\newslide
+
+{\ltt{}int s, n;}
+\break
+{\ltt{}s} will be used for the socket, {\ltt{}n} will be used to
+temporarily store the number of characters returned by the last read.
+
+{\ltt{}int outchars, inchars;}
+\break
+The number of characters written (which is the number of characters
+we expect back; and the number of characters read from the echo
+server. We will have received the entire echo when {\ltt{}inchars}
+becomes equal to {\ltt{}outchars}.
+\vt
+
+{\cprogram
+s=connectTCP(host,service);
+while (fgets(buf,sizeof(buf),stdin)){
+  buf[LINELEN]='\0';
+  outchars=strlen(buf);
+  (void)write(s,buf,outchars);
+@endprogram}
+
+The same as in the UDP echo except for the variable name.
+A line is read from the keyboard.
+A terminator is added that matters only if the line is longer
+than the buffer.
+The line is written to the server.
+
+\newslide
+Since we the message may get broken up in transmission it must be
+carefully reassembled when it is echoed back.
+
+{\cprogram
+for (inchars=0; inchars<outchars; inchars+=n){
+  n=read(s,&buf[inchars],outchars-inchars);
+  if (n<0) errexit(...);
+}
+@endprogram}
+
+{\ltt{}inchars}: keeps track of how many bytes we have read.
+\break
+{\ltt{}inchars<outchars}: we stop when we have gotten back the
+same number of bytes that we sent to the server.
+\break
+{\ltt{}n=}:
+Save is the number of we got from the read.
+\break
+{\ltt{}inchars+=n}:
+increment the total bytes read by the number we got on the last read.
+\break
+{\rtt{}&buf[inchars]}: is the end of the previous input. It is where
+the new input should start. Read needs the address of where the
+input needs to start.
+\break
+{\ltt{}outchars-inchars}: this is the number of bytes not yet echoed,
+this is the largest read that could possibly happen.
+\break
+{\ltt{}if (n<0)}: if the read fails (server died), exit
+
+{\ltt{}fputs(buf,stdout)}: Now the line has been assembled print it.
+It should be the same as the line that was typed.
+
+Note: {\rtt{}buf[outchars]='\0';} would ensure string termination,
+especially if we use two buffers.
+\newslide
+\centerline{\bbf TCP recap}
+
+1) Assemble the entire answer from multiple reads.
+
+2) Process the answer.
+
+\vf
+\centerline{\bbf Assembling an integer}
+
+{\cprogram
+int answer;
+for (inchars=0; inchars<4; inchars+=n){
+  n=read(s,&buf[inchars],4-inchars);
+  if (n<=0) errexit(...);
+}
+memcpy(&answer, buf, 4);
+answer = ntohl(answer);
+@endprogram}
+
+Read the 4 bytes into a buffer (may take several reads).
+
+Copy the 4 bytes from the buffer into an integer.
+
+Convert the integer to host order.
+
+{\ltt{}(n<=0)}, we've got to get 4 bytes, if we get a disconnect
+or EOF first something is wrong.
+
+\bye

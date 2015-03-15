@@ -1,0 +1,77 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 6 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 13 February 2002 (Week 3 Lecture 2)\hfill 
+Due: 18 February 2002 (Week 4, Lab 1)}
+\parindent 0pt
+
+This part of the assignment is designed to familiarize you with the
+commands involving Unix processes.
+
+Submission: You will submit a written document.
+
+For Cheetah: 1) how long has it been since it has
+been rebooted, 2) how many users are logged in, 3) how busy is the machine
+(short, medium and long term load).
+
+For Cheetah: 3) What percentage of the cpu is the operating system
+spending in each of user mode, system mode and idle?
+4) How much memory is in use and
+how much is idle?
+5) What processes have consumed the most total CPU since
+they were started?
+
+For the machine you administer answer the following:
+6) How many processes called {\ltt{}agetty} are running?
+7) There are several commands running that include the letters {\ltt{}rpc},
+list all those commands.
+8) What is the resident set size and total size of the lpd process.
+
+One of the users on your system has created a run-away process.
+Use your system administrator privilege to
+get rid of the process the process.
+(-10 points if you reboot the machine)
+
+Submit: 9) The exact commands you used to examine the processes.
+Who owned the process and what was it called.
+The exact command you used to get rid of the run-away process
+
+Note: If your machine was rebooted recently, it will have wiped
+out the run-away process, and you will have to let me know so
+I can start one.
+
+This part of the assignment is designed to familiarize you with the
+commands involving virtual memory and swapping.
+
+On the lab machine you are assigned to administer:
+
+10) As it is set up,
+does your machine use a swap partition or a swap file? 
+Report which it is.
+Report the full name of the swap partition or file.
+
+11) Report the following in kilobytes:
+
+a) the amount of memory available (minus the kernel),
+\break
+b) the amount of memory in use,
+\break
+c) the amount of memory used for buffers,
+\break
+d) the amount of swap space available,
+\break
+e) the amount of swap space in use,
+
+(Any dumps of command output will be given a zero.)
+
+Set up a 4 MB swap file, call it /swapfile.
+Turn on swapping for that file.
+
+12) Report the exact commands you used to do this.
+
+13) Report the amount of swap space available and the amount in use in
+{\it{}bytes}.
+
+Turn off swapping and remove your file.
+\bye

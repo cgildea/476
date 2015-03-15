@@ -1,0 +1,48 @@
+\def\chapternumber{Encryption -- 23 February 2010}
+\input slides.tex
+\centerline{\bbf Encryption}
+
+Several means of encryption are available.
+
+{\ltt{}gpg}: Gnu Privacy Guard.
+Will encrypt or decrypt a file.
+Output the result to {\ltt{}stdout}
+
+Basic options:
+\break
+{\ltt{}e}: encrypt
+\break
+{\ltt{}d}: decrypt
+\break
+{\ltt{}s}: sign a document
+
+You can specify which encryption algorithm to use,
+or use the defaults.
+
+You can use large keys and keep them on/in an encrypted
+key-ring protected by a passphrase.
+
+You can crypt simply using a pass phrase.
+
+\newslide
+
+{\ltt{}cryptdir}, {\ltt{}decryptdir}:
+
+Encrypt or decrypt the files in a directory.
+
+You specify a pass phrase
+\break
+(twice to make sure you don't goof).
+
+Each encrypted file has a {\ltt{}.crypt} on the end.
+
+Files ending in {\ltt{}.crypt} are not encrypted.
+
+The directory structure is not modified.
+
+Side effect: you can add a file to a directory and {\ltt{}cryptdir} will
+encrypt only that file.
+
+This program has no options.
+
+\bye

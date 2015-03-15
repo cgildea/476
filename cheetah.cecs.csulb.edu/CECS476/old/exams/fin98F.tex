@@ -1,0 +1,125 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1998, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+In general, if you are asked how to do something,
+give file names and contents; or explicit versions of commands.
+
+\ques
+(4 points)
+You wish to allow printing the the printer on unix67.cecs.csulb.edu.
+Unix67 calls the printer {\ltt{}lj}.
+You do not want to remove the capability to print to the jaguar printer.
+What do you need to do to your machine (give file and directory names and 
+contents).
+\vskip 2.5in
+\ques
+(4 points)
+You add a second drive to your system.
+You wish to use the first 100 cylinders for a swap partition and the
+rest (100-601) for a linux partition.
+What do you need to do to correctly partition the disk. 
+(Don't set up the file system of the swap, you did that on the midterm.)
+\vskip 2.5in
+\ques
+(4 points)
+What are {\ltt{}aha1740.s} and {\ltt{}fdomain.s} and how do they differ?
+\vskip 1.0in
+\ques
+(4 points)
+What is the difference between the A disk set and the N disk set.
+\vfill\eject
+\ques
+(4 points)
+When installing Linux,
+what things do you do during the netconfig portion of the install
+\vskip 1.0in
+\ques
+(4 points)
+You want to clear everything out the {\ltt{}/tmp} directory at 2am
+every day.
+Describe the command and give the entry you make in the table.
+\vskip 1.0in
+\ques
+(4 points)
+I want to issue a mail messages 8 hours from now. The message
+is in a file called {\ltt{}message.txt}
+(Mail can take input from a file using the standard redirect input operator.)
+What command do I issue? (Give the exact form.)
+\vskip 0.7in
+\ques
+(4 points)
+What is ``chord middle"?
+\vskip 0.7in
+\ques
+(4 points)
+How do you find out how much RAM is on your video card?
+\vskip 0.7in
+\ques
+(4 points)
+You wish to modify your system so that all return addresses
+are rewritten to be {\ltt{}smtp.csulb.edu},
+except for mail that is from the user {\ltt{}joe} (which should not have 
+its return address rewritten);
+how do you do this?
+\vskip 1.8in
+\ques
+(4 points)
+What entry do you change in the configuration file to move the
+location of where the web server keeps its files?
+\vfill\eject
+\ques
+(4 points)
+How do we forward the local.326a news group to {\ltt{}tabloid.csulb.edu}?
+\vskip 1.5in
+\ques
+How do we allow users from {\ltt{}lynx.cecs.csulb.edu} to read the
+news that is stored on our machine.
+\vskip 1.0in
+\ques
+(4 points)
+What does the {\ltt{}chroot} command do?
+\vskip 0.7in
+\ques
+(4 points)
+For maximum security, 
+what should be in the file {\ltt{}~ftp/etc/passwd}?
+\vskip 0.9in
+\ques
+(4 points)
+You have a lot of configuration files in the {\ltt{}/etc} directory;
+how do you save them to floppy?
+\vskip 0.7in
+\ques
+(4 points)
+A reboot is considered a kernel notice. You wish information about
+any reboots (in the lab) to be send to your office machine 
+{\ltt{}netman.cecs.csulb.edu}. How do you do this?
+\vfill\eject
+\ques
+(4 points)
+You are only a TA (not the system administrator).
+You want students to be able submit their homework to you by
+depositing it in your home account's {\ltt{}submitted} directory.
+How do you do this?
+\vskip 2.5in
+\ques
+(4 points)
+You wish to automount {\ltt{}/home/sue} from {\ltt{}lab76.net.cecs.csulb.edu}.
+What file must be modified and what entry must be made in that file.
+\vskip 1.5in
+\ques
+(4 points)
+You wish to distribute the files {\ltt{}.cshrc} and {\ltt{}.login}
+to {\ltt{}/home/sue} and {\ltt{}/home/sam}, give the contents
+of the distfile.
+\vskip 1.5in
+\bye

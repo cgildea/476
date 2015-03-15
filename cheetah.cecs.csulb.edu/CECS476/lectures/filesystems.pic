@@ -1,0 +1,836 @@
+\def\chapternumber{File Systems and Disks -- 5 February 2013}
+\input slides.tex
+\centerline{\bbf File System and Disk Administation}
+
+Disks: a random access block device.
+\break
+can support a file system.
+\break
+One file system per disk partition.
+
+Unix file system -- A tree
+\vt
+Each disk partition contains a piece of the tree
+
+File system consists of:
+\break
+superblock, inodes, indirect blocks, data blocks
+
+Basic concepts:
+
+superblock: overall information about the fs
+\break
+data blocks: actual file (and directory) contents
+\break
+inodes: used to find datablocks of files
+
+Information cached in memory:
+
+superblock
+\break
+data blocks (LRU replacement)
+\break
+inodes (LRU replacement)
+
+\newslide
+\centerline{\bbf Data blocks}
+
+Contain data only, i.e., only file contents, nothing else
+
+Problem: if you fragment by disk sectors you do too much seeking
+\break
+Solution: group sectors into blocks
+\break
+Block size can be selected (usually larger on large disks)
+
+Block size issue:
+\break
+Large blocks provide more efficient access time
+\break
+Large blocks waste more space
+
+Block size solution:
+\break
+Provide fragments 
+\break
+divide some blocks, often in 1/8ths
+\break
+Stuff small files or left over pieces into a fragment
+\vt
+All blocks on a file system use the same size:
+\break
+superblock is in a block
+\break
+inodes are stuffed several ($\approx 64$) per block
+\newslide
+\centerline{\bbf Inodes}
+
+There is one inode for each file
+\break
+Each inode has a unique number
+
+Inode structure:
+
+Mode, {\ltt{}-rwx-r-x--x}
+\break
+number of links
+\break
+file uid, gid
+\break
+3 times: create, modify, inode modify
+\break
+file size (bytes)
+\break
+the number of data blocks in the file
+\break
+15 slots for addresses of the data blocks used by the file
+
+When in memory this structure is extended to include, the name
+of the device which the inode came from, the block-size on that device
+and other information.
+
+Inodes cache in RAM: a hash table
+
+inode 1: points to the file that is the root (base) directory
+for the disk
+
+\newslide
+\centerline{\bbf Inode: Data Block Addresses Handling}
+
+15 slots for addresses
+
+12 direct blocks (12 addresses)
+\break
+1 Indirect block,
+\break
+1 Doubly indirect block,
+\break
+1 Triply indirect block.
+
+Direct blocks: with 1K block size, up to 12K.
+
+Indirect block: the address is a data block, but
+\break
+the data block does not contain file information 
+\break
+it contains addresses of other data blocks
+\break
+Extends number of allowable blocks in a file by $\approx 256$.
+\break
+Actual by the number of inodes that fit in a data block
+
+Doubly indirect block: the block contains addresses
+\break
+of blocks that contain addresses
+\break
+of actual data blocks.
+\break
+Extends number of blocks by about $256^2$.
+
+Triply indirect block: 
+\break
+Extends number of blocks by about $256^3$.
+\break
+File size limit: 16GB, except on large disk with a larger data block size.
+\break
+
+\newslide
+\centerline{\bbf Directories}
+
+A directory is a file with a special format
+\break
+A single inode points to this ``file".
+\break
+In this file we find an array of directory entries
+
+Directory entry:
+\break
+A pair consisting of an inode number and a (file) name
+\break
+The inode is the one defining the file.
+\break
+The name of a file is in the directory, not in the file itself.
+
+Directory entry details:
+\break
+inode number, length of entry, 
+\break
+length of file name in entry, file name.
+
+The two lengths may differ because of padding.
+
+\newslide
+\centerline{\bbf Links}
+
+There are two types of links, symbolic and hard
+
+{\ltt{}ln newname oldfile}   -- a hard link
+
+The file/directory now has two names, the old name ({\ltt{}oldfile})
+and the new name ({\ltt{}newname})
+
+Both names refer to the file.
+\break
+They do not depend on each other
+\break
+A file is not removed until {\bit all} references to it are removed.
+
+{\ltt{}ln -s apointer oldfile}   -- a symbolic link
+
+{\ltt{}apointer} is an alias,
+it refers to any file that is called {\ltt{}oldfile}
+
+Notice: {\ltt{}mv oldfile newlocation}
+\break
+{\ltt{}newname} is a hard link and will still refer to the old file
+\break
+{\ltt{}cat newname} -- will display the old file
+
+{\ltt{}apointer} is a soft link and will still refer to anything named 
+{\ltt{}oldfile} 
+\break
+{\ltt{}cat apointer} -- will say, ``file not found"
+
+The soft link is a name
+\break
+a hard link refers to the file itself
+\newslide
+\centerline{\bbf Special Files}
+
+There is an inode for each device file
+\break
+Device files don't use block addresses
+\break
+First two address slots are used for the major and minor numbers
+
+Other special files (communications ports)
+
+Sockets (Unix domain only, not network)
+
+Pipes (Named pipes only)
+
+\newslide
+\centerline{\bbf Block Groups}
+
+File system contains several block groups.
+\break
+Each group contains inodes, data blocks
+\break
+and a duplicate of the superblock
+\break
+Allows the inode for a file to be close to the data blocks.
+
+Free inodes and free blocks are managed by bitmaps.
+
+Each group contains:
+\break
+superblock
+\break
+1 bitmap block for blocks,
+\break
+1 bitmap block for inodes,
+\break
+blocks for the inode table
+\break
+data blocks
+
+For each group there is a descriptor with:
+\break
+the block numbers of the bitmap blocks
+\break
+the free blocks count
+
+Group descriptors are located after the main superblock.
+
+When running:
+\break
+a bitmap cache is used
+\break
+(one per mounted file system).
+
+\newslide
+\centerline{\bbf Superblock}
+
+There is one superblock (plus backups) per file system.
+
+Superblock structure:
+
+The number of inodes, the number of blocks
+\break
+the number of free inodes and free blocks
+\break
+The address of the first data block
+\break
+The size of a block and the size of a fragment
+\break
+The blocks fragments and inodes per group
+\break
+The last mount time, the last write time
+\break
+the mount count and max mount count
+\break
+The signature for the file system
+\break
+The state (clean, dirty)
+\break
+16 flags that say what to do on errors
+\break
+Time of last file system check, max time between checks
+\break
+The name of the creating OS (linux, hurd, masix, freebsd, lites)
+\break
+Revision level of file system
+\break
+Default UID and GID for reserved blocks
+
+The information in the superblock is used to find everything else
+\break
+data blocks, inode areas, group areas
+\newslide
+\centerline{\bbf Disks, Partitions and File Systems}
+
+One file system per partition.
+\break
+Each partition is attached to the tree (as a subtree).
+\break
+One partition is designated the root of the tree.
+\break
+A partition takes its name from the attachment point,
+\break
+it can be reattached elsewhere
+
+The system adiminstrator ({\ltt{}root})  controls where disks are attached 
+to the tree.
+\newslide
+\centerline{\bbf Examining the File System}
+
+{\ltt{}df} -- disk free
+\break
+lists the mounted devices, the usage statistics, and the attachment points
+\break
+{\ltt{} /dev/sda2 1556116 125640 1350152 9% /u2}
+
+{\ltt{}mount} -- list attachments
+\break
+lists the mounted devices and the pseudo file systems with
+their attachment points and the mount parameters
+\break
+{\ltt{}/dev/sda2 on /usr type ext2 (rw)}
+
+{\ltt{}du} -- disk usage
+\break
+list the amount of disk used by each file or subdirectory
+
+{\ltt{}dumpe2fs} -- dump the superblock
+\break
+list the contents of the superblock and the information about each
+of the block groups.
+
+{\ltt{}fdisk -l} -- format (parition) a disk
+\break
+this option lists the partition table
+
+{\ltt{}/etc/fstab} -- file system configuration file
+\break
+Tells the system what to mount and where.
+\break
+{\ltt{}/dev/sda2 /u2 ext2 defaults 1  1}
+\newslide
+\centerline{\bbf Building a Disk}
+
+DOS terminology:
+\break
+low-level format: build the sectors on a disk
+\break
+high-level format: build a file system on a disk
+
+Unix terminology:
+\break
+format: build the sectors on a disk
+\break
+make a file system: build a file system on a disk
+
+{\ltt{}fdformat}: format a floppy disk, all information on the disk
+will be lost
+\break
+Even after a disk is formated, you still have to build a file system
+in order to use it.
+
+{\ltt{}mkdosfs} build a DOS file system on a formated disk
+\break
+DOS file systems are fairly minimal.
+
+{\ltt{}mke2fs} build a Linux file system on a formated disk
+The inodes are setup, the superblock and backups, the ``root" directory of the
+disk, the {\ltt{}lost+found} directory
+\break
+Required parameter: partition (device) name
+\break
+Optional parameters: block size, number of inodes,...
+
+Engineering issue:
+\break
+Lots of small files: more inodes
+\break
+Lots of large files: unused inodes waste space
+
+\newslide
+\centerline{\bbf Setting Up a Linux Harddrive (steps)}
+
+1) Clean out any obsolete partitions ({\ltt{}fdisk}).
+
+2) Establish new Linux partitions ({\ltt{}fdisk}).
+
+3) Construct file systems ({\ltt{}mke2fs}).
+
+4) Test your setup ({\ltt{}mount}/{\ltt{}umount}).
+
+5) Modify your {\ltt{}fstab}.
+
+6) Test the reboot.
+\vf
+\centerline{\bbf Setting Up a Transient (floppy/cd/pen)}
+
+1) Construct a file system ({\ltt{}mke2fs}/{\ltt{}mkdosfs}).
+
+2) Test your setup ({\ltt{}mount}/{\ltt{}umount}).
+
+3) Modify your {\ltt{}fstab}.
+\break
+If you want users other than root to be able to mount these devices
+these must be done in the fstab.
+
+4) Test your setup as a user ({\ltt{}mount}/{\ltt{}umount}).
+\break
+(If it is a user-mount setup.)
+
+\newslide
+\centerline{\bbf Disk Partitions }
+
+{\ltt{}fdisk}: Interactive, type {\ltt{}m} for options.
+
+The disk partition structure is usually expressed in cylinders.
+
+0--500: Linux native
+\break
+501--600: DOS
+\break
+601--700: Linux swap
+
+Warning: some BIOS (such as Sun Sparc) require there be an extra (fake?)
+partition that covers the whole disk.
+
+0--700: disk
+
+The x86 BIOS: allows 4 primary partitions
+\break
+Secondary (logical) partitions subdivision inside a primary partition 
+and were invented to get around BIOS limitation of 4 partition.
+Recommendation: Do not use secondary partitions with Linux.
+
+Your job:
+Make partition size decisions.
+\break
+Create the partitions.
+
+\newslide
+\centerline{\bbf Partitioning a Disk}
+
+1) Run {\ltt{}fdisk} in interactive mode.
+\break
+A list of commands and descriptions may be displayed
+by typing {\ltt{}m} (the prompt tells you this).
+
+
+2) Delete any obsolete partitions.
+\break
+You must delete the included secondary partitions before
+deleting a primary partition.
+
+3) Create Linux partitions.
+
+4) Change partition types as necessary.
+\break
+When a partition is created it has a default type of Linux native.
+\break
+If you want the partition to have a different type, such as Linux
+swap you must change the partition type (sometimes called the
+partition or system ID).
+\break
+The type is a hexidecimal code.
+\break
+You can tell {\ltt{}fdisk} to display a list of types and their codes.
+
+5) Write and quit.
+\newslide
+\centerline{\bbf Building a File System}
+
+{\ltt{}mke2fs} will build a Linux native files system in a partition.
+
+The only required parameter is the partition in which you want to build the
+file system.
+The command will pick appropriate parameters values for your disk.
+
+You may override the defaults if you have special needs including:
+\break
+The number of inodes.
+\break
+The block size.
+\break
+The fragment size.
+\break
+The number of copies of the superblock.
+
+You can also have {\ltt{}mke2fs} do a scan of the disk for bad blocks
+before it creates the file system.
+\vf
+{\ltt{}mkdosfs} and other mkfs's are available for various other kinds
+of file systems. If you are going to do this, you should have set the
+partition type appropriately with {\ltt{}fdisk}.
+That is, building a dos file system in a Linux partition is not recommended.
+\newslide
+\centerline{\bbf Mount (details)}
+
+With no parameters, {\ltt{}mount}, lets a user exam where disks are
+attached to the file system tree.
+\vt
+Sample output lines:
+
+{\ltt{}/dev/sda2 on /usr type ext2 (rw)}
+
+Partition 2 of the first hard disk is attached to the tree as {\ltt{}/usr},
+this partition contains an {\ltt{}ext2} file system, 
+it can be read or written {\ltt{}(rw)}.
+
+{\ltt{}/dev/fd0 on /floppy type msdos (ro)}
+
+The floppy in drive A is attached to the tree as {\ltt{}/floppy},
+this floppy contains an {\ltt{}msdos} file system,
+it can be read, but not written {\ltt{}(ro)}
+
+{\ltt{}134.139.248.18:/slakware on /ourware type nfs (rw)}
+
+On the machine named {\ltt{}jaguar} (machine number {\ltt{}134.139.248.18}
+there is a directory called {\ltt{}/slakware}. This directory and all the
+files and subdirectories in it are available over the network ({\ltt{}nfs}) 
+and have been attached to our files system as {\ltt{}/ourware}.
+\newslide
+\centerline{\bbf Mounting a Disk}
+
+{\ltt{}mount}: with two parmeters, 
+designates a disk and where it is to be attached to the tree.
+
+{\ltt{}mount /dev/fd0 /home/john/floppy}
+
+The disk {\ltt{}fd0} is attached
+as {\ltt{}/home/john/floppy}
+
+After mount the ``attachment" is invisible,
+\break
+it is part of the tree
+
+1) {\ltt{}fd0} must be a block device
+\break
+2) {\ltt{}fd0} must have a file system on it
+\break
+3) {\ltt{}/home/john/floppy} must be a directory
+
+After the mount, any contents of the directory are hidden
+\break
+Principle: mount to empty directories.
+
+mount has options for example to mount read only:
+\break
+{\ltt{}mount -r /dev/fd0 /floppy}
+\break
+The manual entry for {\ltt{}mount} lists the available options.
+
+\newslide
+\centerline{\bbf Unmounting a Disk}
+\vt
+{\ltt{}umount} -- detach a disk from the file system,
+
+The disk should not be in use.
+\break
+No user should be {\ltt{}cd}'d to it.
+\break
+No files should be {\ltt{}open} on it.
+
+\vf
+When unmounting, either the attachment point or the
+device is used (but not both).
+
+For example to undo the mount from the previous slide,
+\break
+you may use either:
+\break
+{\ltt{}umount /home/john/floppy}
+\break
+or
+\break
+{\ltt{}umount /dev/fd0}
+
+\newslide
+\centerline{\bbf The Filesystem Table}
+
+Most mounts use {\ltt{}/etc/fstab}
+
+This table contains the list of disks, attachment points. and mount options,
+(plus dump and check options).
+
+{\ltt{} /dev/sdc1 /u4 ext2 defaults 1 1}
+
+The device {\ltt{}sdc1} will be attached to the tree as {\ltt{}/usr}
+\break
+The disk should contain an {\ltt{}ext2} filesystem.
+\break
+default options should be used (see man mount).
+\break
+dump is 1, check order is 1
+
+All permanent disks should be listed
+
+Transients may be listed, but use {\ltt{}noauto} option.
+
+{\ltt{}/dev/fd0 /floppy msdos user,noauto 0 0}
+\break
+an ordinary user can say {\ltt{}mount /floppy}
+\break
+the floppy is locked in until a {\ltt{}umount /floppy}
+\break
+transient disks shouldn't be dumped or checked
+
+{\ltt{}fstab} also contains other information such as:
+\break
+swap partitions
+\break
+pseudo file system (like {\ltt{}/proc})
+
+\newslide
+\centerline{\bbf Using {\ltt{}mount} With {\ltt{}fstab}}
+
+{\ltt{}mount} and {\ltt{}umount} can use {\ltt{}fstab}
+
+You can mount all the disks found in {\ltt{}fstab} except
+those that use the {\ltt{}noauto} option with the command:
+\break
+{\ltt{}mount -a}
+
+Similarly you can unmount all disk (except {\ltt{}noauto}:
+\break
+{\ltt{}umount -a}
+
+If {\ltt{}root} uses mount with a single parameter (either
+the attachment point or the device} the command looks up
+the other parameter to use in {\ltt{}fstab}:
+\break
+{\ltt{}mount /u4} 
+\break
+or
+\break
+{\ltt{}mount /dev/sdc1} 
+\break
+will look up the entry in {\ltt{}fstab} and do the correct mount
+
+A user can use mount with a single parameter to use {\ltt{}fstab},
+but the parameter must be an attachment point and that attachment
+point must specify the {\ltt{}user} option.
+
+Caution: if the user doesn't own the attachment point there are
+some issues with writting to upper level of the device.
+\newslide
+\centerline{\bbf fsck}
+
+{\ltt{}fsck} -- scans and repairs the file system for many problems
+
+Will occur ``automatically" at boot (check = 1)
+\break
+Skipped if a {\ltt{}shutdown} or {\ltt{}reboot}
+did an orderly close of the file system
+\break
+(even then after a fixed number of skips, it will do a check)
+
+May be run manually
+\break
+{\ltt{}fsck /dev/sda1}
+\break
+file system should be unmounted
+
+Five passes.
+
+1) Blocks and sizes: inodes checked for consistency
+\break
+2) Paths: follows directory paths. 
+\break
+Builds bitmaps of inodes and data blocks
+\break
+3) Connectivity: inodes in use that refer to files/directories that
+weren't found in the directory tree
+\break
+4) Reference counts: compare the inode link count against the number
+of directory references to those nodes.
+\break
+5) Freelist: all unallocated blocks checked to be they are marked
+unallocated in the data block bitmaps
+\newslide
+\centerline{\bbf Device Names}
+
+Disk names follow certain conventions.
+
+{\bit Linux:}
+
+{\ltt{}/dev/sda} -- the first hard drive
+\break
+(all drives are mapped to the SCSI command set)
+\break
+(DOS drive {\ltt{}C:})
+
+{\ltt{}/dev/sda1} -- first partition on first hard drive
+\break
+(DOS partition {\ltt{}C:})
+
+{\ltt{}/dev/sda2} -- second partition on first hard drive
+
+{\ltt{}/dev/sdb1} -- first partition on second hard drive
+
+{\ltt{}/dev/fd0} -- the {\ltt{}A:} floppy drive
+\break
+{\ltt{}/dev/fd1} -- the {\ltt{}B:} floppy drive
+
+{\ltt{}/dev/usb/...} -- appears when a USB device has been plugged in
+
+{\bit BSD:}
+
+{\ltt{}/dev/sd0} -- the first SCSI disk
+\break
+{\ltt{}/dev/sd0a} -- a partition on first disk
+\break
+{\ltt{}/dev/sd0g} -- another partition on first disk
+
+partition names and order given by partition table
+
+\bye
+\newslide
+\centerline{\bbf Handling Badblocks}
+
+A command exists to search for badblocks.
+
+{\ltt{}badblocks device block-count}: 
+\break
+Name a device and how many blocks are on it.
+\break
+
+A file system with badblocks can be repaired.
+\break
+{\ltt{}fsck -l file-name}
+
+Notes: IDE and SCSI disks automatically remap bad blocks.
+\vt
+\centerline{\bbf Fragmentation}
+
+The file system automatically makes efforts to defrag itself.
+\vt
+\centerline{\bbf Super Block}
+
+{\ltt{}dumpe2fs} -- examine the super block for an ext2 partition.
+\newslide
+\centerline{\bbf Disk Partitions}
+
+There are several possible kinds of partition.
+
+DOS: 12-bit, small 16-bit, $\le$32M 16-bit, extended, secondary, R/O
+\break
+Linux: minix, swap, native
+\break
+Xenix, Novell, BSDI, AIX, OS/2
+
+Note: some DOS partitions are within other DOS partitions
+
+Linux: needs Linux native or DOS (UMSDOS)
+\break
+DOS: linux files have funny names
+
+Changing where the partitions are on your drive usually destroys the files.
+\break
+Changing a partition to a new type,
+\break
+erases files in that partition only.
+
+FIPS: non-destructive DOS repartition (on CD)
+\break
+fdisk: (DOS) will set up DOS partitions.
+\break
+fdisk: (Linux) Linux  partitions
+
+Linux native: Unix (ext2) file system.
+\break
+Linux swap: virtual memory paging area.
+\newslide
+\centerline{\bbf Setting up a Swap Partition}
+
+Principle: a portion of the disk is used as extended memory. It's slow,
+but it's alot cheaper than tons of RAM.
+
+Assumed: you've used fdisk to create a swap partition
+
+Set up the swap partition for swapping:
+\break
+{\ltt{}mkswap -c partition size}: 
+\break
+get your size number from {\ltt{}fdisk}
+\break
+{\ltt{}swapon partition}: activate swapping on this partition
+
+{\ltt{}mkswap}: once
+\break
+{\ltt{}swapon}: each time you boot
+\vt
+{\ltt{}fstab}: On boot:
+\break
+swap entry causes a swapon do be done.
+
+{\ltt{} /dev/sdc9  swap swap defaults 0 0}
+
+The key word swap in the partition type causes most of the
+rest of the entry to be ignored.
+
+{\ltt{}swapon -a} -- turn swapping on for every partition listed
+as a swap partition in the {\ltt{}fstab}.
+
+\newslide
+\centerline{\bbf Raw Device Copy}
+
+{\ltt{}dd}: device-to-device copy (can substitute a file)
+
+{\ltt{}dd if=/dev/sda1 of=/dev/sda2}  \quad --clone disk
+
+{\ltt{}dd if=/dev/fd0 of=fimage} \quad --floppy image to file
+\break
+{\ltt{}dd if=fimage of=/dev/fd0 } \quad --clone floppy
+
+{\ltt{}dd if=/dev/fd0 of=/dev/sda1} \quad --trash hard drive 
+\bye
+\centerline{\bbf Filesystem Utilities}
+
+{\ltt{}df} -- disk free
+
+lists the mounted disks and their usage statistics
+\break
+watch your disks for 100\% full
+
+{\ltt{}du directory} -- disk usage
+
+list the amount of disk used by each file or subdirectory in the
+specified directory
+\break
+look for unexpected large files.
+
+Note: certain log files keep expanding, certain other files should
+be temporary.
+Use {\ltt{}cron} to automatically do maintenance on these.
+
+{\ltt{}tar} -- tape archive
+
+Used to make backups (covered later)
+\newslide
+

@@ -1,0 +1,106 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Assignment 9 \hfill Spring 2014}}
+\footline{Nathan Pickrell \hfill 18 February 2014 (Week 5 Lecture 1)\hfill 
+Due: 20 February 2014 (Week 5 Lab 2)}
+\parindent 0pt
+
+This assignment covers the X Window system.
+
+Examine the manual entry for the configuration file ({\ltt{}xorg.conf}).
+\hfill\break
+1) What configuration option diables the action of the control-alt-backspace
+combination.
+
+In {\ltt{}/etc/X11}:
+
+Examine the {\ltt{}xorg.conf-vesa}  configuration file.
+The manual entry for {\ltt{}xorg.conf} will also be helpful.
+\hfill\break
+2a) How many different mouse protocol options available?
+\hfill\break
+2b) If this file were to be used, what protocol option would be used for the
+mouse?
+
+Examine the initializations for {\ltt{}xinit}.
+\hfill\break
+2c) How is the default window manager set (use {\ltt{}ls})?
+\hfill\break
+Verify this by starting X as {\ltt{}bob}.
+
+In the log directory:
+
+Examine the {\ltt{}Xorg.0.log} file 
+(It was created when you started X in question 2.)
+\hfill\break
+3a) What mouse input device was found?
+\hfill\break
+3b) What is the best Modeline supported by the video chipset (DCC)?
+\hfill\break
+3c) What is the best Modeline supported by the monitor (VGA1)?
+
+
+Examine the device file system (use {\ltt{}ls}):
+
+4) What device does {\ltt{}/dev/mouse} link to?
+
+In the {\ltt{}djv} account:
+
+Examine the {\ltt{}.xinitrc}:
+\hfill\break
+5a) What window manager is used by this account?
+\hfill\break
+5b) How many windows are display when this account starts X?
+
+Examine the {\ltt{}.twmrc}:
+\hfill\break
+A button has been set up that raises a window (to be on
+top of the other windows).
+\hfill\break
+5c) Report the button and the line that does it?
+
+On your system as administrator:
+
+Modify the default {\ltt{}fvwm} settings to automatically
+start two 80x24 xterm windows in the upper left and lower right
+of the screen. Also modify the settings so the background is
+solid yellow.
+\hfill\break
+6a) Report the name of the file and the modifications you made
+to that file?
+
+Modify the default window manager to be {\ltt{}twm}.
+\hfill\break
+Verify this works by starting X as {\ltt{}bob}.
+\hfill\break
+6b) How did you do this?
+\hfill\break
+Modify the default back to {\ltt{}fvwm}.
+\hfill\break
+Verify you did this this by again starting X as {\ltt{}bob}.
+
+On your system (the user login doesn't matter):
+
+Run the {\ltt{}xvidtune} program.
+\hfill\break
+7a) What are the horizontal and vertical display resolutions?
+({\ltt{}HDisplay}, {\ltt{}VDisplay})
+\hfill\break
+7b) What is the vertical synchonization rate?
+
+
+On your system as {\ltt{}sue}:
+
+Modify sue's account so it
+(a) uses {\ltt{}twm} as the window manager instead of the default manager
+(b) automatically starts an xterm in the upper left
+and
+(c) sets the background to solid red.
+\hfill\break
+Verify by starting X as {\ltt{}sue}.
+\hfill\break
+8) Report the name of the file you created and the contents of
+that file.
+
+\bye

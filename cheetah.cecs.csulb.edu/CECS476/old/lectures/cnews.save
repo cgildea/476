@@ -1,0 +1,55 @@
+\centerline{\bbf CNews}
+\centerline{A Brief Look}
+
+Same capabilities as INN.
+\break
+Similar configuration issures.
+\break
+Slightly different files and file contents.
+\break
+Non-integerated approach.
+
+{\ltt{}rnews}: accepts incoming news and stores it in the incoming spool
+
+{\ltt{}newsrun}: processes incoming spool into news directory heirarchy
+
+{\ltt{}inews}: accepts postings and stores them in the outgoing spool
+
+{\ltt{}relaynews}: screens out inactive groups, duplicate and stale articles
+
+{\ltt{}uucp, nntpd}: transfer news to another machine.
+
+Configuration files:
+
+{\ltt{}active}:
+\break
+List of news feeds, includes self.
+\break
+List of active news groups
+\break
+must include {\ltt{}junk} and {\ltt{}control} groups
+
+\newslide
+{\ltt{}newsgroup}: Has the high, low (article numbers) and
+permission (post, moderated, feed through).
+
+{\ltt{}sys}: controls what goes to and comes from newsfeeds.
+Format similar to innd newsfeeds
+\break
+Includes transfer control flags:
+\break
+ihave/sendme: slow connections
+\break
+batching control (compress and send)
+
+for batching also set up {\ltt{}batchparams} to specify batch sizes
+and compression method (one line per newsfeed site)
+
+{\ltt{}explist}: how long you hold the articles (by news group)
+
+{\ltt{}mailname}: Return address (in header)
+\break
+{\ltt{}organization}: for that line in the header
+
+Usually you use utilities like {\ltt{}addgroup} instead of editing files.
+\bye

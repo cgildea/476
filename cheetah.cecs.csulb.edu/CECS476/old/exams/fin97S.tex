@@ -1,0 +1,224 @@
+\input header.tex
+\parskip=0pt
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1996, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notes.
+
+\ques
+(8 points)
+Linux installation, boot and root floppies.
+
+When you boot, what things happen while your first floppy disk is in the
+drive?
+\vskip 1.5in
+During the boot sequence you may select to use either a ramdisk or a rootdisk
+as the second disk you load.
+What is the difference between a ramdisk and a rootdisk?
+\vskip 1in
+What command do you use to review the messaged that were printed during boot?
+\vskip 0.7in
+
+\ques
+(8 points)
+Linux installation, commands.
+
+Give an example of each of the following commands and tell what the
+command (as you have shown it) will do?
+
+fdisk:
+\vskip 0.8in
+mkswap:
+\vskip 0.8in
+swapon:
+\vskip 0.8in
+mke2fs:
+\vfill\eject
+
+\ques
+(6 points)
+Terminal configuration.
+
+You attach an old Data Media 1521 to your serial port (COM 1).
+You wish to allow root logins from this terminal and no others.
+What needs to be in termcap?
+\vskip 0.8in
+
+What file do you need to adjust for the desired root login capability and
+what should be in that file?
+\vskip 1in
+
+\ques
+(4 points)
+Processes.
+
+What does the RSS field of the ps command tell you?
+\vskip 0.8in
+
+\ques
+(8 points)
+Network configuration.
+
+Your lab machine is assigned the IP number 134.139.136.72 and a netmask
+of 255.255.255.192.
+What command would you give to accomplish this configuration?
+(Give a command that does not require rebooting your machine.)
+\vskip 0.8in
+
+For the cable your machine is on, there is one gateway to the rest of the
+internet.
+The IP address of this gateway is 134.139.136.65.
+What command do you give to set up your routing tables?
+\vskip 0.8in
+
+You wish to configure your machine to look up machine names using NIS
+and to use DNS only when the NIS lookup fails.
+What file do you modify and what do your put in that file?
+\vskip 1.2in
+
+You wish to configure your machine to use jaguar for its DNS lookups.
+What file do you modify and what do your put in that file?
+\vfill\eject
+
+\ques
+(6 points)
+Networking utilities.
+
+How would you find out the protocol number for the transmission control
+protocol?
+\vskip 0.8in
+
+How would you find out what port number is used by the telnet service?
+\vskip 0.8in
+
+You wish to examine a telnet session to see where it is coming from,
+what command do you use? (Give the exact form with correct options.)
+\vskip 0.8in
+
+\ques
+(8 points)
+Network File System.
+
+You wish to make the {\ltt{}/homes} directory on your machine
+({\ltt{}lion.net.cecs.csulb.edu} available to {\ltt{}lab17}.
+On {\ltt{}lab17} this directory should appear as {\ltt{}/local/users}.
+Give all the steps you need to take. 
+Include the names of files, the contents of those files and
+the exact form of all commands.
+\vskip 3in
+
+\ques
+(6 points)
+Network Information System.
+
+You are trying to set up an account for sue.
+You want to make sue's default group {\ltt{}majors}.
+You go to the {\ltt{}/etc/groups} file and all it
+contains is a single line with one letter, a {\ltt{}+}.
+What do you do now to find out what number corresponds
+to the desired group?
+Give the exact form of all commands you would use.
+\vfill\eject
+
+\ques
+(6 points)
+Mail configuration.
+
+This is a hypothetical question to see if your understand the general format.
+In the year 2042, the new sendmail allows expanders. 
+Usually an expander is a machine on the high-speed netowrk, so that
+when you send mail to a group of people, one copy will go over the
+slow cables to the expander, which will fan out copies to the list
+of recipients.
+You want to set up {\ltt{}mailgate.la.us} as your expander.
+What file will you modify?
+What sort of line would you expect to have to add (or modify) to that file?
+\vskip 1in
+
+\ques
+(8 points)
+Network news.
+
+What is the purpose of the nnrp.access file?
+\vskip 0.8in
+
+What is the purpose of the newsfeeds file?
+\vskip 0.8in
+
+\ques
+(6 points)
+Domain Name Service.
+
+You are bringing up your machine on the network
+({\ltt{}lion.net.cecs.csulb.edu}, {\ltt{}134.139.136.72}).
+Your name server is jaguar and on jaguar the file {\ltt{}named.boot}
+contains the following:
+
+{\program
+primary  net.cecs.csulb.edu        named.net
+primary  136.139.134.in-addr.arpa  named.137
+\endprogram}
+
+What changes do you have to make and to what files?
+\vskip 2in
+
+\ques
+(6 points)
+File transfer protocol.
+
+What does the {\ltt{}chroot} system call do?
+\vskip 1in
+
+During an ftp, what piece of software would call this command?
+\vskip 1in
+
+\ques
+(6 points)
+WAIS.
+
+You want to set up an index called {\ltt{}grades} on {\ltt{}lion}.
+Give the the command to build the index and
+the command to search that index from {\ltt{}jaguar}.
+\vskip 1in
+
+\ques
+(6 points)
+World Wide Web.
+
+You want to run a web server on port 8013 and you want the www stuff
+to be in the {\ltt{}/u1/cecs/www} directory.
+What file do you modify and what lines do you change to do this?
+(Don't bother to give the rest of the lines or files and assume
+stuff has been untar'ed into the correct place).
+\vskip 1in
+Give the exact form of the command you use to start the web server?
+\vskip 1in
+
+\ques
+(8 points)
+Network management.
+
+In ECS 416 you want to it setup so that the machine {\ltt{}unix67}
+can distribute to {\ltt{}unix68} .. {\ltt{}unix78}.
+What would you have to do?
+(Include the names of the files, which machines those files are
+on and their contents.)
+\vskip 1.2in
+
+You wish to distribute a copy of the password file from {\ltt{}unix67}
+to the other machines.
+What would you have to do?
+(Include the names of the files, which machines those files are
+on and their contents.)
+Although you cannot really do it, I will accept a ".." in the
+middle of the list of machines (give complete entries only for unix68 and 
+unix78).
+Note that the domain names in that lab end in {\ltt{}cecs.csulb.edu}.
+\vskip 1in
+\bye

@@ -1,0 +1,69 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 2 \hfill Spring 2007}}
+\footline{Dennis Volper \hfill 31 January 2007 (Week 1 Lecture 2)\hfill 
+Due: 5 February 2007 (Week 2 Lab 1)}
+% due third session
+\parindent 0pt
+
+Purpose: This assignment is to familiarize you with users and logins.
+
+Submission: You will submit a written document.
+
+Examine the password and group files on {\ltt{}cheetah}
+and answer the following questions:
+
+For the instructors account ({\ltt{}volper}) answer the following
+questions:
+
+1) What is the UID (user) number?
+
+2) What is the GID (group) number?
+
+3) What is the home directory?
+
+4) What is the login shell?
+
+5) What is the name of the base group the instructor belongs to?
+
+6) The user {\ltt{}djv} belongs to three additional groups,
+what are the names of this group?
+
+7) What are the group numbers for the groups named {\ltt{}guest},
+{\ltt{}cecsu} and {\ltt{}cecsg}?
+
+Examine the shadow file on the {\ltt{}lab66} machine
+and answer the following questions:
+
+8) List the local accounts that have (encripted) passwords.
+Hint: there are a very small number of such accounts.
+
+9) When (approximately) was the password on the root account changed?
+Give me a month and year. This will be approximate, that is, it
+may be off by a couple days.
+
+Hint, use bc to help compute the year it was changed (assume
+365.25 days per year), and roughly estimate the month 
+(assume 30 days per month).
+
+Examine your {\ltt{}.cshrc} and answer the following questions:
+
+10) How many aliases are setup?
+
+11) How many directories in your path?
+
+Modify your {\ltt{}.cshrc}.
+Remember, the {\ltt{}.cshrc} file is only read when you login.
+I recommend you modify in one window and use a second window
+to login and test your changes (that way you won't lock yourself out.
+Be sure to verify that your changes work.
+
+12) Add an alias have {\ltt{}p} be a shorthand for {\ltt{}ps aux}.
+
+13) Add the directory {\ltt{}~djv} to the end of your path.
+After you have done this, from your home directory, you should be
+able to run the {\ltt{}hello} program (which prints {\ltt{}Hello}).
+This program exists only in the {\ltt{}~djv} directory.
+
+\bye

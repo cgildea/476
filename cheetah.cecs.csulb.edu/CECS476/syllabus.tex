@@ -1,0 +1,171 @@
+\input macros.tex
+\footline{{\rm Nathan Pickrell --  January 2014 \hfill}}
+\centerline{{\bf SYLLABUS --- CECS 476}}
+\vskip 5pt
+{\obeylines\parindent 0pt
+{\bf System and Network Administration}\hfill Spring 2014
+lass: ECS 405 (TTh 5:00--5:50PM) \hfill Course code: 13289 \hfill Lab: ECS 405 (TT 6:00--7:15PM)
+
+Instructor: Nathan Pickrell \hfill Lab Hours: ECS 405  TTh 5:00-8:15PM (or on request if earlier)
+
+}
+ 
+\vskip 5pt
+\centerline{\bf Course Objectives}
+ 
+To introduce the principles behind a multiuser operating system with network
+access.
+To teach the of administration of computers with such operating systems.
+The course will cover both how the Unix system works
+and the tasks the system administrator must perform.
+
+\vskip 5pt
+\centerline{\bf Prerequisites }
+
+A knowledge of Unix and operating systems (e.g., CECS 326).
+The ability to read technical material (manuals, documentation).
+Some experience in computing (several upper division courses).
+The ability to follow instructions.
+ 
+\vskip 5pt
+\centerline{\bf Books }
+ 
+A book is helpful if you have trouble understanding the manual entries
+and the lecture.
+The Nemeth book is listed as the official text, but there are several
+good books in different areas of system administration.
+
+{\it Unix System Administrators Handbook}
+by Nemeth et.al.
+This book covers several versions of Unix, including Linux.
+It covers many topics, but sometimes doesn't cover them
+as completely as you would like.
+
+{\it Running Linux}
+by Welsh et.al.
+This book contains information specific to Linux.
+On some topics it has more information than Nemeth,
+but it does not cover as many topics.
+
+In addition you may find books from the following list helpful. 
+Most can be found cheaply at major
+computer stores or ordered on-line.
+
+% {\it Linux System Administration}
+% {\it{}Linux Configuration and Installation}
+% {\it The Linux Internet Server}, 
+% {\it{}Linux Network}.
+% This is a series of books from IDG.
+% There is overlap, but they cover the topic completely.
+
+{\it Linux System Administration Handbook}
+by Komarinski and Collett. 
+Good in the networking area, 
+but a little shallow in non-networking places.
+
+% {\it Unix System Administrator's Edition} from SAMS publishing.
+% Good, but covers all versions of Unix so the Linux information
+% is scattered throughout the book.
+
+{\it Essential System Administration} by Aeleen Frish (O'Reilly).
+Good, but aimed at non-Linux versions of Unix.
+
+{\it Linux Network Administrator's Guide} by Olaf Kirch (O'Reilly).
+Very good, but only covers the networking part of Linux.
+
+\vskip 5pt
+\centerline{\bf Other Materials}
+
+You will be issued accounts for the system administration lab.
+This account is separate from any other department or university
+accounts you are issued and is good for the semester only.
+Online manuals will be available using those accounts.
+How-To files are available for many functions.
+Additional materials will be available online.
+% the first set by being handed out, later sets through the copy center 
+% of the campus book store.
+Copies of the lecture slides are available in the book store.
+Source for the lecture slides is available online in TeX format
+from the computer {\tt{}cheetah} under the directory
+{\ltt{}~volper/classes/476}.
+That directory also includes lots of other useful items including copies
+of the old exams in {\ltt{}~volper/classes/476/old/exams}.
+
+\vskip 5pt
+\centerline{\bf Structure of the Course}
+ 
+There will be a large number (approximately one per lab) of 
+assignments, one midterm, and a final.
+The assignments will be worth 40\% of the grade,
+each exam will be worth 30\% of the grade.
+I recommend that you maintain a notebook documenting those actions
+you have taken as a system administrator.
+The exams will be open note, so the better organized your notebook
+the more helpful you will find it during the exams.
+
+\vfill\eject
+\centerline{\bf Laboratory}
+
+Your working environment for System Administration is part of the CSULB network.
+There are many machines on this network, they are accessible in
+many different ways.
+The lab will be ECS 405. It contains the machines reserved for this course.
+These machines are accessible over the network,
+but in a restricted fashion so as to prevent the machines from being hacked.
+You may login to these machines from any cecs computer,
+but you will need to login to {\tt cheetah}
+first, then telnet/ssh to your Linux machine.
+If you are off campus you may access {\tt cheetah} only through ssh.
+We suggest using putty if you are working from a Windows computer.
+We recommend you perform your actual system administration in the laboratory
+during lab hours.
+You will be issued system administration privileges;
+exercise these privileges only for the purposes described in the assignments.
+
+\vskip 5pt
+\centerline{\bf Assignments}
+
+Work is due in the lab on the date indicated on the assignment.
+If the assignment indicates there is a demonstration required
+that demonstration must performed at the time the assignment is submitted.
+Assignments may be submitted early (no penalty).
+Late submissions will be penalized 5 points per lab that they are late.
+To allow for illness and emergencies,
+the first 50 points of late penalty you
+accrue during the semester will be waived.
+If you are examining your grade, the number of waiver points you have
+remaining is under the column labeled ``{\ltt{}wv}".
+No work will be accepted after the last lab of the semester.
+
+In general, you should leave the results of your assignment running or
+active on your machine so the instructor can verify your work.
+In a few cases you will be given specific ``clean up" instructions
+to shutdown particular parts of assignments which have the potential
+to clog the system.
+
+You are expected to run your tests and make sure your assignments work
+before submission.
+One re-submission will be allowed during the semester, you will receive
+the average of the scores of the two submissions. The amount of late
+penalty will be based on the date of the second submission.
+This is intentionally severe, I don't encourage re-submissions, test your
+work before submitting the first time.
+
+To view your scores, login to {\ltt{}cheetah} and run {\ltt{}getscore}.
+
+\vskip 5pt
+\centerline{\bf Course Summary}
+
+In general, we will cover a set of principles used by the Unix operating system,
+you will look at the operating system to observe details on these principles,
+then you will perform system administration tasks based on these principles.
+Much of the material for your work will come from the on-line documentation.
+
+\vskip 5pt
+Final Exam: 
+5:00--7:00, Thursday, 15 May 2014
+
+\def\week#1{\par\hangindent 0.7in {\indent\llap{\bf #1 \enspace}
+\ignorespaces}}
+
+\bye

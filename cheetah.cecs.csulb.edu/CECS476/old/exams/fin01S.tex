@@ -1,0 +1,232 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2001, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(4 points)
+% Project 18
+Your directory {\ltt{}/home/ftp/pub} has a mode ({\ltt{}chmod}) of 777.
+What does this mean? What does this allow users to do (and which users)?
+\vskip 2.0in
+\ques
+(4 points)
+% Project 18
+What is the difference between a static and a dynamic library.
+What command would you use to determine if a program
+accessed dynamic libraries.
+\vskip 1.0in
+\ques
+(4 points)
+% Project 19
+Your want all mail (except for the {\ltt{}root} and {\ltt{}bob}
+accounts) to be forwarded {\ltt{}jaguar.cecs.edu}.
+(Hint: You macro letter is {\ltt{}H} and your and
+your class letter is {\ltt{}L}.)
+What file would you modify and what change would you make to that file?
+\vskip 1.2in
+\ques
+(4 points)
+% Project 20
+You have a C program (called {\ltt{}getgrade}) already build and compiled.
+This program will allow a user to look only at their line in the
+grade sheet {\ltt{}grades.txt} for the class.
+Of course, the grade sheet needs to be protected so it is not readable.
+What do you need to to to make this program work.
+Give the protections you need and give the exact commands to
+set up those protections for both the above files.
+\vskip 1.0in
+\ques
+(4 points)
+% Project 21
+You wish to allow users from {\ltt{}lynx} and {\ltt{}jaguar} to
+read news using your machine as a server.
+What do you need to do? (Give file(s) and modifications.)
+\vskip 0.8in
+\vfill\eject
+\ques
+(4 points)
+% Project 21
+You want your machine to transfer (feed) news articles to {\ltt{}cheetah}.
+What do you need to do?
+(Give file(s) and modifications.)
+Also give the command that you (as the news administrator) could used to 
+transfer the news.
+\vskip 1.9in
+\ques
+(4 points)
+% Project 22
+Suppose you have www configured and running. You are to make a
+modification so that {\ltt{}/etc} is not accessible
+via the web, but {\ltt{}/etc/public} is accessible.
+What do you need to do? (Give file(s) and modifications.)
+\vskip 1.5in
+% \vfill\eject
+\ques
+(4 points)
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}lab1.lbcc.edu} (201.1.4.2) and 
+{\ltt{}server1.lbcc.edu} (201.1.4.3).
+Give the zone entries (only zone entries) of the {\ltt{}named.conf}
+for your DNS server.
+\vfill
+\eject
+\ques
+(4 points)
+% Project 23
+Give the reverse zone file for the previous question. (Include the SOA).
+\vskip 2.8in
+\ques
+(4 points)
+% Project 24
+You wish to allow user {\ltt{}bob} on {\ltt{}cheetah.cecs.csulb.edu}
+to put files onto your ftp area (user {\ltt{}ftp}) on 
+your machine ({\ltt{}lab99.net.cecs.csulb.edu}).
+What do you do?
+(Give file(s) and contents.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 24
+User {\ltt{}bob} wishes to put a program (file) called 
+{\ltt{}stuff.tar} from his home directory into {\ltt{}~ftp/pub}
+call it {\ltt{}version2.tar} and change its permissions to
+be {\ltt{}644}.
+What does {\ltt{}bob} do? (Give files, contents and command.)
+\vskip 1.6in
+\ques
+(4 points)
+% Project 25
+You want Windows NT users to be able to access their home directories
+(if they have an account).
+What special section needs to be set up and what sort
+of security do you need?
+(Assume the appropriate software is already installed.)
+What do you need to do?
+\vskip 1.3in
+\vfill\eject
+\ques
+(4 points)
+% Project 13
+You want to list the accounts that are being delivered to your machine
+by NIS. Give the exact command to do this.
+\vskip 1.8in
+\ques
+(4 points)
+% Project 13
+What does the file {\ltt{}nsswitch.conf} allow you to do.
+Include a discussion of what the {\ltt{}compat} mode does.
+\vskip 1.0in
+\ques
+(4 points)
+% Project 14
+Describe how you would
+export the {\ltt{}/homes} directory on your machine to all
+machines on the 134.139.136.0 cable, read/write
+and to machines on the 134.139.45.0 cable, read only?
+(Give the file name(s) and contents.)
+\vskip 1.2in
+\ques
+(4 points)
+% Project 14
+Describe how you have the
+the {\ltt{}/etc} directory from {\ltt{}jaguar.cecs.csulb.edu}
+automatically mounted when your machine boots.
+(Give the file name(s) and contents.)
+\vskip 1.2in
+\ques
+(4 points)
+% Project 15
+How would you make two printers available to users on your machine.
+One printer is called {\ltt{}laser} and is on {\ltt{}cougar}
+the other is called {\ltt{}apple} and is on {\ltt{}cheetah}.
+The printer on {\ltt{}cheetah} should be the default.
+(Give the file name(s) and contents.)
+\vskip 1.0in
+\vfill\eject
+\ques
+(4 points)
+% Project 15
+Describe how you would have
+notice ({\ltt{}notice}) messages (or higher) from the cron daemon 
+({\ltt{}cron})
+go into the file {\ltt{}/var/log/cron}
+and
+critical ({\ltt{}crit}) (only, no higher or lower)
+messages from printer system ({\ltt{}lpr}) be sent to {\ltt{}cheetah}.
+(Give the file name(s) and contents.)
+\vskip 1.5in
+\ques
+(4 points)
+% Project 16
+You want to load Linux from an aztec CD drive onto an SCSI harddrive.
+You need a special (1.44M) floppy.
+(a) Which special floppy do you need (boot or root)?
+(b) You need an image to {\ltt{}dd} onto that floppy, where would you
+look to find out the name of the image you need (give directory
+and filename)?
+\vskip 1.3in
+\ques
+(4 points)
+% Project 17
+Your third partition on your main driver {\ltt{}hda3} is
+DOS and needs to be changed to linux native.
+What command do you give and exactly what do you type when
+running that command.
+\vskip 2.7in
+\ques
+(4 points)
+% Project 17
+When installing the operating system, 
+you want to install the compilers and debuggers on your machine.
+Which disk set do you need?
+\vskip 0.5in
+\ques
+(4 points)
+% Project 17
+You installed the smb server software but disabled it.
+What command did you run to disable this software?
+\vskip 0.5in
+\vfill\eject
+Analysis section. 
+
+\ques
+(4 points)
+Suppose the following work:
+
+{\program
+ ping 134.139.136.65
+ ping 134.139.45.6
+ ping 128.192.4.53
+\endprogram}
+
+and the following fails:
+
+{\program
+ ping 134.139.136.85
+\endprogram}
+
+What could be misconfigured on your machine?
+\vfill
+\ques
+(4 points)
+Assume all the above pings work and when a user logs into your
+machine they get a message ``{\ltt{}no home directory using /}".
+What could be misconfigured on your machine?
+\vfill
+\ques
+(4 points)
+Assume the pings and the home directories work.
+Suppose that all user home pages except for {\ltt{}bob} can be accessed.
+What could be misconfigured on the machine?
+Assuming {\ltt{}bob} doesn't have root priviledges,
+what could bob have done to cause this?
+\bye

@@ -1,0 +1,51 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Homework 21 \hfill Spring 2005}}
+\footline{Dennis Volper \hfill 25 April 2005 (Week 13 Lecture 1)\hfill
+Due: 27 April 2005 (Week 13 Lecture 2)}
+\parindent 0pt
+
+Purpose: To use some of the advanced socket I/O capabilities.
+
+You will build an upgraded TCP time client.
+You will call your client {\ltt{}ATCPtimec.c}.
+It will be an upgrade of the {\ltt{}TCPtime.c} client you built
+for your homework.
+
+As in you homework you will be using my server so,
+the default service should {\ltt{}"5001"},
+and the default host should be {\ltt{}"panther"}.
+
+Remember, the {\ltt{}panther} server is perverse and it will try
+to break up the reads and it will occasionally drop the connection.
+
+Client Upgrades:
+
+1) After setting up the socket, but before the read/reassemble loop,
+the client should print the size of the socket's
+send and receive buffers.
+
+2) Also before the read/reassemble loop; set up the socket to be asynchronous
+(non-blocking).
+
+3) Inside the read/reassemble loop; if the read
+the read gets an error of {\ltt{}EAGAIN} you should 
+(a) print an {\ltt{}X}
+(b) sleep for a second
+(c) retry the read
+
+Note: if the result of the read is {\ltt{}==0} (before you get 4 bytes)
+or the error is not {\ltt{}EAGAIN}; the server has lost or dropped the
+connection and you should exit without printing the time.
+
+Expected client behavior:
+When the server pauses in the middle of sending you the number
+you should see an {\ltt{}X} or two come out.
+The time you print should still be valid.
+
+Submit: a printout of your {\ltt{}ATCPtimec.c} file.
+
+A copy of this file must be located in your class home directory;
+and have the name above.
+
+\bye

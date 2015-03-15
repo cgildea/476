@@ -1,0 +1,40 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 19 \hfill Spring 2007}}
+\footline{Dennis Volper \hfill 11 April 2007 (Week 10 Lecture 2)\hfill 
+Due: 16 April 2006 (Week 11, Lab 1)}
+\parindent 0pt
+
+This project is about configuring mail.
+
+1) As {\ltt{}bob} modify your incoming mail handling as follows:
+
+a) If the Subject line contains the word ``Late",
+place the mail in a file called {\ltt{}latestuff}.
+
+b) If it is from {\ltt{}csa476xx} (use your account here)
+place the mail in a file called {\ltt{}importantstuff}
+
+c) If the body of the mail contains the word {\ltt{}Bargin}
+place the mail in a file called {\ltt{}junkmail}
+
+If an incoming mail matches multiple actions, the first actions
+specified should be taken.
+Use lockfiles in all cases.
+
+Report: the contents of bob's {\ltt{}.procmailrc}
+
+For the remaining questions, examine the {\ltt{}sendmail.cf}
+file on {\ltt{}panther}.
+
+2) sendmail is set to forward to a smart host.
+Report: the line in the {\ltt{}cf} that does this.
+
+3) mail for {\ltt{}bob} and {\ltt{}root} is to be delivered locally and
+not to the smart host.
+Report: the line in the {\ltt{}cf} that does this.
+
+4) Report the number of the ruleset that converts header
+names to a masqueraded form.
+\bye

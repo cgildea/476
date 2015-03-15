@@ -1,0 +1,92 @@
+\def\chapternumber{Handling Terminals -- 30 November 2009}
+\input slides.tex
+\centerline{\bbf Handling Terminals}
+
+A terminal or virtual terminal defines an interactive session with a user.
+
+Telnet and ssh clients emulate terminals, a bad client emulation
+or a client/server emulation mismatch will cause issues with the
+display on the screen.
+
+Linux allows terminals to be connected to serial ports.
+
+There are many different types of terminals.
+How you interact with the terminal depends on its type.
+Linux needs to know which type of terminal you are using.
+
+\newslide
+You still need to know how to talk to the terminal.
+
+{\ltt{}/etc/termcap}
+
+Each type has a name. Each name has associated capabilities.
+
+{\cprogram
+d0|vt100|vt100-am|vt100am|dec vt100:\
+  :do=^J:co#80:li#24:cl=\E[;H\E[2J:sf=2*\ED:\
+  :le=^H:bs:am:cm=5\E[%i%d;%dH:nd=2\E[C:up=2\E[A:\
+  :ce=\E[K:cd=\E[J:so=2\E[7m:se=2\E[m:\
+  :us=\E[4m:ue=\E[m:md=2\E[1m:mr=2\E[7m:\
+  :mb=\E[5m:me=\E[m:is=\E[1;24r:\
+  :rf=/usr/lib/tabset/vt100:\
+  :rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:\
+  :ks=\E[?1h\E=:ke=\E[?1l\E>:ku=\EOA:kd=\EOB:\
+  :kr=\EOC:kl=\EOD:kb=^H:ho=\E[H:k1=\EOP:k2=\EOQ:\
+  :k3=\EOR:k4=\EOS:pt:sr=2*\EM:vt#3:xn:\
+  :sc=\E7:rc=\E8:cs=\E[%i%d;%dr:
+  :tc=vt-generic:
+@endprogram}
+
+Example: for the {\ltt{}vt100} 
+the down arrow key ({\ltt{}kd}) 
+sends an escape followed by an {\ltt{}O}
+followed by an {\ltt{}B}
+
+special: {\ltt{}tc}--include another entry here; values before the
+{\ltt{}tc} are overrides.
+
+\newslide
+Adjusting your terminal settings.
+
+{\ltt{}stty:} -- sets options for the terminal
+
+{\ltt{}stty erase ^H}  -- control H becomes the backspace key
+\break
+{\ltt{}stty kill ^U}  -- control U becomes line erase
+\break
+{\ltt{}stty intr ^C}  -- control C sends an interrupt signal to the
+foreground program.
+
+For special keys the following can be used
+\break
+{\ltt{}stty erase ^V^H}  -- hit the backspace key where it says {\ltt{}^H}
+
+{\ltt{}stty --all}  -- examine your tty settings
+
+\vf
+Key processing:
+\break
+Many keystrokes are not delivered to the program;
+\break
+for example, control-C interrupts the program.
+
+{\ltt{}stty} can be used to change what is delivered
+\break
+There are system calls that allow
+a program can disable the special meaning of keys.
+\newslide
+\centerline{\bbf Virtual Consoles}
+
+6 virtual consoles available.
+
+Access with {\ltt{}alt-F1} ..  {\ltt{}alt-F6}
+\break
+Called {\ltt{}/dev/tty1} .. {\ltt{}/dev/tty6}
+\break
+w shows tty as {\ltt{}v01} .. {\ltt{}v06}
+
+You can switch back and forth.
+
+A virtual console has an {\ltt{}agetty} when waiting for a login.
+
+\bye

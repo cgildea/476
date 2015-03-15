@@ -1,0 +1,116 @@
+\input macros
+\input cstuff
+\nopagenumbers
+\headline{{\bf CECS 472\hfill Homework 10 \hfill Spring 2003}}
+\footline{Dennis Volper \hfill 26 April 2004 (Week 13 Lecture 1)\hfill
+Due: 10 May 2004 (Week 15 Lecture 1)}
+\parindent 0pt
+
+Purpose: Explore Routing, Domain Name Service and Subnetting Utilities
+
+Submission: 
+For the network topology question you will submit a picture which may be hand 
+drawn. 
+For all other you will submit short answers.
+Remember, your analysis of the output of the command is an important part
+of the assignment.
+
+1)
+Data link layer.
+(Manual entries: arp, ping,)
+
+Give part of the arp table for jaguar.
+The jaguar arp table is huge so you will give the arp entries
+You must include the arp entries for cheetah, panther, and lab37.
+
+ping is used only to make sure the arp table cache has the entries you want.
+
+\vfill
+2) Interface configuration. (Manual entries: ifconfig)
+
+For each IP interface give the following:
+a) The IP number.
+b) The name of the interface
+c) The netmask.
+d) The broadcast address
+
+Answer questions (a), (b), (c) and (d) for each of the following machines:
+\hfil\break
+i) cheetah
+\hskip1in
+ii) jaguar
+\hfil\break
+
+\vfill
+3) Routing tables. (Manual entries: netstat)
+
+a) What cables is the machine connected to.
+b) What gateways does the machine know about.
+
+Answer questions (a), and (b) for each of the following machines:
+\hfil\break
+i) cheetah
+\hskip1in
+ii) jaguar
+\hskip1in
+
+\vfill
+4) Remote access of data.
+(Manual entry: snmpnetstat, snmpstatus)
+
+The College of Engineering gateways have multiple interfaces.
+One of these gateways has an interface with the IP address 134.139.248.25,
+another has 134.139.248.1, another has 134.139.147.129.
+a) For each of these gateways list the type of gateway and the
+number of interfaces that are ``down" (this is the status of
+the gateway).
+b) For each of these gateways list
+the ``IP Interfaces" that are currently active on these gateways
+their internet numbers and their network masks (in /bits format).
+Notes: Whereas cheetah uses eth0 and eth1 and the
+gateways use things like et12, dhcp34 and FastEthernet0/12 for
+their interface names.
+{\ltt{}cheetah} supports snmpnetstat and snmpstatus.
+The gateways will not report out their routing tables,
+but it will respond to the {\ltt{}-i} option of {\ltt{}snmpnetstat}
+that queries it's interfaces (which gives you the answer you need).
+The community is required (as indicated in the manual entry)
+eventhough the ``usage" the program prints indicates it isn't.
+
+Remember: each port has {\it one} IP number, obviously
+one of the ports has the IP number given above.
+
+Note: entries without IP numbers are ``virtual" LANs and should
+be ignored.
+Be careful not to mix up the cablenumber/netmask with the interface
+IP number.
+
+5) Network topology. 
+(Manual entries: traceroute)
+
+Draw a map of the ``interesting" part Internet.
+Include the following machines in your map and include all gateways
+that connect those machines.
+Your map should include IP numbers of as many of the network connections
+as possible.
+Using the information from questions 1-4 above, you should be able
+to get IP numbers for all network connections.
+
+\medskip
+
+{\obeylines\parskip=0pt
+
+panther.net.cecs.csulb.edu
+jaguar.net.cecs.csulb.edu
+cheetah.cecs.csulb.edu
+aardvark.cecs.csulb.edu
+ecs412lin67.cecs.csulb.edu
+heart.cecs.csulb.edu
+lab71.net.cecs.csulb.edu
+lab37.net.cecs.csulb.edu
+ecs416lin196.cecs.csulb.edu
+charlotte.cecs.csulb.edu
+134.139.59.11
+
+}
+\bye

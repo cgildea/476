@@ -1,0 +1,164 @@
+\def\chapternumber{Unix Memory Management -- 16 February 2012}
+\input slides.tex
+\centerline{\bbf Memory Management}
+
+Virtual memory: Each process has $2^{64}$ bytes of memory.
+
+A page (block) of virtual addresses is somewhere in ram.
+
+Process Page table: Virtual to Real
+\break
+22000H $\rightarrow$  3000H
+\break
+per process.
+
+Swap space: used as slow ram, some pages may be found here.
+\break
+Page table indicates disk and location.
+\break
+Kernel: does not get paged.
+
+Buffers: I/O is buffered. Writes are delayed,
+\break
+Prefetches are allowed.
+\break
+if page is in a buffer when it requested
+\break
+the copy in the buffer is used
+
+Behavior:
+\break
+{\ltt{}cc} delay while compiler is read from disk
+\break
+{\ltt{}cc} no delay, compiler is still in RAM
+
+LRU: least recently used.
+\break
+Enough buffer: frequently used pages in RAM
+\break
+Too little buffer: frequent disk accesses
+
+\newslide
+{\ltt{}free}: memory summary
+
+If your free memory or buffers go to small, 
+\break
+you lose performance due to excess disk activity
+
+{\ltt{}ps}: 
+\break
+{\ltt{}VSZ}: virtual memory size: text (code) + data + stack
+\break
+{\ltt{}RSS}: resident set size
+\break
+Kilobytes of program in memory 
+
+{\ltt{}lpd}-- {\ltt{}VSZ 31}, {\ltt{}RSS 0}
+\break
+Program alive, using 31K of data + code
+\break
+neither the program nor its data are in RAM.
+\break
+Conclude: program idle.
+
+{\ltt{}csh}-- {\ltt{}VSZ 172}, {\ltt{}RSS 688}
+\break
+Program alive, 172K
+\break
+Active, in RAM, substantial memalloc.
+\break
+using over 0.6MB real RAM
+
+An idle process uses no RAM (swap space yes).
+\break
+Conclusion: processes that are inactive don't hurt performance.
+\break
+Conclusion: avoid servers that are active even when they aren't being used.
+
+\newslide
+\centerline{\bbf Swap Space}
+
+Actually: Paging space.
+\break
+The area on disk where pages of virtual memory are stored when
+there is not enough real RAM.
+
+Out of Core: Your requests exceeded the amount of swap space
+
+Two types of swap space:
+\break
+1) Swap partition (preferred)
+\break
+2) Swap file (easy to add)
+
+{\bit Swap partition}
+
+a) set up your partitions using fdisk.
+\break
+label the partition as ``swap" (82)
+
+b) set up the swap structures in the partition
+\break
+{\ltt{}mkswap /dev/sdc1}
+\break
+lots of options, usually the defaults work
+
+c) turn swapping on
+{\ltt{}swapon /dev/sdc1}
+
+On shutdown turn swapping off {\ltt{}swapoff /dev/sdc1}
+\newslide
+{\bit Swap file}
+
+a) create a contiguous file on disk
+\break
+{\ltt{}dd if=/dev/zero of=/myswap bs=1024 count=1024}
+\break
+1MB swapfile called {\ltt{}myswap}
+
+b) set up the structures in the file
+\break
+{\ltt{}mkswap /myswap}
+
+c) turn swapping on
+\break
+{\ltt{}swapon /myswap}
+\vf
+{\ltt{}/etc/fstab} can name swap partitions and files
+\break
+{\ltt{}swapon -a}
+\break
+turn on swapping for every swap thing listed in {\ltt{}fstab}
+\vt
+
+{\program
+/dev/sdc1  none swap sw 0 0
+/myswap    none swap sw 0 0
+\endprogram}
+\newslide
+\centerline{\bbf I/O Buffers}
+
+Amount of RAM is set by system (varies)
+
+Behavior:
+
+Write back: block will be written to disk when convenient.
+
+Prefetch: read next block in file too.
+
+Requirement: control writting buffers to disk
+\break
+{\ltt{}bdflush}: does the write back
+\break
+{\ltt{}update}: starts {\ltt{}bdflush}
+
+Requirement: write before removing disk or shutting down
+
+{\ltt{}sync}: write the buffers to disk.
+
+{\ltt{}umount}: forces a {\ltt{}sync} for that disk.
+
+Note: many drives can be ``locked" by software.
+\break
+Linux: lock drives with mounted file systems or active swap space.
+\bye

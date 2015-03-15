@@ -1,0 +1,121 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2003, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open book, open notebook. (All question 8 points, 104 total points possible)
+
+\ques
+% Homework 6
+How would you find out the amount of CPU time the {\ltt{}inetd}
+server has used?
+\vskip 0.8in
+Give the steps to set up a swap partition on {\ltt{}/dev/hda3}.
+\vskip 1.3in
+% Homework 2
+You want to check when {\ltt{}bob} last changed his password.
+How would you do this?
+\vskip 1.0in
+You want to find out what groups {\ltt{}bob} belongs to.
+How would you do this?
+\vskip 0.8in
+\ques
+% Homework 13
+How would you get a list of the groups that are 
+coming in over the network?
+\vskip 0.8in
+How would you specify what machine your NIS information comes from?
+(Give a file, and contents.)
+\vskip 0.5in
+\ques
+% Homework 4
+Write a script that counts the number of {\ltt{}agetty} programs
+that are currently running.
+\vfill\eject
+\ques
+% Homework 3
+Give the steps to set up an account for {\ltt{}bob}.
+\vskip 2.0in
+\ques
+% Homework 5
+How do you find out if the ext2 file system on {\ltt{}/dev/hda3} is
+marked clean or dirty?
+\vskip 1.0in
+Show the {\ltt{}fstab} that would allow the system administrator
+to mount a SCSI cdrom {\ltt{}/dev/scd0} on {\ltt{}/cdrom}.
+\vskip 0.7in
+Give the command to build a Unix file system on {\ltt{}/dev/hda3}.
+\vskip 0.7in
+\ques
+% Homework 7
+You want to modify your system so that only one
+(instead of the six) virtual terminal is allowed (i.e., only alt-F1 exists).
+What file do you need to change?
+\vskip 0.5in
+You want to build a new kernel at 11:30PM (after the lab closes).
+Describe how you do this? (Give files, with exact contents and commands.)
+\vfill\eject
+\ques
+% Homework 10
+Give the exact command to 
+make a compressed backup of the contents of all files in
+{\ltt{}/etc} to a floppy disk.
+\vskip 1.0in
+You want the key that pauses (suspends) a program ({\ltt{}susp}) to
+be control-Y instead of control-Z.
+Give the exact command to make this change.
+\vskip 0.5in
+\ques
+% Homework 8
+You switch from a PS/2 mouse to a serial mouse.
+What changes do you need to make in your system.
+(Include any configuration files and links that you would change.)
+\vskip 1.1in
+How would you find out what type of video card you have?
+\vskip 0.7in
+\ques
+% Homework 9
+Give the steps to build (not install) a new kernel.
+\vskip 1.8in
+You install a (complete) experimental version of Linux into the 
+{\ltt{}/dev/hda3} partition. You want do allow a dual boot for your
+original ({\ltt{}/dev/hda1}) Linux and the experimental version.
+What lines would you have to add to the {\ltt{}lilo.conf} file to do this.
+\vfill\eject
+\ques
+% Homework 1
+In what directory would you look to find the configuration file
+of your advanced audio system?
+\vskip 0.5in
+You need examine the output of {\ltt{}inetd},
+in what directory would you look?
+\vskip 0.5in
+You want to know if your kernel supports the reisner file system.
+In what directory would you look to find this out?
+\vskip 0.5in
+\ques
+% Homework 11
+What does the file {\ltt{}3c503.c} contain?
+\vskip 0.5in
+Give the exact command you would use to find out
+the (internet) name  of your machine.
+\vskip 0.5in
+How do you find out the netmask on the loopback interface?
+\vskip 0.5in
+\ques
+% Homework 12
+Give the exact command to configure the network card on the machine
+that {\it you} administer.
+\vskip 0.5in
+What command would you use to set up your machine so
+it can get through the gateway to the rest of the net?
+(Assume you network interfaces are already configured correctly.)
+\vskip 0.5in
+Describ how {\ltt{}hosts.equiv} works.
+\vskip 0.5in
+\bye

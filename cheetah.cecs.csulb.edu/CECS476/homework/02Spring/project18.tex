@@ -1,0 +1,37 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 18 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 10 April 2002 (Week 10 Lecture 2)\hfill 
+Due: 15 April 2001 (Week 11, Lab 1)}
+\parindent 0pt
+
+This project is about ftp.
+
+1) Log into jaguar.
+Ftp to your local machine.
+Use the username anonymous.
+Get the dummy test file.
+
+Report: On login. It says "Welcome,...";
+report the next two words after welcome.
+
+2) Compare the {\ltt{}ls} command that everyone else uses with the
+one for anonymous ftp.
+Examine the size of the two ls command
+and use {\ltt{}ldd} to look at the dynamically loaded libraries.
+
+Report: the difference between the two commands (sizes and dynamic libraries).
+
+3) The current setup of ftp is a little less secure than it
+could be.
+Some change would make it more secure.
+Make these changes.
+Then check your changes by logging log into jaguar a second time
+and using anonymous ftp to get the dummy test file again.
+
+Report: What changes you made.
+If a change was made in a file, report the name of the file and
+the result of your changed.
+If you changed ownership or protection, report the new owner or mode.
+\bye

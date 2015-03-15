@@ -1,0 +1,116 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Project 7 \hfill Fall 2002}}
+\footline{Dennis Volper \hfill 28 October 2002 (Week 9 Lecture 1)\hfill
+Due:6 November 2002 (Week 10 Lecture 2)}
+\parindent 0pt
+
+Purpose: To gain an in-depth understanding of
+remote procedure calls.
+
+You will build a remote program and a client that makes remote procedure calls 
+to that program.
+Your remote procedure calls will use TCP.
+
+Your remote program (server) will provide three remote procedures.
+Your rpc client will allow the user to call any of these procedures.
+For the remote program you must use your personal RPC program
+number.
+Compile and run the {\ltt{}Uniq_Id.c} program 
+(from {\ltt{}~volper/classes/472/programs/rpc_example})
+to get your program number.
+
+Overview: You are writing an rpc (client/server) program for a railroad freight
+train.
+When a shipment is loaded onto the train, information about
+that shipment is entered into a remote data base.
+This data base represents the shipments currently on the train.
+When a shipment is unloaded (hopefully at its destination),
+information about that shipment is returned to the client
+and the entry is deleted from the remote database.
+
+{\it THE SINGLE MACHINE PROGRAM} 
+
+In accordance with the RPC development procedure covered in class a
+single process (non-network, non-rpc) version of the program must be
+built first. Use the {\ltt{}train.c} program found in the 
+{\ltt{}programs/rpc} directory.
+You should copy that program, compile and run it so you know what it does.
+To build this into a rpc program you must to separate it into two files, 
+one file must contain the service procedures 
+and the other file must contain the user interface.
+When building the RPC version of the program you must
+organize the inteface procedures so you retain the same interface
+for the services as in {\ltt{}train.c}.
+
+{\it The Service Procedure}
+
+You must make each of the services provided by the program:
+( {\ltt{}LoadTrain}, {\ltt{}UnloadTrain}, {\ltt{}GetWeights},
+{\ltt{}CountBoxes}, {\ltt{}IsTrainFull} {\ltt{}ClearTrain})
+avaliable as remote procedures in a remote program.
+
+{\it The User Interface}
+
+The emphasis here is on the rpc implementation.
+Keep the same (simplified) user interface provided by {\ltt{}train.c}. 
+
+\vfill\eject
+
+{\it THE RPC SERVER PROGRAM}
+
+The rpc server program will be called {\ltt{}traind} when running.
+
+Make sure the number of values passed to each of the remote procedures
+corresponds to the number of parameters the corresponding
+sevice procedures requires.
+Make sure the number of values returned by each of the remote procedures
+corresponds to the number of values the corresponding
+sevice procedures delivers back to the user.
+
+Your job is to implement the server and the
+the server-side interfaces to provide the correct packing and unpacking
+necessary between the server procedures and the rpc calls.
+
+{\it THE RPC CLIENT}
+
+The rpc client program will be called {\ltt{}trainc} when running.
+It will take one command line argument, the name of the host to which 
+it is to make its rpc calls.
+Example: {\ltt{}trainc cheetah}
+
+Your job is to implement the client and the
+the client-side interfaces to provide the correct packing and unpacking
+necessary between the client and the rpc calls.
+You must also make the appropriate modification to the main program.
+
+{\bf Submit:} The fully commented copy (print-out) of the source code
+for the following files:
+{\ltt{}train.x},
+{\ltt{}train_cif.c},
+{\ltt{}train_sif.c},
+{\ltt{}train_client.c},
+{\ltt{}train_services.c},
+In addition the source code for these files should be placed in your home
+directory.
+Note: {\ltt{}train_client.c} and {\ltt{}train_services.c} are going 
+to be mostly my code from {\ltt{}train.c}. 
+I want to make sure you've made the appropriate modifications
+and appropriately separated the service procedures.
+
+Note that the files:
+{\ltt{}train_clnt.c},
+{\ltt{}train_svc.c},
+{\ltt{}train_xdr.c},
+{\ltt{}train.h},
+will be automatically generated, but since you don't do anything to them
+you should not submit them.
+
+\bigskip
+{\bf Reminder:}
+Your parameters in 
+{\ltt{}train_client.c} and
+{\ltt{}train_services.c} {\it must}
+use the types and modes specified in the single machine program.
+
+\bye

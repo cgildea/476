@@ -1,0 +1,105 @@
+\def\chapternumber{Review -- 7 June 2000}
+\input slides.tex
+\centerline{\bbf Review of Course -- 472}
+
+{\bit Client/Server:}
+
+{\program
+  Connection oriented  TCP
+  Connectionless       UDP
+  Iterative: accept - (read) - reply - close
+  Concurrent: Multiple processes -- fork
+              Single process -- select
+  Programming: port numbers, well-known-ports, 
+               hostnames, ip numbers
+  Network system calls: htonl(s), read, write,
+               sendto, receivefrom, send, recv.
+  Underlying calls: socket, bind, 
+               connect, accept
+  Data structures: sockadder_in, hostent
+\endprogram}
+
+{\bit Broadcast:}
+
+{\program
+  Enabling UDP broadcast.
+  Disabling replies only accepted from.
+  Broadcast addresses.
+\endprogram}
+
+{\bit Industrial strength programs:}
+{\program
+  Backgrounding.
+  Logging.
+  Signal handling (config files).
+\endprogram}
+
+
+\newslide
+{\bit RPC:}
+
+{\program
+  Build, split, create interface methodology.
+  1 parameter, 1 return value (dummies)
+  pack call unpack / unpack call pack
+  Programming: program and procedure numbers, rpcgen
+  Underlying: xdr
+  Portmapper: relating a program number to a port.
+\endprogram}
+
+{\bit CORBA:}
+
+{\program
+  Build classes, user interface and main separately.
+  Create interface definition file.
+  Build CORBA version of main.
+  Modify identifiers in Classes.
+  Programming: stringified remote references, 
+       idl compiler
+  ORB: advertises and finds remote references
+\endprogram}
+
+\newslide
+{\bit Network principles:}
+
+{\program
+  IP addresses vs. names.
+  Ethernet addresses vs. ip addresses -- arp
+  Routing: send direct or send to a closer gateway 
+           (netmask and route table)
+  Automatic routing tables: RIP, OSPF
+  Concepts: licenses, subnetting, 
+           cables/machines/broadcast
+
+  TCP: sequence numbers, sliding windows, 
+       acknowledgements, and retransmissions
+
+  Packets: source, destination addresses
+  Levels: take "data" and add header
+  Tunneling: encapsulate and add header
+\endprogram}
+
+\newslide
+{\bit Network information:}
+
+{\program
+  YP: Master server, slave servers, clients
+  DNS: client, servers; a hierarchy (tree) of
+       servers, contact the one you need
+  NFS: using a file system from another machine
+  SNMP: allows examination of data by a 
+       friendly machine
+  NTP: keeping correct time.
+\endprogram}
+
+{\bit Network tools and management:}
+
+{\program
+  traceroute: checks routing
+  ifconfig: checks or sets network interfaces
+  netstat: check routing tables and other 
+       things about the network
+  arp: checks or sets the arp table.
+\endprogram}
+\bye
+  

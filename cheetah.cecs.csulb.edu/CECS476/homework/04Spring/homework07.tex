@@ -1,0 +1,57 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 7 \hfill Spring 2004}}
+\footline{Dennis Volper \hfill 18 February 2004 (Week 4 Lecture 2)\hfill 
+Due: 23 February 2004 (Week 5 Lab 1)}
+\parindent 0pt
+
+Purpose: This part of the assignment covers init.
+
+Submission: You will submit a written document, plus a ``demonstration".
+
+You want to attach a terminal to serial port 0 (DOS calls this COM1).
+(1) Report: What line would you need to change in the inittab.
+(Do not make this change, just report the line that would need
+to be changed.)
+
+The following must be done from CONSOLE:
+
+Modify your {\ltt{}inittab} so that control-alt-delete does not
+reboot the machine.
+Cause {\ltt{}init} to re-read {\ltt{}inittab}.
+Check to make sure that your have successfully disabled control-alt-delete.
+
+Good practice, never delete or modify a default configuration line, 
+comment the old one out (so you can go back to it) and add the new one.
+
+{\it Demonstration}: 
+call the instructor over and let him type control-alt-delete
+(your machine should not reboot).
+
+Cleanup: restore {\ltt{}inittab} to it's original condition. 
+
+(2) Report: The exact text of the line that disables control-alt-delete.
+The command you ran to make that line take effect
+
+On shutdown, how many seconds does {\ltt{}init} wait before 
+forcibly terminating processes? (Hint: {\ltt{}man init})
+\break
+3) Report: the number of seconds.
+
+This part of the assignment cron and at.
+
+Cron: as bob; set up you crontab so that you run an {\ltt{}ls} command
+every minute (redirect the output of the {\ltt{}ls} to a file). 
+
+4) Report: your crontab entry. Just the one line is ok.
+
+Clean up: remove your crontab entry.
+
+At: Set up an at entry, that in 5 minutes from now will
+run the {\ltt{}ls} command.
+(Again, redirect the output of the {\ltt{}ls} to a file.) 
+
+5) Report: the exact command you used to do this.
+
+\bye

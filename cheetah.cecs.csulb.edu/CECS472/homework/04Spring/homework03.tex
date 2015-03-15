@@ -1,0 +1,120 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Project 3 \hfill Spring 2004}}
+\footline{Dennis Volper \hfill  9 February 2004 (Week 3 Lecture 1) \hfill
+Due: 23 February 2004 (Week 5, Lab 1)}
+\parindent 0pt
+
+Purpose: This assignment is to gain an in-depth understanding of
+a client-server program.
+
+You will build a time client and an iterative connectionless time server
+using the techniques found in Chapter 9 of the text.
+(You will use UDP.)
+
+Submission: You must submit a print out of both the client and the server.
+In addition you must place the source code for both the client and
+the server in your home directory in files called {\ltt{}t472c.c}
+and {\ltt{}t472d.c}, respectively. I will access these files to check
+the correctness of your programs.
+
+Port numbers: You must use your personal well-known-port number.
+Copy the file\hfill\break {\ltt{}~volper/classes/472/shells/get_port.c}
+into your home directory. The {\ltt{}get_port} procedure in this file 
+returns your personal port number.
+Use an include directive to make the procedure available,
+and call this procedure in both your client and server at the point
+the {\it default} service is set up.
+
+\noindent
+{\it THE TIME SERVER}
+
+Your time server will listen on your well known UDP port.
+Whenever it receives a message from a client it will call {\ltt{}gettimeofday}
+and return the {\ltt{}tv_sec} and {\ltt{}tv_usec} values to the client.
+
+To give a little visibility to what the server it doing;
+after it returns the time, it will use the {\ltt{}inet_ntoa} call to
+print (to the screen) the internet number of the client to which the time
+was returned.
+The internet number is in the return address,
+the {\ltt{}inet_ntoa} call was used in an example in the Chapter 6 lecture.
+It wasn't used with the return address in that example, so you will
+have to put things together a little differently.
+(Hint: it can be done entirely within a {\ltt{}printf} statement.)
+
+\noindent
+{\it THE TIME CLIENT}
+
+Your time client will contact your server and get the time on the server's 
+machine.
+The client will send a  message and receive as a reply the
+time on the server's machine given as the two {\ltt{}gettimeofday} numbers
+({\ltt{}tv_sec} and {\ltt{}tv_usec}).
+The client will report two items:
+
+1) The {\it rtt}, that is the round trip time between the machines
+in {\bf microseconds}. (The same thing you did in homework 2.)
+
+2) The {\it offset}, that is the difference,
+between the client machine's clock and server machine's clock in 
+{\bf microseconds}.
+Thus, positive offsets will mean that the client's clock is faster than the 
+server clock and negative offsets mean that it is slower.
+You client shall use the following formula for the offset:
+\hfill\break
+{\ltt{}(client_start_time - server_time) + (rtt/2)}.
+Subtraction the times using the same technique as you did for computing
+the rtt in project 2.
+
+You only need one round trip and offset (not three as in homework 2).
+
+Requirements:
+
+You have 8 bytes to ship from the server to the client.
+After converting to network order, you will use two 
+{\ltt{}memcpy} calls to put these
+into a single 8 character array and then ship the eight bytes in one write.
+At the client end, do one read, use two {\ltt{}memcpy} calls to unpack,
+then convert to host order.
+
+\bigskip
+Recommendations: (not requirements)
+
+Server)
+A good starting point is Comer's {\ltt{}UDPtimed.c}.
+Don't forget to change your default {\ltt{}service} to use
+{\ltt{}get_port}.
+Get rid of the Unix Epoch stuff, have both your client and your server
+use the {\ltt{}gettimeofday} time format.
+
+Client) 
+Start with your UDP client from homework 2, it's most of the solution.
+Remove the {\ltt{}for} loop.
+Switch the default service to use {\ltt{}get_port}.
+Switch the code to read and unpack the time values.
+Add the offset calculation.
+
+
+Testing:
+If you want, you can use {\ltt{}ctime} to print out the seconds part of
+the time you get from the server to make sure that what you unpacked
+to make sure it is reasonable. Don't forget to do at least one test
+with your client and server running on different machines.
+
+Note:
+This is UDP; you can lose packets.
+As in homework 2, a lost packet will cause your client to hang.
+Don't worry if your client hangs occasionally.
+
+%Minimum Testing:
+%\hfill\break
+%client: {\ltt{}cheetah} \qquad server: {\ltt{}cheetah}
+%\hfill\break
+%client: {\ltt{}cheetah} \qquad server: {\ltt{}puma}
+%\hfill\break
+%client: {\ltt{}puma} \qquad server: {\ltt{}jaguar}
+%\hfill\break
+%client: {\ltt{}labxx} \qquad server: {\ltt{}jaguar}
+
+\bye

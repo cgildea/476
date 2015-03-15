@@ -1,0 +1,278 @@
+\def\chapternumber{Chapter 8 --- Server Software Issues -- 29 November 2010}
+\input slides.tex
+\centerline{\bbf Chapter 8}
+\centerline{Server Software Issues}
+
+\centerline{\bbf Iterative vs. Concurrent}
+\vt
+Principle: one long request should not block short requests.
+
+Principle: a long interactive connection (a telnet login) should not prohibit
+other connections.
+
+Observation: iterative servers are simpler.
+
+Design choice: use an iterative server when all requests are
+short (like daytime).
+
+Design choice: use a concurrent server when you have interaction with a user.
+
+Design choice: use a concurrent server when the request takes a long time,
+(file transfer protocol).
+
+\newslide
+\centerline{\bbf Conection-Oriented vs. Connectionless}
+\vt
+Problems: missing data, duplication of data, order of data
+\vt
+TCP: protocol handles the problems
+
+UDP: client and/or server must handle the problems
+\vt
+TCP advantage: server is simpler to write
+
+TCP disadvantage: slower, connection usually closes on error
+\vt
+UDP advantages: low protocol overhead, flexible handling of problems
+
+UDP disadvantage: server is more complex to write (correctly)
+
+TCP: point-to-point communication.
+Client-server format.
+
+UDP: many-to-many communication.
+Allows broadcast, multicast and peer-to-peer.
+
+TCP: stream, no boundary preservation
+
+UDP: message (datagram), one send-one recv.
+\newslide
+\centerline{\bbf Stateless vs. Intelligent}
+
+Observation: clients and servers crash
+
+Principle: Don't trust the other program (it may be gone)
+
+Stateless: don't rely on past transactions
+
+Client must repeat a full command
+\break
+ex: give me block 3 of {\ltt{}/etc/termcap}
+
+Server must sent a full reply
+\break
+ex: here is block 4 of {\ltt{}/etc/passwd}
+
+Note: past information may be used for caching
+\break
+(this does not violate stateless)
+\vt
+Of course, the program still needs to handle what happens if the
+program itself (or the machine it is on) crashes.
+\newslide
+\centerline{\bbf Robustness}
+\bt
+Observation: What can go wrong will go wrong
+
+Examples:
+\break
+-file system full
+\break
+-process table full
+\break
+-out of memory (swap space)
+\break
+-client or server involved in a crash
+
+Principle: Plan to survive
+
+Examples of ``rules"
+
+One client crashing shouldn't lock the entire server
+\break
+-Server should still handle other/future clients.
+
+Server crashing should cause the client to exit.
+\break
+-Do not hang or infinite loop.
+\break
+-OK to sleep, then retry, but after a while--give up.
+
+The server should carefully allocate or write.
+\break
+-Either report the error to client or retry.
+\newslide
+\centerline{\bbf TCP: Master-Slave Paradigm}
+
+In a TCP server there are two types of sockets.
+
+{\bit Master Socket}:
+\break
+The result of the socket.
+\break
+Used only for the accept.
+\break
+Cannot be used to talk to a client.
+
+{\bit Slave Socket}:
+\break
+The result of an accept.
+\break
+Used only to talk to a client.
+\break
+Cannot be used for the accept.
+\vf
+\centerline{\bbf UDP server}
+
+There is only one type of socket.
+\break
+Think post-office box.
+\break
+There is no accept.
+\break
+This socket is used for send and receive.
+
+
+\newslide
+\centerline{\bbf Iterative, Connection-Oriented Server}
+\centerline{Algorithm 8.1}
+\vt
+.PS
+boxwid=1i
+boxht=0.3i
+Ss:box invisible "socket"
+Sc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Sl:box invisible with .n at last box.s + (0,-boxht) "listen"
+Sa:box invisible with .n at last box.s + (0,-boxht) "accept"
+Sr:box invisible with .n at last box.s + (0,-boxht) "read"
+Sw:box invisible with .n at last box.s + (0,-boxht) "write"
+Scl:box invisible with .n at last box.s + (0,-boxht) "close"
+Smcl:box invisible with .n at last box.s + (0,-boxht) "close master"
+arrow from Ss.s to Sc.n
+arrow from Sc.s to Sl.n
+arrow from Sl.s to Sa.n
+arrow from Sa.s to Sr.n
+arrow from Sr.s to Sw.n
+arrow from Sw.s to Scl.n
+arrow from Scl.s to Smcl.n
+arc rad 0.3i -> from Sw.e to Sr.e
+arc rad 0.9i -> from Scl.e to Sa.e
+.PE
+\centerline{\box\graph}
+\mfill
+Chapter 10 gives detailed code
+\newslide
+\centerline{\bbf Iterative, Connectionless Server}
+\centerline{Algorithm 8.2}
+\vt
+.PS
+boxwid=1.5i
+boxht=0.3i
+Ss:box invisible "socket"
+Sc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Sr:box invisible with .n at last box.s + (0,-boxht) "recvfrom"
+Sw:box invisible with .n at last box.s + (0,-boxht) "sendto"
+Scl:box invisible with .n at last box.s + (0,-boxht) "close"
+arrow from Ss.s to Sc.n
+arrow from Sc.s to Sr.n
+arrow from Sr.s to Sw.n
+arrow from Sw.s to Scl.n
+arc rad 0.3i -> from Sw.e to Sr.e
+.PE
+\centerline{\box\graph}
+\mfill
+Chapter 9 gives detailed code
+\newslide
+\centerline{\bbf Concurrent, Connectionless Server}
+\centerline{Algorithm 8.3}
+\vt
+.PS
+boxwid=1.5i
+boxht=0.3i
+Ps:box invisible "socket"
+Pc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Pa:box invisible with .n at last box.s + (0,-boxht) "recvfrom"
+Pf:box invisible with .n at last box.s + (0,-boxht) "fork"
+Pcla:box invisible with .n at last box.s + (0,-boxht) "close"
+Pr:box invisible with .e at Pcla.w + (-0.5i,0) "compute"
+Pw:box invisible with .n at last box.s + (0,-boxht) "sendto"
+Pcl:box invisible with .n at last box.s + (0,-boxht) "exit"
+arrow from Ps.s to Pc.n
+arrow from Pc.s to Pa.n
+arrow from Pa.s to Pf.n
+arrow from Pf.s to Pcla.n
+arrow from Pf.sw to Pr.ne
+arrow from Pr.s to Pw.n
+arrow from Pw.s to Pcl.n
+arc rad 0.6i -> from Pf.e to Pa.e
+.PE
+\centerline{\box\graph}
+\newslide
+\centerline{\bbf Concurrent, Connection-Oriented Server}
+\centerline{Algorithm 8.4}
+\vt
+.PS
+boxwid=1i
+boxht=0.3i
+Ps:box invisible "socket"
+Pc:box invisible with .n at last box.s + (0,-boxht) "bind"
+Pl:box invisible with .n at last box.s + (0,-boxht) "listen"
+Pa:box invisible with .n at last box.s + (0,-boxht) "accept"
+Pf:box invisible with .n at last box.s + (0,-boxht) "fork"
+Pcla:box invisible with .n at last box.s + (0,-boxht) "close"
+Pmcla:box invisible with .n at last box.s + (0,-boxht) "close master"
+Pcmb:box invisible with .e at Pcla.w + (-0.8i,0) "close master"
+Pr:box invisible with .n at last box.s + (0,-boxht) "read"
+Pw:box invisible with .n at last box.s + (0,-boxht) "write"
+Pcl:box invisible with .n at last box.s + (0,-boxht) "close"
+Pex:box invisible with .n at last box.s + (0,-boxht) "exit"
+arrow from Ps.s to Pc.n
+arrow from Pc.s to Pl.n
+arrow from Pl.s to Pa.n
+arrow from Pa.s to Pf.n
+arrow from Pf.s to Pcla.n
+arrow from Pcla.s to Pmcla.n
+arrow from Pf.sw to Pcmb.ne
+arrow from Pcmb.s to Pr.n
+arrow from Pr.s to Pw.n
+arrow from Pw.s to Pcl.n
+arrow from Pcl.s to Pex.n
+arc rad 0.3i -> from Pw.e to Pr.e
+arc rad 0.6i -> from Pcla.e to Pa.e
+.PE
+\centerline{\box\graph}
+\mfill
+Chapter 11 gives detailed code
+\newslide
+\centerline{\bbf TCP Deadlock}
+
+You have a limited amount of network buffer.
+If you exceed your buffer; UDP drops messages.
+
+TCP is not allowed to drop data, it must buffer.
+If the receiver runs out of buffer, the sender is unable to write.
+When this happens {\ltt{}write} call on the sender block.
+If both the client and the server write before reading,
+deadlock can occur.
+
+Suppose both the client and server write a 32Mb message,
+then read. With the default TCP options, this usually deadlocks.
+
+\newslide
+\centerline{\bbf Multihomed and Machine Portable Code}
+
+When the server calls {\ltt{}bind} it specifies an
+address, including a port and an internet address.
+\break
+This port and address must be available.
+\break
+Usually {\ltt{}INADDR_ANY} is specified which allows the
+program to listen on all network interfaces of the server.
+
+Alternate: specify an internet number such as {\ltt{}134.139.248.17}.
+\break
+The program the only listens on the interface with that number.
+\break
+Used in firewalls. Allows connection only from the inside or the outside
+of the firewall.
+\bye

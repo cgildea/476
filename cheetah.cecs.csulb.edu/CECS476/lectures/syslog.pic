@@ -1,0 +1,123 @@
+\def\chapternumber{Syslog -- 29 November 2010}
+\input slides.tex
+\centerline{\bbf Syslog}
+
+Log a message to the system.
+
+{\program
+openlog("ProgName",options,facility);
+syslog(LOG_NOTICE,"Out of Disk");
+\endprogram}
+
+{\ltt{}openlog}: called once per program
+\break
+Establishes syslog defaults.
+\break
+Name of program.
+\break
+options--such as include the pid with the message.
+\break
+facility--type of log
+
+{\ltt{}syslog}: called for each message to be logged
+\break
+Sends a message to {\ltt{}syslogd}.
+\break
+{\ltt{}LOG_NOTICE}--the log level
+\break
+message--to be recorded.
+\vt
+
+{\program
+openlog("mail",LOG_PID,LOG_MAIL);
+syslog(LOG_EMERG,"Failed");
+\endprogram}
+
+{\ltt{}"mail"} our name for logging purposes
+\break
+{\ltt{}LOG_PID} --include process PID in log
+\break
+{\ltt{}mail} --which log to record it in
+\break
+{\ltt{}LOG_EMERG} --log level
+\break
+{\ltt{}Failed} --message to be logged
+
+{\ltt{}logger -p mail.emer "Failed"} \quad (Script call)
+\newslide
+\centerline{\bbf syslog.conf}
+
+{\ltt{}syslogd}--gets the message, handles it as defined by the configuration
+file {\ltt{}/etc/syslog.conf}.
+
+{\ltt{}syslog.conf} format: selector --- action
+
+Selectors:
+\break
+{\ltt{}*.emerg} ---all at {\ltt{}LOG_EMERG} or higher.
+\break
+{\ltt{}mail.*}  --- all levels of info from mail
+\break
+{\ltt{}news,lpr.err} ---all {\ltt{}news} or {\ltt{}lpr} at
+{\ltt{}LOG_ERR} or higher.
+\break
+{\ltt{}*.=debug} -- only {\ltt{}LOG_DEBUG} (not ``and higher")
+\break
+{\ltt{}*.!debug} -- lower than {\ltt{}LOG_DEBUG}
+\break
+{\ltt{}*.=debug,news.none} -- all debug, except news
+
+Actions:
+\break
+{\ltt{}sam} ---if sam is logged in, display it on his terminal
+\break
+{\ltt{}/var/log/cron} ---put it into this file.
+\break
+{\ltt{}@aardvark.cecs.csulb.edu} ---send it to this machine.
+
+Examples:
+
+{\program
+mail.*            /var/log/maillog
+*.notice          root
+kern.emerg        /dev/console
+cron.err          @aardvark.cecs.csulb.edu
+\endprogram}
+
+Syslog will create log files, it will not create directories,
+do that by hand.
+\newslide
+\centerline{\bbf syslog startup}
+
+{\ltt{}syslogd -r} --- enables remote machines to
+report log entries
+
+{\ltt{}-h} --- if you received a remote log entry you
+are allowed to forward it.
+
+\vt
+
+\centerline{\bbf Synchronization}
+
+The unix file system allows buffering.
+\break
+If a write has been requested, the write will be performed when convenient.
+\break
+This is more efficient interms of disk access.
+
+{\ltt{}syslog} traditionally does not use buffering.
+You may tell it to do so by adding a minus sign in front
+of an entry in {\ltt{}syslog.conf}.
+For example:
+
+{\program
+mail.*            -/var/log/maillog
+\endprogram}
+
+Down side: if it's an error message about what is causing the machine
+to crash, it probably won't get written before the machine crashes.
+\break
+At a minimum, do not use the minus for levels {\ltt{}alert} or
+{\ltt{}emerg}, since these are often the last message before
+some sort of a crash.
+\bye

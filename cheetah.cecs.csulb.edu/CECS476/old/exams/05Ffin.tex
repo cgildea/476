@@ -1,0 +1,169 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 2005, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook. No digital or communitcations devices.
+All questions 4 points.
+
+\ques
+% Project 14
+You want to export the
+{\ltt{}/home} directory on your machine to all machines in the lab.
+Give the {\ltt{}exportfs} entry to do this.
+\vskip 0.8in
+\ques
+% Project 14
+Give the {\ltt{}fstab} entry that would mount
+the {\ltt{}/usr/local} directory from {\ltt{}panther.net.cecs.csulb.edu}
+on the {\ltt{}/usr/local} directory of your machine.
+\vskip 0.7in
+\ques
+% Project 20
+Describe how a SUID program works.
+\vskip 2.4in
+\ques
+% Project 15
+Give the {\ltt{}printcap} entry (on {\ltt{}lab99})
+for a printer called {\ltt{}laser3}
+on {\ltt{}panther}, this printer will use {\ltt{}/var/spool/laser3}
+as it's local spool directory.
+\vskip 0.8in
+\ques
+% Project 17
+After {\it installing} the system, describe the steps you had to take
+to enable NIS.
+\vskip 2.4in
+\vfill\eject
+\ques
+% Project 13
+You want to add the users in from the NIS server {\ltt{}panther}
+to those found in your local groups file.
+What files do you need to change and what changes do you need to make?
+\vskip 1.7in
+\ques
+% Project 24
+You wish to install the executable file {\ltt{}clogit}
+from the {\ltt{}csa476z5} account on {\ltt{}cheetah} as
+{\ltt{}/home/bob/sid} on {\ltt{}lab99}.
+You wish the file to be owned by {\ltt{}bob} and it should be a SUID
+executable. You can use the {\ltt{}bob} account on {\ltt{}lab99}
+to do the install.
+Give the {\ltt{}distfile}.
+\vskip 1.4in
+\ques
+% Project 19
+In {\ltt{}sendmail.cf}:
+Define a group {\ltt{}Q} to contain {\ltt{}bob} and {\ltt{}sue}
+and a macro {\ltt{}R} to be {\ltt{}panther}.
+If you were looking for where the class Q is {\it used} what would you look for?
+\vskip 1.6in
+\ques
+% Project 25
+Give the {\ltt{}smb.conf} entries necessary to make
+{\ltt{}/home/share} available as a public share to
+machines running Windows.
+\vskip 1.5in
+\vfill\eject
+\ques
+% Project 19
+SWITCHME?
+You want mail going to {\ltt{}webmaster} to be delivered locally
+and not to the smart host.
+What file would you need to change and what change would you need to make.
+\vskip 1.0in
+\ques
+% Project 18
+How would you want to find out what libraries are used by
+{\ltt{}/usr/sbin/httpd}. Give the exact command to do this.
+\vskip 0.7in
+\ques
+% Project 21
+You wish users from {\ltt{}panther} to be able to read and
+post news on your machine.
+What file will need to be modified
+and what modification would be made to that file?
+\vskip 2.4in
+\ques
+% Project 21
+You wish your news server to send news to the
+{\ltt{}panther} news server.
+What files need to be modified and what modifications are done to those files?
+\vskip 2.2in
+\vfill\eject
+\ques
+% Project 17
+During the configure step of installing the system, name two things you
+configured.
+\vskip 0.7in
+\ques
+% Project 18
+You want to disallow {\ltt{}bob} from using ftp and
+allow NIS accounts to use ftp.
+What files do you need to modify and what modifications do you need to make?
+\vskip 1.4in
+\ques
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}x.csuf.edu} ({\ltt{}140.111.1.1}) and 
+{\ltt{}y.csuf.edu} ({\ltt{}140.111.1.2}).
+Give the entire forward zone file for the zone {\ltt{}csuf.edu},
+including the SOA, if the DNS server for that zone
+is {\ltt{}lab99.csuf.edu} ({\ltt{}140.111.2.3}).
+\vskip 4.2in
+\ques
+% Project 23
+Give the zone entry in {\ltt{}named.conf}
+for {\ltt{}140.111.1} (reverse lookup) assuming
+the name of the file is {\ltt{}named.rev}.
+\vfill\eject
+\ques
+% Project 15
+Send all log messages from the 
+facility {\ltt{}lpd} that are at level {\ltt{}debug} or higher
+to a file called {\ltt{}/var/log/lpd}.
+Give the file name and the line you need in that file.
+\vskip 0.8in
+\ques
+% Project 16
+What is a boot set?
+Name one boot set.
+\vskip 1.2in
+\ques
+% Project 22
+Describe the steps you need to take to require passwords to access
+a web directory from a browser.
+\vskip 1.9in
+\ques
+% Project 22
+Give, in the correct order, the {\ltt{}http.conf} directives that would
+disallow web access to all of {\ltt{}/www}, allow access to {\ltt{}/www/public},
+and allow {\ltt{}.htaccess} files to operate in {\ltt{}/www/public}.
+\vskip 2.3in
+\vfill\eject
+Analysis section. Assume {\ltt{}lab88} is a machine you administer.
+For each of the questions on this page
+state what things would you check on {\ltt{}lab88}
+and for each thing you would check state how you would perform the check.
+
+\ques
+User {\ltt{}csa476z7} receives the message ``no home directory"
+when he logs in.
+\vfill
+\ques
+User {\ltt{}bob} tries {\ltt{}telnet cheetah} and receives the
+message ``no path to host".
+\vfill
+\ques
+The public html directory ({\ltt{}httpd} is running on {\ltt{}lab88}) for
+{\ltt{}bob} can't be seen, the public html directory for {\ltt{}csa476z7}
+can be seen.
+\vfill
+\ques
+User {\ltt{}bob} can log in, user {\ltt{}csa476z7} can't.
+\bye

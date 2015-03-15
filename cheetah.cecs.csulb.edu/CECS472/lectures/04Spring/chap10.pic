@@ -1,0 +1,89 @@
+\def\chapternumber{Chapter 10 --- Iterative Connection-Oriented Server -- 6 December 2000}
+\input slides.tex
+\centerline{\bbf Chapter 10}
+\centerline{Iterative Connection-Oriented Server}
+
+Uses the same passive socket procedure (but uses parameter TCP).
+
+see Section 10.5 for code
+
+{\program
+int msock, ssock;
+msock=passiveTCP(service,QLEN);
+ssock=accept(msock,(struct sockaddr *)&fsin,&alen);
+\endprogram}
+
+{\ltt{}msock}: is the master socket.
+\break
+Its TCP purpose is to produce slave sockets.
+\break
+A slave socket provides communication to {\bit one} client.
+
+The {\ltt{}bind} and {\ltt{}listen} are on the master socket.
+
+The master socket waits for a {\ltt{}connect}.
+
+{\ltt{}accept}: accepts a connection and creates a socket ({\ltt{}ssock}) for
+that connection.
+
+{\ltt{}ssock} is used by the server to read from and write to the client. 
+
+{\ltt{}write(fd,...)}: Here {\ltt{}fd=ssock} and a message is sent to the
+client.
+
+Note: any message the client sends is ignored.
+\newslide
+{{\ltt{}close(ssock)}: the connection between the client and the server is 
+ended, the socket is deallocated and the descriptor is set to null.
+\break
+The next socket created may use the same slot in the descriptor array.
+
+
+The server should close the master socket only when (if) the server exits.
+
+Closing the master socket means no further requests for a connection will
+be accepted by the server.
+
+Closing a slave socket means the server no longer wants to talk to the client.
+\break
+A connection can still be made to a new client.
+
+Writing to a socket closed on the other end either gets an error (TCP)
+or the message is quietly discarded (UDP).
+\vf
+Note: if the server exits, all descriptors, including sockets, are 
+automatically closed.
+\break
+We recommend an explicit close.
+\newslide
+\centerline{\bbf Review}
+
+{\ltt{}ssock} is the connection between the server and a client.
+
+{\ltt{}ssock} is the connection between an internet address/port pair of the 
+server and an internet address/port pair of the client.
+
+client view: {\ltt{}connect} attaches you to a socket of the server 
+{\bit created} by the address/port you named in the connect.
+It does not connect you to the master socket on the port you named.
+
+UDP: Master (passive) socket is used to send and receive messages.
+
+TCP: Master socket is used to {\ltt{}accept} which creates a new socket.
+The new socket is used for reads and writes.
+\newslide
+\centerline{\bbf Termination (Issue)}
+
+Single reply then terminate strategy:
+\break
+Socket and structures will go away shortly.
+\break
+Brief retention to ensure late packets are rejected gracefully.
+
+Problem: if the server {\ltt{}while(1)}'s fast (due to alot of requests)
+the number of sockets waiting to go away can become large.
+
+Design principle: consider the rate of requests.
+
+Frequent programming problem: a failure triggers an immediate retry.
+\bye

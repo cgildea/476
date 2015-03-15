@@ -1,0 +1,167 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2013, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open book, open notes, access to your the machine you administer.
+(All question 8 points, 96 total points possible)
+\hfill\break
+\ques
+% Homework 9
+The user {\ltt{}sue} wishes to set her background to {\ltt{}solid blue}
+regardless of which window manager she chooses to use.
+Give the file and the line she needs to add to that file.
+\vskip 0.6in
+When any user chooses the {\ltt{}twm} window 
+manager you wish modify the default configuration for that window manager
+to use {\ltt{}Shift-left-click} to change the background color.
+What file would you need to change? (Give the full path.)
+(Just give the file name, you don't need to give the change.)
+\vskip 0.4in
+What link controls the selection of a default window manager for
+all users on the system? (Of course users can override this.)
+\vskip 0.4in
+\ques
+% Homework 1
+Give the names of two stream editors that are available on your machine.
+Also give the command(s) you used to find out this information.
+\vskip 0.8in
+Give the full command (with arguments) that will tell you which libraries have
+been {\it recently} installed on your system.
+\vskip 0.4in
+In what {\it directory} would you {\it most likely} find
+the following:
+\hfill\break
+A) What IO ports on your system were found by the kernel:
+\vskip 0.3in
+B) Log file for the mysql database:
+\vskip 0.3in
+\ques
+% Homework 8
+What command would you use to build a new kernel (assuming you have
+already modified the configuration file).
+\vskip 0.4in
+In the main labs we boot the {\ltt{}/boot/vmlinuz} kernel with
+from the boot sector on {\ltt{}/dev/sda} with {\ltt{}/dev/sda1}
+as the root partition.
+Give a minimal {\ltt{}lilo.conf} file to do this.
+(Note: you are not allowed to access those machines to answer this question.
+\vskip 1.4in
+\vfill\eject
+\ques
+% Homework 6
+You have an {\ltt{}/dev/sdc1} swap partion you wish to use. to
+Give the commands to place the swap structure into parttion and to activate
+the swapping on the partition by hand (don't use {\ltt{}fstab}).
+\vskip 1.0in
+Give the exact command (with options) to list all processes being run from
+{\ltt{}/dev/tty1}. (You are expected to do a manual lookup for the options.)
+\vskip 0.4in
+\ques
+% Homework 11
+A machine has internet number {\ltt{}128.139.35.122} and
+netmask {\ltt{}255.255.255.252}; give it's subnet/cable number and subnet
+broadcast address.
+\vskip 1.0in
+For looking up host names/numbers you wish to use your the information
+in you {\ltt{}/etc/hosts} before you attempt to use DNS.
+Give the name of the file you need to modify and the new value of the
+entry that you need to change in that file.
+\vskip 0.6in
+You want your DNS server to be {\ltt{}142.15.22.99}.
+Give the file name and the entry to do this.
+\vskip 0.4in
+\ques
+% Homework 12
+Your IP number is {\ltt{}128.139.35.122} and netmask is {\ltt{}255.255.255.252};
+give the exact command to configure your (only) network interface.
+\vskip 0.4in
+Your default (and only) gateway is {\ltt{}128.139.35.121};
+give the exact command to configure your machine to use this gateway.
+\vskip 0.4in
+You wish to enable {\ltt{}finger}.
+Give name of the file and the exact line that needs to be uncommented.
+(Hint: look in the file on your machine and find the line.)
+\vskip 0.4in
+You wish do allow {\ltt{}finger} to be accessed only from
+{\ltt{}panther.net.cecs.csulb.edu}.
+Give file names and modifications to do this.
+\vskip 1.4in
+\vfill\eject
+\ques
+% Homework 5
+You have an {\ltt{}/dev/sdc2} Linux native partion you wish to add to
+your machine as the {\ltt{}/disk2}. 
+Give the exact command to build a Linux file ext2 system on that partition,
+the command to make the mount point available and the
+{\ltt{}fstab} entry to that partition automatically mount at boot time.
+\vskip 1.3in
+\ques
+% Homework 7
+You wish permanently run the X11 window system, even for login's.
+This means you need to start X11 at boot time.
+To do this you will need to modify the default runlevel.
+Give the name of the file you need to modify and the modification (one line)
+you will need to make to that file
+(Hint: Look at that file on your machine to find the line.)
+\vskip 0.6in
+You need to reboot one of your servers to use a new Linux kernel.
+(You have already installed the kernel and modified the {\ltt{}lilo.conf};
+all you need is the reboot.)
+However because classes are in you want the reboot to happen at 2:00am.
+Give the command you would run and the contents of any file associated with
+that command.
+\vskip 0.6in
+You want to get a new copy of your system's default window manager file
+({\ltt{}/etc/X11/xinit/xinitrc.fvwm2}) from 
+{\ltt{}/net/cheetah/u4/backups/xinitrc.fvwm2}
+once a week (Saturday 2:00am)
+Explain how you would do this. Give the command(s) and details.
+\vskip 0.8in
+\ques
+% Homework 2
+A user wants to change their default umask (whatever that is).
+What files could the user edit to do this?
+\vskip 0.9in
+You are using the database a lot and are tired of typing
+{\ltt{}/usr/local/share/} in front of all the database commands.
+What file would you need to change and what change would you need
+to make?
+\vskip 1.0in
+You need to add a group to your local machine for the xyzzy project,
+the number of this new group should be 4321.
+What file do you need to modify and what line to you need to add?
+\vskip 0.9in
+\vfill\eject
+\ques
+% Homework 10
+You want {\ltt{}control-y} to be the key that interrupts ({\ltt{}intr})
+a program.
+Give the command to do this.
+\vskip 0.4in
+Give the command to backup /home to a file called {\ltt{}/backups/homes.tgz}.
+\vskip 0.4in
+Give the command to decrypt the {\ltt{}exam.cr} file.
+\vskip 0.4in
+\ques
+% Homework 3
+The user {\ltt{}sam} has  a home directory of {\ltt{}/home/sam},
+a shell of {\ltt{}/bin/bash}, a user number of {\ltt{}4321}
+and a base group of {\ltt{}2222}.
+Give the password and shadow entries for {\ltt{}sam}.
+\vskip 0.8in
+Who should own {\ltt{}/home/sam} and it's contents?
+\vskip 0.4in
+\ques
+% Homework 4
+Give a command that would list your disks and their partitions?
+\vskip 0.4in
+Write a script that will list all files (not directories) in {\ltt{}/etc} 
+that have modification dates newer than the file {\ltt{}/timestamp}.
+\vskip 1.1in
+\bye

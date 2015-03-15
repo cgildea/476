@@ -1,0 +1,261 @@
+\def\chapternumber{Chapter 6 --- Client Software -- 29 November 2010}
+\input slides.tex
+\input bigcstuff.tex
+\centerline{\bbf Chapter 6}
+\centerline{Client Software Design}
+
+\centerline{\bbf Program arguments}
+
+Arguments from the command line are sent to the program as parameters.
+
+{\ltt{}int main(int argc, char* argv[])}
+\break
+(Example call: {\ltt{}a.out Hi there     joe x-y-z})
+
+{\ltt{}argc} is the number of parameters the command line.
+\break
+Example: {\ltt{}argc} is 5. Arguments are separated by space(s).
+The command is counted.
+
+{\ltt{}argv} is an array of strings.
+\break
+Example: {\ltt{}argv[2]} is "there".
+\break
+Example: {\ltt{}argv[0]} is "a.out" (the name of the command).
+
+Commandline arguments are used freguently
+\break
+{\ltt{}telnet cheetah}
+\break
+{\ltt{}g++ a.cc b.cc}
+
+Example program code (from assignment 1):
+
+{\ltt{} src_fd = open(argv[1],0);}
+\newslide
+\centerline{\bbf Domain Name Service}
+
+Given a name you can get the internet number(s)
+\break
+Given an internet number you can get the name.
+\break
+Limited nicknames available.
+
+{\ltt{}struct hostent *gethostbyname(const char *name);}
+\break
+given an internet name, returns a host structure
+
+{\program
+struct hostent *gethostbyaddr(const void *addr,
+                        int len, int type);
+\endprogram}
+
+given an internet number, returns a host structure
+
+You get {\ltt{}NULL} (not found) or
+\break
+a pointer to a {\ltt{}hostent} structure
+{\program
+struct  hostent {
+  char    *h_name;        /* official name */
+  char    **h_aliases;    /* alias list */
+  int     h_addrtype;     /* host address type */
+  int     h_length;       /* length of address */
+  char    **h_addr_list;  /* list of addresses */
+#define h_addr  h_addr_list[0]  /* compatiblity */
+};
+\endprogram}
+
+type is {\ltt{}AF_INET}, length is 4 (4 byte integer).
+\break
+{\ltt{}h_addr} is the address (IP number)
+\break
+{\ltt{}char *} type to allow any length address
+\break
+array of addresses applies to gateway machines
+\newslide
+\centerline{\bbf Byte Order}
+
+Byte order for integers varies.
+
+High byte first: SPARC, 68000, MIPS, RS6000
+
+Low byte first: Pentium,  MIPS
+\vt
+
+Needed for network communication: a standard order.
+\break
+(High byte first)
+\vt
+Needed for programming: conversion routines from host order to network order.
+
+{\ltt{}htonl} (host to network--long):
+convert a number from host order (whatever that is) to network order.
+
+{\ltt{}ntohl} (network to host--long)
+\break
+{\ltt{}htons} (host to network--short)
+\break
+{\ltt{}ntohs} (network to host--short)
+
+\newslide
+\centerline{\bbf Domain Name Service Example}
+
+{\cprogram
+struct hostent *hp, *hp2;
+struct in_addr addr;
+hp = gethostbyname("cheetah.cecs.csulb.edu");
+printf("%s\n",hp->h_name);
+printf("%d\n",hp->h_length);
+memcpy(&addr, hp->h_addr, hp->h_length);
+printf("%x\n",ntohl(addr.s_addr));
+printf("%s\n",inet_ntoa(addr));
+hp2 = gethostbyaddr(&addr, 4, AF_INET);
+@endprogram}
+
+{\ltt{}h_length} is always 4 for IP.
+\break
+copy is necessary to unfool c about length (1 for {\ltt{}char})
+\break
+{\ltt{}h_addr} is in network byte order
+\break
+{\ltt{}inet_ntoa} converts an internet number
+(in network byte order, in an {\ltt{}in_addr} structure)
+to ascii dot notation.
+
+The contents of {\ltt{}*hp2} should be the same as {\ltt{}*hp}.
+
+\newslide
+\centerline{\bbf Port and Services}
+
+{\program
+struct servent *getservbyname(
+       const char *name, const char *proto)
+struct servent *getservbyport(
+             int port, const char *proto)
+\endprogram}
+
+Given a name (or a port number) and protocol (UDP/TCP),
+return a service structure.
+\break
+
+{\program
+struct servent {
+  char *s_name;  /* name of service */
+  char **s_aliases;   /* alias list */
+  int  s_port;              /* port */
+  char *s_proto; /* protocol to use */
+};
+\endprogram}
+
+{\ltt{}port} is {\ltt{}int} here, {\ltt{}u_short} in {\ltt{}sockaddr_in}
+\break
+proto and name usually echo what you entered 
+
+{\cprogram
+  struct servent *sp, *sp2;
+  sp = getservbyname("telnet", "tcp");
+  printf("%s\n",sp->s_name); /* telnet */
+  printf("%d\n",ntohs(sp->s_port)); /* 23 */
+  printf("%s\n",sp->s_proto); /* tcp */
+  sp2 = getservbyport(htons(23), "tcp");
+@endprogram}
+
+{\ltt{}s_port} is in network byte order
+\break
+{\ltt{}*sp} and {\ltt{}*sp2} should contain identical data.
+\newslide
+\centerline{\bbf More Tricks}
+
+Getting integers from a command line argument requires
+an extra step.
+
+For example, if you run the command:
+\break
+{\ltt{}lab99> a.out 33}
+
+{\ltt{}argv[1]} will be {\ltt{}"33"}, that is, it
+will be a string and not an integer.
+
+To get an integer you use the ASCII to integer conversion
+function {\ltt{}atoi}.
+
+Warning:  {\ltt{}atoi(argv[1])} will return an {\ltt{}int}, not
+a {\ltt{}short}, if you need a {\ltt{}short} you either need to store the
+value in a variable that is a {\ltt{}short} or cast.
+
+\vf
+Some implementations will allow you to replace the tcp/udp string
+with the value {\ltt{}NULL} as in:
+\break
+{\ltt{}getservbyport(htons(23), NULL);}
+\break
+This will match either TCP or UDP.
+Which value is returned if the service has
+both TCP and UDP is not specified.
+
+\newslide
+\centerline{\bbf TCP Algorithm (6.1)}
+\centerline{(Client)}
+
+\ind{1.} Get server address and service port number
+\ind{2.} Get socket
+\ind{3.} Set up {\ltt{}sockaddr_in} struct (for 4.)
+\ind{4.} Get connection (use any local port)
+\ind{5.} Talk with server
+\ind{6.} Close the connection
+
+Message delivery guaranteed (or error is signalled)
+
+Connection establishment is ensured by protocol
+
+Close/shutdown is communicated to other end-point
+\newslide
+\centerline{\bbf UDP Algorithm (6.2)}
+\centerline{(Client)}
+
+\ind{1.} Get server address and service port number
+\ind{2.} Get socket
+\ind{3.} Set up {\ltt{}sockaddr_in} struct (for 4.)
+\ind{4.} Set socket for server (use any local port)
+\ind{5.} Send/receive messages to/from server
+\ind{6.} Close the socket
+
+No guarantee that messages will get there.
+
+Application must handle missing message problem
+
+\newslide
+\centerline{\bbf System calls (review)}
+
+{\ltt{}socket}: set up a socket, you specify TCP or UDP.
+
+{\ltt{}connect}: client only. Must pass this an {\ltt{}sockaddr_in}
+with the address of the server.
+For TCP sockets, this forms a connection.
+For UDP sockets, this sets up a default destination address.
+
+{\ltt{}accept}: TCP server only. Accept a client's connection request.
+You get a new socket for each accept.
+
+{\ltt{}write}: send a message. Params are socket, buffer, count.
+\break
+{\ltt{}send}: Params are socket, buffer, count, flagbits.
+If flagbits is 0, it is identical to write.
+
+{\ltt{}read}: receive a message. Params are socket, buffer, buffersize.
+\break
+{\ltt{}recv}: Params are socket, buffer, buffersize, flagbits.
+If flagbits is 0, it is identical to read.
+
+\vt
+Variations (UDP only):
+
+{\ltt{}sendto}: Message destination given as an argument.
+
+{\ltt{}sendmsg}: Message structure contains destination.
+
+{\ltt{}recvfrom}:  Message source given as an argument.
+
+{\ltt{}recvmsg}:  Message structure contains source.
+\bye

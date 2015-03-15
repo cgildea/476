@@ -1,0 +1,140 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1999, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(8 points)
+You want to know if your system has been setup so that it can
+access the SCSI tape drive;
+In what directory would you look?
+\vskip 0.5in
+In what directory would you look if you wanted to know what addresses
+your kernel had assigned to the various devices?
+\vskip 0.5in
+What command would you run if you wanted to find out the directory
+that the {\ltt{}xf86config} program was in.
+\vskip 0.5in
+\ques
+(8 points)
+How would you find out the Unique ID (UID) number for the user bob?
+\vskip 0.5in
+You are working alot with the {\ltt{}yp} programs and you are tired of 
+having to type the full path name of these programs, 
+such as {\ltt{}/usr/lib/yp/ypxfr}.
+What do you have to do to be able to use just the name of the command
+and not the whole path? (Specify file and changes)
+\vskip 1.8in
+\ques
+(8 points)
+User {\ltt{}joe} is unhappy with using {\ltt{}csh} as his shell and wants
+to use {\ltt{}bash} as his shell instead.
+Describe how you would do this? (not using scripts)
+\vskip 0.8in
+User {\ltt{}smith} has changed their name to {\ltt{}jones} and needs
+to change their login name.
+Describe how you would do this?
+(Do not move the home directory.)
+\vfill\eject
+\ques
+(8 points)
+Write a script that counts the number of processes that {\ltt{}joe}
+is running and mails that number to {\ltt{}sam}.
+\vskip 2.8in
+\ques
+(10 points)
+Your get a third drive for your system.
+Set it up as follows: first partition (cylinders 1-950) is ext2 and
+will be attached to your file system as {\ltt{}/u2};
+the second partition (cylinders 951-1021) is a swap partition.
+Give the commands necessary to do this. Be sure the name of the file
+you need to edit a file to make this new disk available at boot
+up and tell me what changes you must make to that file.
+\vskip 3.8in
+\ques
+(8 points)
+You are trying to run a big program, but you don't have enough swap space.
+What commands would you run to set up and use a 16 megabyte swapfile.
+(Do not reboot.)
+\vfill\eject
+\ques
+(8 points)
+After you have changed the configuration file for {\ltt{}init},
+how do you get the {\ltt{}init} process to read the new configuration.
+\vskip 0.5in
+How you you set up you Linux box to replace your alarm clock?
+Do this by having it play the file {\ltt{}wakeup.wav} at 6am
+(on weekdays only).
+To simplify this assignment, assume you play a wav file by
+sending it ({\ltt{}cat} is fine) to the {\ltt{}audio} device.
+\vskip 2.5in
+\ques
+(8 points)
+You upgrade from a serial mouse to a PS/2 mouse.
+Exactly what in your Linux system need to be changed 
+and what changes do you make?
+\vskip 1.0in
+\ques
+(8 points)
+You rebuild Linux on a {\it Sparc} system (instead of on an {\it Intel}).
+Where should you look for the kernel?
+\vskip 0.4in
+How do you make Linux have the following behavior at boot:
+wait until you have chosen whether to boot Linux from the second
+hard drive or Windows from the primary hard drive?
+(Assume there is only one partition on each drive.)
+Give file name, contents of that file and command.
+\vfill\eject
+\ques
+(8 points)
+You have used ftp to get a new version of the X window system.
+The file is called {\ltt{}xf86_4_0.tgz}.
+How would you install this new software. (Just install, do not configure.)
+\vskip 0.8in
+Your new keyboard has a little key with a flag on it. You want to be
+able to use that key in the editor to jump to the lower right of the
+screen. What file would you need to modify?
+\vskip 0.4in
+Control-z is too similar to Shift-z so you want to change the command
+that suspends a process ({\ltt{}susp}) to control-p.
+What command do you issue to do this?
+\vskip 0.4in
+\ques
+(8 points)
+What is the purpose of the arp table?
+\vskip 0.5in
+You want your DNS server to be ({\ltt{}192.168.4.15}), and you want to
+beable to leave of the {\ltt{}.mycom.com} and {\ltt{}.its.mycom.com}
+suffixes when you do network operations.
+Give the exact contents of the {\ltt{}resolv.conf} file that will do this.
+\vskip 1.2in
+\ques
+(10 points)
+(Netmask for this question is {\ltt{}255.255.255.192}) 
+\hfill
+\break
+You need to change the IP number on your machine from
+IP number {\ltt{}134.139.136.110},
+to IP number {\ltt{}134.139.136.111}.
+Give the exact command you can use to do this with out rebooting.
+\vskip 0.5in
+Give the exact command you can use to set it's gateway to  
+{\ltt{}134.139.136.65}.
+\vskip 0.5in
+You set up a new machine and you want to
+remove ftp services (completely).
+What do you change and in what file?
+\vskip 0.5in
+On subnet {\ltt{}134.139.43.0/255.255.255.0} (ECS 414),
+you want to set up a machine so that you can telnet
+to it from other machines on the same subnet,
+but from no where else.
+What two files do you change and what do you put in each file?
+\bye

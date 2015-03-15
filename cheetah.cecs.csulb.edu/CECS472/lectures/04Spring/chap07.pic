@@ -1,0 +1,378 @@
+\def\chapternumber{Chapter 7 --- Client Software -- 4 June 2003}
+\input slides.tex
+\centerline{\bbf Chapter 7}
+\centerline{Client Software}
+\centerline{(code details)}
+
+Principle: Design small modules, then use them.
+
+Reason: You only have to figure it out once.
+\vt
+Principle: Build modules with parameters.
+
+Reason: You can build fewer of them.
+
+\newslide
+\centerline{\bbf Flexible Connection Maker}
+\centerline{(Detailed Comments)}
+
+See Sections 7.5-7.7
+
+Include file overview (p. 85):
+
+Include files are found in {\ltt{}/usr/include}
+\vt
+{\ltt{}types.h}:
+Short hand type names such as {\ltt{}u_long} for {\ltt{}unsigned long}
+\vt
+{\ltt{}socket.h}:
+Types and calls for sockets
+
+Identifier/number mappings for
+\break
+socket types ({\ltt{}SOCK_STREAM})
+\break
+socket options ({\ltt{}SO_BROADCAST})
+\break
+address families ({\ltt{}AF_INET})
+\break
+protocol families ({\ltt{}PF_INET})
+
+Structures for: 
+protocols ({\ltt{}sockproto}) , 
+addresses ({\ltt{}sockaddr}), 
+messages  ({\ltt{}msghdr})
+\newslide
+{\ltt{}in.h}:
+Constants and structures for IP
+
+Identifier/number mappings for
+\break
+protocol ({\ltt{}IPPROTO_IP})
+\break
+standard ports/sockets ({\ltt{}IPPORT_ECHO}, {\ltt{}IPPORT_LOGINSERVER})
+
+Internet version of structures ({\ltt{}sockaddr_in}, {\ltt{}in_addr})
+
+Conversion functions ({\ltt{}ntohs}, {\ltt{}htons}, {\ltt{}ntohl}, 
+{\ltt{}htonl})
+\vt
+{\ltt{}inet.h}: inet-to-ascii function {\ltt{}inet_ntoa}, 
+ascii-to-inet function {\ltt{}inet_addr}
+\vt
+{\ltt{}netdb.h}: Structures and function definitions for accessing the 
+network databases.
+
+Structures:
+\break
+{\ltt{}hostent}, 
+{\ltt{}servent}, 
+{\ltt{}protoent}
+
+Functions:
+\break
+{\ltt{}gethostbyname}, 
+{\ltt{}gethostbyaddr}, 
+{\ltt{}get net/serv/proto/rpc by name/addr}
+
+Error message meanings:
+\break
+{\ltt{}HOST_NOT_FOUND}
+\newslide
+\centerline{\bbf Making a Connection}
+
+{\ltt{}connectTCP} calls {\ltt{}connectsock} with
+a protocol of {\ltt{}"tcp"}.
+
+{\ltt{}connectUDP} calls {\ltt{}connectsock} with
+a protocol of {\ltt{}"udp"}.
+\vf
+{\ltt{}connectsock(host,service,protocol)}
+
+Parameters are strings.
+\break
+{\ltt{}host}: the name of the server machine
+\break
+{\ltt{}service}: the name of the service
+\break
+{\ltt{}protocol}: {\ltt{}"udp"} or {\ltt{}"tcp"}
+
+{\ltt{}memset}: The address structure ({\ltt{}sin}) will be used to make
+the connection. Initialize it by clearing all bits.
+
+{\ltt{}sin.sin_family=AF_INET}: address is for an IP connection 
+(not Decnet, Novell ...)
+\newslide
+\centerline{\bbf Getting a Port Number}
+
+First: guess it was the name of a service (e.g., {\ltt{}"time"})
+\break
+Second: guess it was a port number (e.g.,  {\ltt{}"7154"})
+\break
+Third: abort the program
+
+{\ltt{}if (pse=getservbyname...)}: 
+Try looking up the service in the {\ltt{}/etc/services} file.
+\break
+if it finds a service it creates a {\ltt{}servent}
+structure and returns a pointer to that structure. Use that pointer
+to put the port number into the address sturcture
+\break
+{\ltt{}sin.sin_port=pse->s_port}.
+\break
+otherwise it returns {\ltt{}NULL}
+\break
+C trick: not found = {\ltt{}NULL} = 0 = false 
+
+if the above check fails no service was found by name
+so try {\ltt{}else if((sin.sin_port=...)}:
+
+{\ltt{}htons((u_short)atoi(service)))}
+\break
+{\ltt{}atoi(service)}: convert the string to a number.
+\break
+Trick: if the string wasn't a number {\ltt{}atoi} returns a zero
+\break
+if {\ltt{}atoi} returns a non-zero number,
+convert number to network order and store it in {\ltt{}sin_port}
+
+if {\ltt{}atoi} gets a 0, the parameter wasn't a number 
+so call {\ltt{}errexit} to abort the program
+\newslide
+\centerline{\bbf Getting an Internet Number}
+
+First: guess that it was a name like {\ltt{}cheetah.cecs.csulb.edu}.
+\break
+Second: guess that it was a number like {\ltt{}134.139.248.17}
+\break
+Third: abort the program
+
+{\ltt{}if (phe=gethostbyname...)}: 
+Try looking up a host name. 
+If it was a legal name it
+creates a {\ltt{}hostent} structure and returns a pointer to that structure.
+otherwise it returns {\ltt{}NULL} (failed).
+
+{\ltt{}memcpy}: The name look up worked, 
+copy the address from the {\ltt{}hostent} structure
+to the {\ltt{}sockaddr_in} structure.
+Note: the {\ltt{}sockaddr_in} assumes an internet address (4 bytes),
+but the {\ltt{}hostent} is a {\ltt{}*char}, it is using a ``string" 
+to store an arbitrary number of bytes (so it works for non-internet
+addresses).
+
+On failure check the else:
+
+{\ltt{}else if (...inet_addr(host)...}: Guess is that the string is a
+dotted notation internet address
+\break
+convert it to an address and store it in the 
+{\ltt{}sockaddr_in} structure.
+\break
+Trick: if it isn't a dotted notation, {\ltt{}inet_addr} returns
+{\ltt{}INADDR_NONE}
+\break
+and we do an error exit
+
+\newslide
+\centerline{\bbf Setting the Protocol Field}
+{\ltt{}if ((ppe=getprotobyname(protocol)...}: If the protocol doesn't exist
+if returns {\ltt{}NULL} otherwise it returns a pointer to a protocol
+structure.
+
+{\ltt{}strcmp}: if the protocol string was {\ltt{}"udp"} we are
+connectionless ({\ltt{}SOCK_DGRAM}),
+\break
+if it was any other string we are connection-oriented ({\ltt{}SOCK_STREAM}),
+\vt
+At this point the address structure has been correctly set up.
+\newslide
+{\ltt{}s=socket}: get an internet socket of the appropriate type and protocol.
+
+{\ltt{}if(connect...)}: connect to the correct server by using the address
+structure we have just filled in.
+\break
+Note: type conversion {{\ltt{}(struct sockaddr *)}
+\break
+connect is multiprotocol, it looks at the first byte 
+({\ltt{}AF_INET} for our connect) to know if it is Internet, Decnet, ...
+
+Connect fills in the socket descriptor ({\ltt{}s}) with information about
+the connection, including the server you are connected to and
+which port (protocol) on that server.
+\break
+or connect returns a negative number (error).
+\break
+On error: connect fills in the global variable {\ltt{}errno},
+\break
+{\ltt{}errno} is used to look up a message ({\ltt{}strerror})
+
+UDP note: connect sets up a default address (not a connection)
+\break
+TCP note: connect sets up a connection
+\vt
+Summary: {\ltt{}connectsock} returns a socket connected to the right
+service and server.
+\newslide
+\centerline{\bbf Sample Client (TCPDaytime)}
+\centerline{(Section 7.10, page 89)}
+
+How the {\ltt{}switch} works.
+\break
+Goal 1: allow the user to specify the name or number of the server they want
+to connect to on the command line. If they don't specify a server, assume
+they want to use the local host.
+
+Goal 2: allow the user to specify the service on the server or 
+the port number on the server they is to be used. if they don't specify 
+a service or port number, assume they want the {\ltt{}daytime} service.
+
+The allowed formats for the command are:
+
+{\ltt{}daytimec}
+\break
+{\ltt{}daytimec cheetah.cecs.csulb.edu}
+\break
+{\ltt{}daytimec 134.139.248.18}
+\break
+{\ltt{}daytimec cheetah.cecs.csulb.edu echo}
+
+The last form uses the time client to connect to the echo service. 
+(Dumb idea!)
+
+Notice: there are one, two are three arguments (counting the command)
+\newslide
+{\ltt{}char *host="localhost";} set up the default machine
+\break
+{\ltt{}char *service="daytime";} set up the default service
+
+{\ltt{}switch (argc)}: check the number of arguments
+\break
+{\ltt{}case 1:} take the default server and service
+\break
+{\ltt{}case 3:} user specified a server and service, use the
+\break
+{\ltt{}case 2:} user specified a server, use that string
+\break
+{\ltt{}host=argv[1];}
+
+{\ltt{}TCPdaytime(host, service);} all the above is used by any client.
+So to change for another service, simply call a different procedure.
+\break
+(This method is flexible, i.e., good software engineering.)
+
+\newslide
+The daytime server returns a string.
+
+{\ltt{}char buf[LINELEN+1]}:
+Real storage room for the result is needed.
+
+{\ltt{}s=connectTCP}:
+The connection is made.
+\break
+{\ltt{}s} is now a descriptor.
+\break
+The connection alerts the server to send the answer.
+
+Important: the answer may arrive in parts.
+\break
+The parts may not correspond to record, string, or integer boundaries
+(TCP {\bit does not preserve boundaries})
+
+Important: type matching is the responsibility of the protocol (daytime)
+and not the socket/read.
+
+{\ltt{}while (n=read(s,buf,LINELEN)}:
+\break
+{\ltt{}n} is number of bytes actually read,
+\break
+0 is EOF, negative means read error.
+\break
+{\ltt{}buf}: is where it gets stored.
+\break
+{\ltt{}LINELEN}: is maximum number of bytes to read.
+
+As each piece of the message arrives we add a null
+\break
+and use {\ltt{}fputs} to print it.
+
+Note: The Daytime server sends one string in one write,
+it may arrive at the client in several reads.
+\newslide
+\centerline{\bbf UDP Time}
+
+(section 7.15) Time service returns a number (seconds since 1 Jan 1970)
+(good until 2172)
+
+{\ltt{}s=connectUDP}:
+Not a connect.
+Associates the socket with a default address.
+\break
+The socket can be used to send messages to any address
+\break
+write sends a message to the default address
+
+{\ltt{}write}: send a dummy message indicating we want the time
+
+{\ltt{}read}: the long integer comes back.
+\break
+UDP reads a complete message, i.e., reads one write
+\break
+(assuming the buffer is big enough)
+\break
+The read loop ({\ltt{}while (n=...)}) is unnecessary
+
+{\ltt{}ntohl}: By convention every number sent across the network is
+sent in network standard order (high byte first).
+Using the conversion macro is always a good practice;
+it makes the code portable to all types of machines.
+
+\newslide
+\centerline{\bbf TCP Echo}
+\centerline{(Section 7.17)}
+
+{\ltt{}while(fgets...}: read a line from the keyboard.
+\break
+Note: On end of file (control-D) {\ltt{}fgets} returns the {\ltt{}NULL}
+pointer; {\ltt{}NULL} = 0 = false = out of while loop
+
+{\ltt{}write}: send the line to the echo server.
+
+Since we the message may get broken up in transmission it must be
+carefully reassembled when it is echoed back.
+
+{\program
+for (inchars=0; inchars<outchars; inchars+=n){
+  n=read(s,&buf[inchars],outchars-inchars);
+}
+\endprogram}
+
+{\ltt{}inchars}: keeps track of how many bytes we have read.
+\break
+{\ltt{}inchars<outchars}: we should get the same number of bytes
+we sent to the server.
+\break
+{\ltt{}buf[inchars]}: is the end of the previous input. It is where
+the new input should start. Read needs the address of where the
+input needs to start.
+\break
+{\ltt{}outchars-inchars}: this is the number of bytes not yet echoed,
+this is the largest read we expect.
+
+{\ltt{}fputs}: print the line as echoed to the screen. It should
+be the same as the line that was typed.
+
+{\ltt{}if (n<0)}: if the read fails (server died), exit
+\newslide
+\centerline{\bbf UDP Echo}
+
+writes a line, reads the line.
+\break
+(writes a message, reads a message)
+
+The buffer should be big enough,
+\break
+because it should be the message that was sent from the buffer
+
+Note (again): UDP does not form a connection.
+\bye

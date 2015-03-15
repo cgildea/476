@@ -1,0 +1,400 @@
+\def\chapternumber{DNS -- 18 April 2013}
+\input slides.tex
+\centerline{\bbf Domain Name Service}
+
+Name service is delegated.
+
+The root name server have:
+
+{\program
+csulb.edu IN NS garuda.csulb.edu.
+139.134.in-addr.arpa IN NS garuda.csulb.edu.
+garuda.csulb.edu IN A 134.139.1.2
+\endprogram}
+
+or
+
+{\program
+csulb.edu IN NS 134.139.1.2
+139.134.in-addr.arpa IN NS 134.139.1.2
+\endprogram}
+
+Which delegates name service for names ending
+in {\ltt{}csulb.edu} and cables starting with
+{\ltt{}134.139} to a machine on campus.
+
+\vt
+At {\ltt{}garuda} responsibility is delegated to cecs:
+
+{\program
+cecs.csulb.edu IN NS 134.139.249.20
+248.139.134.in-addr.arpa IN NS 134.139.249.20
+247.139.134.in-addr.arpa IN NS 134.139.249.20
+\endprogram}
+
+Suppose responsibility for names ending in
+{\ltt{}cecs.csulb.edu}
+and for cables starting with {\ltt{}134.139.248}
+has been delegated to our machine;
+how do we set up DNS?
+\newslide
+\centerline{\bbf named}
+
+Answers queries from resolver.
+\break
+Issues queries as necessary to other named's.
+\break
+Answers queries as necessary for other named's.
+
+Reads configuration out of files.
+
+When running most DNS information is kept in memory.
+
+Concept: each ``authority" has one machine that acts as a primary server.
+Secondary servers cover when primary is unavailable.
+Secondary server frequently gets ``map" from primary.
+
+If you are the authority you can give an authoritative answer.
+
+Optimization: Recently used information is cached by named.
+So the second time you are asked the same question you don't have
+to search.
+
+If you answer from your cached information you can give
+a non-authoritative answer.
+\newslide
+\centerline{\bbf named.conf}
+
+{\ltt{}/etc/named.conf} ---  The main file for named. 
+It lists domains for which this named acts
+as primary or secondary server. Note: old versions of DNS this
+was {\ltt{}named.boot} and had a different format for the same information.
+
+{\program
+zone "cecs.csulb.edu" in {
+    type master;
+    file "named.hosts";
+};
+
+zone "249.139.134.in-addr.arpa" in {
+    type master;
+    file "named.rev249";
+};
+\endprogram}
+
+Primary for {\ltt{}cecs.csulb.edu} names  and {\ltt{}134.139.249.x} numbers
+
+Information about {\ltt{}cecs} is found in the file {\ltt{}named.hosts}
+\break
+Given a name, use this file to find the IP number.
+
+Information about ``249" is found in the file {\ltt{}named.rev249}
+\break
+Given an IP number, use this file to find the IP name.
+
+\newslide
+\centerline{\bbf named.conf (con'd)}
+
+{\program
+zone "net.cecs.csulb.edu" in {
+        type slave;
+        file "cecsnet.bak";
+        masters { 134.139.248.2 };
+};
+\endprogram}
+
+Secondary for cecs. 
+\break
+A copy of the information is stored in a file {\ltt{}cecsnet.bak} in case
+of double failure.
+
+{\program
+options {
+    directory "/etc/namedb";
+};
+\endprogram}
+
+All the files mentioned are found in this directory.
+
+{\program
+logging {
+    category lame-servers { null; };
+    category cname { null; };
+};
+\endprogram}
+
+Special options for logging information.
+
+\newslide
+\centerline{\bbf named.conf (con'd)}
+{\program
+zone "." in {
+        type hint;
+        file "root.cache";
+};
+\endprogram}
+
+This file has the starting cache of name servers we know about. 
+We need to know at least where the root name servers are, so we
+can use them to find other DNS servers.
+
+{\program
+zone "0.0.127.in-addr.arpa" in {
+        type master;
+        file "named.hosts.127.0.0";
+};
+\endprogram}
+
+You must know about yourself.
+\newslide
+\centerline{\bbf named}
+
+{\ltt{}root.cache}/{\ltt{}named.ca}/{\ltt{}named.root}
+--- The initial cache for this name server.
+Always includes the name of the root servers.
+When you boot, you get your initial information about other name
+servers from this file.
+
+{\ltt{}A.ROOT_SERVERS.NET} is a root DNS server.
+\break
+From there we can find a server for any domain.
+
+{\program
+.  3600000  IN NS A.ROOT_SERVERS.NET.
+A.ROOT_SERVERS.NET. 3600000 A 198.41.0.4
+A.ROOT-SERVERS.NET. 3600000 AAAA 2001:503:BA3E::2:30
+\endprogram}
+
+A time-out value ({\ltt{}3600000}) is given,
+\break
+for root servers a huge value suffices.
+
+Both IP version 4 and 6 are given
+
+Approximately 13 root servers are names,
+\break
+Any local master should be named
+\break
+(name service on campus will then run even if we lose
+our outside connection)
+
+Download a new {\ltt{}named.ca} occasionally.
+\break
+Currently from {\ltt{}rs.internic.net}
+
+\newslide
+\centerline{\bbf Source of Authority record}
+
+The name of our machine and the name of the account on that
+machine responsible for name service. (Present in every
+zone file.)
+
+{\program
+@ IN SOA cheetah.cecs.csulb.edu.
+   root.cheetah.cecs.csulb.edu. (
+              2006042801    ; Serial
+              28800         ; Refresh
+              14400         ; Retry
+              3600000       ; Expire
+              86400 )       ; Minimum
+\endprogram}
+
+Serial is used by the {\ltt{}named} and secondary to know if cache is up to 
+date
+\break
+Refresh: how often the secondaries should contact us for changes.
+They won't download unless a newer serial number is found.
+\break
+Retry: If we are offline a secondary tries to refresh, it should wait this
+long before trying again.
+\break
+Expire: Discard all data (that hasn't been refreshed) after this amount of 
+time. Applies usually if the primary goes out of service.
+\break
+Minimum is the default time-to-live for records that don't have any.
+\newslide
+\centerline{\bbf Default timeout}
+
+Each zone file also has a line specifying the default time-out
+of records in that zone:
+\break
+{\ltt{}$TTL 3600000}
+
+\vf
+\centerline{\bbf Mandatory Delegation Record}
+
+Each zone file has at least one delegation record that indicates
+that the current machine is the authoritative machine for that zone.
+
+{\program
+        IN NS cheetah.cecs.csulb.edu.
+\endprogram}
+\newslide
+\centerline{\bbf Names to Numbers}
+
+{\ltt{}named.hosts} --- 
+\break
+for each name there is one
+or more lines indicating IP addresses.
+\break
+delegation of authority over sub-domains may be given here
+
+The name varies and is the one given by the {\ltt{}primary} entry
+in {\ltt{}named.conf} (e.g., {\ltt{}named.hosts})
+
+{\program
+        IN NS handles.cecs.csulb.edu.
+charlotte IN   A   134.139.249.5
+heart.cecs.csulb.edu. IN A 134.139.249.39
+net.cecs.csulb.edu. IN NS 134.139.248.2
+\endprogram}
+
+The name that led to the file is appended
+\break
+({\ltt{}cecs.csulb.edu})
+\break
+unless the name in the file ends with a {\ltt{}.}
+
+{\ltt{}A} -- address record
+\break
+{\ltt{}charlotte.cecs.csulb.edu} IP address {\ltt 134.139.249.5}
+
+{\ltt{}heart.cecs.csulb.edu} IP address {\ltt 134.139.249.39}
+
+{\ltt{}NS} -- name service record.
+\break
+Service for {\ltt{}net.cecs.csulb.edu}
+\break
+delegated to {\ltt{}cheetah}
+\break
+Must delegate to yourself (see first line)
+
+\newslide
+\centerline{\bbf Numbers to Names}
+
+{\ltt{}named.rev249} --- addresses/names of hosts, deletation of authority.
+
+The name varies and is the one given by the {\ltt{}primary} entry
+in {\ltt{}named.conf} (e.g., {\ltt{}named.rev249})
+
+Numbers are given in reverse order.
+
+{\program
+39  IN  PTR  heart.cecs.csulb.edu.
+5.249.139.134.in-addr.arpa. IN PTR
+      charlotte.cecs.csulb.edu.
+\endprogram}
+
+Again, the name that lead to the entry is appended unless it ends in
+a {\ltt{}.}
+
+{\ltt{}39.249.139.134.in-addr.arpa}: internet number of {\ltt{}heart}
+
+{\ltt{}5.249.139.134.in-addr.arpa}: internet number of {\ltt{}charlotte}
+
+Again: a self referencing NS delegation should be in every zone file.
+
+Note: For security, some machines will block services if they are unable to
+get a valid machine name, hence reverse name service is mandatory.
+\newslide
+\centerline{\bbf Other Records}
+
+Canonical name (alias)
+
+{\program
+www.cecs.csulb.edu. IN CNAME
+                         prometheus.cecs.csulb.edu.
+smtp.cecs.csulb.edu. IN CNAME 
+                          charlotte.cecs.csulb.edu.
+cecs.csulb.edu. IN CNAME heart.cecs.csulb.edu.
+\endprogram}
+
+Give machine names for particular aliases.
+\vt
+Mail exchanger (used by mail transport)
+
+{\ltt{}cecs.csulb.edu. IN MX 1 charlotte.cecs.csulb.edu.}
+
+Designate a particular machine as the mail-handler for a domain.
+\newslide
+\centerline{\bbf Utilities}
+
+There are a couple utilities to do basic checks on your files.
+
+{\ltt{}named-checkconf}
+\break
+Does a simple check of the syntax of a {\ltt{}named.conf} file.
+Even if the file passes the check there is no guarantee that
+the entries are correct, they just have a reasonably correct format.
+
+{\ltt{}named-checkzone}
+\break
+Does a simple check of the syntax of a zone file.
+Specify the nameof the zone and the name of the file.
+\break
+There are couple of options that cause some extra checks
+to be done, these can be useful in helping detect errors.
+\newslide
+\centerline{\bbf Round-Robin}
+
+Many DNS servers support a round-robin for identical entries.
+
+Suppose your forward zone file has the following three entries:
+
+{\program
+www IN   A   134.139.249.91
+www IN   A   134.139.249.92
+www IN   A   134.139.249.93
+\endprogram}
+
+The first query to {\ltt{}named} will return the 91, the second 92,
+the third 93, the fourth back to 91.
+
+This gives you a simple way to use multiple hosts to support
+a single ``service".
+
+Many version of {\ltt{}named} will also support
+this behavior using multiple {\ltt{}CNAME} entries.
+\newslide
+\centerline{\bbf IP Version 6 Addresses}
+
+Name to number lookup: modify the existing file ({\ltt{}named.hosts})
+adding {\ltt{}AAAA} records:
+
+{\program
+puma IN A 134.139.248.19
+puma IN AAAA 0:0:0:0:0:0:868b:f813
+\endprogram}
+
+Note: the legacy address of zeros followed by IP number.
+
+\vt
+
+Number to name requires a separate file and a zone entry in {\ltt{}named.conf}:
+
+{\program
+zone "8.f.b.8.6.8.0.0.0.0.0.0.0.0.0.0.0.
+     0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa" IN {
+  type master;
+  file "named6.rev";
+  allow-update { none; };
+};
+\endprogram}
+
+Notes: slightly different {\ltt{}arpa} ({\ltt{}ip6})
+\break
+Still reverse numbering, but in ``nibbles" (half-bytes).
+
+Reverse zone file:
+Same SOA structure as all zone files.
+\break
+Uses reverse numbering in nibbles.
+\break
+Does ``auto-append" same as other reverse zone files.
+
+{\ltt{}3.1 IN PTR puma.net.cecs.csulb.edu}
+
+
+\bye
+
+

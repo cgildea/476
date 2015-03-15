@@ -1,0 +1,202 @@
+\def\chapternumber{Review -- 24 May 2011}
+\input slides.tex
+\centerline{\bbf Review of Course -- 472}
+
+{\bit Client/Server:}
+
+{\program
+  Connection oriented  TCP
+  Connectionless       UDP
+  Iterative: accept - (read) - reply - close
+  Concurrent: Multiple processes -- fork
+              Single process -- select
+  Programming: port numbers, well-known-ports, 
+               hostnames, ip numbers
+  Network system calls: htonl(s), read, write,
+               sendto, recvfrom, send, recv.
+  Underlying calls: socket, bind, 
+               connect, accept, listen
+  Data structures: sockadder_in, sockaddr_un,
+    hostent, servent
+\endprogram}
+
+{\bit Broadcast:}
+
+{\program
+  Enabling UDP broadcast.
+  Disabling replies only accepted from (no connect).
+  Broadcast addresses.
+\endprogram}
+
+{\bit Multicast:}
+
+{\program
+  Enabling UDP multicast (Multicast Registration).
+  Multicast addresses.
+\endprogram}
+
+\newslide
+{\bit Nonblocking IO:}
+{\program
+  Retries, waits, handling EAGAIN
+\endprogram}
+
+{\bit Industrial strength programs:}
+{\program
+  Backgrounding.
+  Logging.
+  Signal handling (config files).
+\endprogram}
+
+
+{\bit RPC:}
+
+{\program
+  Build, split, create interface methodology.
+  1 parameter, 1 return value (dummies)
+  pack call unpack / unpack call pack return
+  Programming: program and procedure numbers, rpcgen
+  Underlying: xdr
+  Portmapper: relating a program number to a port.
+\endprogram}
+
+{\bit CORBA:}
+
+{\program
+  Build classes, user interface and main separately.
+  Create interface definition file.
+  Build CORBA version of main.
+  Modify identifiers in Classes.
+  Programming: stringified remote references, 
+       idl compiler
+  ORB: advertises and finds remote references
+\endprogram}
+
+\newslide
+
+{\bit SSL:}
+
+{\program
+  Building an encrypted connection on top of a socket
+  Know the SSL routines for client and server
+  Understand what a certificate is and that they
+       are stored in files (we used pem format)
+\endprogram}
+
+\newslide
+
+\centerline{\bbf Tasks}
+
+Understand the basic system calls for networking.
+\break
+{\ltt{}socket}, {\ltt{}connect}, {\ltt{}accept}...(networking)
+\break
+{\ltt{}gethostby}, {\ltt{}inet_ntoa}...(information handling)
+
+Build a UDP client/server pair.
+
+Build a TCP client/server pair.
+\break
+Use an iterative server.
+\break
+Use a concurrent server (fork).
+\break
+Use a concurrent server (threads).
+\break
+Undertand the TCP reassembly loop.
+\newslide
+\centerline{\bbf Tasks}
+
+Build a concurrent connection-oriented single-process server
+({\ltt{}chatd}).
+\break
+Understand the use of the {\ltt{}select} call.
+
+Build a multi-input TCP client ({\ltt{}chatc})
+\break
+Understand the use of the {\ltt{}select} call.
+
+Build a multiprotocol server.
+\break
+Open TCP and UDP sockets.
+\break
+Use a {\ltt{}select} and {\ltt{}if} statements.
+
+Build a multiservice server.
+\break
+Use an array to hold the TCP/UDP designations, the socket number
+and the function address; base the if statements on the contents of
+the array.
+
+Build a broadcast client/server.
+\break
+Enabling UDP sockets for broadcast (client and server).
+\break
+Sending a broadcast.
+
+Build a multicast client/server.
+\break
+Enabling UDP sockets for multicast (client and server).
+\break
+Multicast registration.
+\newslide
+\centerline{\bbf Tasks}
+
+Using preallocation in a server.
+\break
+When to use preallocation (frequent connects).
+\break
+How preallocated servers behave (the client hang).
+
+Remote procedure calls.
+\break
+Based on using XDR for data transport.
+\break
+Building a {\ltt{}.x} file based on what values
+went in and out of the function.
+\break
+Building client-side interface (cif) and
+server-side interface (sif) files/functions;
+with pack, call, unpack (cif);
+and unpack, call, pack, return (sif).
+\break
+Returning the address of a static.
+
+Standard techniques (tricks of the trade).
+\break
+Auto-finding a server using broadcasts.
+\break
+Auto-backgrounding
+\break
+Syslog for logging
+\break
+HUP for reloading.
+
+How to use non-blocking I/O (handling {\ltt{}EAGAIN}).
+\break
+Understanding the system network buffers,network buffer size
+and how they can impact programs (hang).
+
+How to use local domain sockets.
+\break
+Fast, private, network like communication for programs.
+
+\newslide
+\centerline{\bbf Tasks}
+
+Understand the Common Object Request Broker Architecture (CORBA).
+\break
+Specifying the idl file and understanding it's format.
+\break
+Understanding how to structure a normal program that uses classes
+so it can be easily transformed into a CORBA program.
+\break
+Knowing where the network boiler plate should be placed.
+
+
+Convert a normal socket based client or server into
+a client or server that uses an encrypted connection.
+(A more secure client or server.)
+
+
+\bye

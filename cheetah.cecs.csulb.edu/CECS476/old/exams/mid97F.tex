@@ -1,0 +1,96 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1997, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(15 points)
+Users. The user joe reports a problem. When he logs in he gets
+a message ``cannot access home directory".
+There are a number of things that could have gone wrong.
+Give a step-by-step description of what would you examine to trace down this 
+problem.
+\hfill\break
+{\ltt{}joe:AaBbddsSinLsg:1001:41:Joe Doe:/u1/home/joe:/bin/csh}
+\vskip 2.5in
+\ques
+(10 points)
+At boot time, you machines freezes up.
+Your friendly instructor tells you that this is caused by something in your 
+fstab.
+He even gives you the following print out of your fstab.
+What change do you need to make to fix the freezing up problem?
+
+{\program
+/dev/hda1        /        ext2        defaults   1   1
+/dev/hda2        swap     swap        defaults   1   1
+/dev/hda3        /dos     msdos       defaults   1   1
+/dev/fd0         /floppy  ext2        defaults   1   1
+none             /proc    proc        defaults   1   1
+
+\endprogram}
+\vskip 2in
+\ques
+(10 points)
+Printcap. You want to setup your machine so that the users have a choice
+of printing to the cecs1 printer on cheetah.cecs.csulb.edu or the lp0
+printer on vec401psvr.cecs.csulb.edu.
+Give the printcap file necessary to do this.
+\vfill\eject
+\ques
+(10 points)
+You want to save {\ltt{}/home/john} directory to the tape you just put into
+the {\ltt{}/dev/rst0} tape drive.
+Show the exact commands you would use.
+\vskip 2.0in
+\ques
+(10 points)
+The 472 students are working on their latest network project.
+Unfortunately they seem to be clogging the system by forgetting
+to shutdown their test runs.
+To free the system up, you decide you need to kill these processes.
+You will be looking for programs called {\ltt{}mutd} that are
+not owned by root and are not attached to a terminal.
+You will build a command file to do this.
+Show the contents of that file.
+\vskip 2.5in
+\ques
+(10 points)
+You decide that you need to run the above command file once an hour.
+Tell me exactly how you do this, including the contents of any files
+and the exact commands you type.
+\vfill\eject
+\ques
+(10 points)
+Your instructor gets a couple new machines.
+He designates them {\ltt{}134.139.122.3} and {\ltt{}134.139.122.4} and
+attaches them to a second interface of the lab88
+machine ({\ltt{}134.139.136.88}) (He borrowed the interface which is numbered
+{\ltt{}134.139.122.1}, but this number is only important in the next question.)
+He asks you to set up the machine you administer so it can send packets to
+these new machines.
+What do you do?
+Give the exact commands.
+\vskip 2.5in
+\ques
+(15 points)
+Unfortunately your instructor forgot to configure the interface on lab88.
+He gives you the root password and tells you, ``Please get that working,
+by the way, it's {\ltt{}eth1}," 
+After loggin into lab88 as root, what do you do?
+Give the exact commands.
+\vskip 2in
+\ques
+(10 points)
+You take charge of a new linux machine.
+You are not sure what hardware the machine has.
+What do you do? (Opening the case is not an acceptable answer.)
+Give the exact command, and tell us what you would look for.
+\bye

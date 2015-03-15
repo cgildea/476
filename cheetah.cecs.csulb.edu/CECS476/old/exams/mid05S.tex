@@ -1,0 +1,132 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2005, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open book, open notebook. (All question 8 points, 96 total points possible)
+\hfill\break
+\ques
+% Homework 3
+The user {\ltt{}joe} has  a home directory of {\ltt{}/home/joe},
+a shell of {\ltt{}/bin/bash}, a user number of {\ltt{}12345}
+and a base group of {\ltt{}111}
+Give the {\ltt{}/etc/passwd} entry for {\ltt{}joe}
+\vskip 0.4in
+How would you make {\ltt{}sam} own his home directory.
+\vskip 0.4in
+\ques
+% Homework 5
+Give the command to build an Linux ext2 file system on {\ltt{}/dev/hda3}.
+\vskip 0.5in
+Give the name of the file and the exact line that needs to be in that file to
+have the file system on {\ltt{}/dev/hda3} attached to the directory trees
+as {\ltt{}/var/log}.
+\vskip 0.5in
+What command do you use to set up the partitions on a disk?
+\vskip 0.4in
+\ques
+% Homework 9
+Give the steps to build a kernel.
+\vskip 2.0in
+You have a two versions of Linux installed, one on {\ltt{}/dev/hda1}
+and the other on {\ltt{}/dev/hdc2}; both call their kernel {\ltt{}vmlinuz}.
+Give the exact contents of your {\ltt{}lilo.conf}.
+\vskip 1.8in
+\vfill\eject
+\ques
+% Homework 10
+Give the exact command to extract the {\ltt{}/xfer/gcc.tar} command,
+preserving permissions.
+\vskip 0.4in
+How would you make control-Y be the command that terminates ({\ltt{}intr})
+a running program?
+\vskip 0.4in
+\ques
+% Homework 7
+You want Alt-F7 on your Linux box to open up a 7th login window (6 isn't enough).
+What file do you need to change? Give the exact command to activate this change.
+\vskip 0.8in
+You want to backup the {\ltt{}/home} directory to floppy at 11:30 this evening
+(You won't be there then so you have to automate this.)
+Describe how to do this; give exact file name, file contents and command.
+\vskip 1.2in
+A system administrator wants the machines in a lab to reboot {\it every} morning
+at 2AM.
+How is this done? Give file name, file contents and command.
+\vskip 1.4in
+\ques
+% Homework 2
+Give a sample {\ltt{}/etc/shadow} entry for a user called {\ltt{}joe} and give an
+explanation of the first three fields of that entry.
+\vskip 1.5in
+Each user has a path. What does this path do and how is it set?
+\vskip 1.0in
+How are groups given names?
+\vskip 0.5in
+\vfill\eject
+\ques
+% Homework 4
+Write a script that counts the number of device interfaces in {\ltt{}dev}
+that contain the letters ``{\ltt{}tty}".
+\vskip 0.8in
+\ques
+% Homework 12
+Describe how to allow telnets only from {\ltt{}panther}.
+\vskip 0.9in
+Describe how to allow rlogins to {\ltt{}bob} from {\ltt{}joe@cheetah}.
+\vskip 1.1in
+Your IP number is 192.168.1.2 and netmask is 255.255.255.0;
+give the exact {\ltt{}ifconfig} command you need.
+\vskip 0.4in
+Your default (and only) gateway is 192.168.1.1;
+give the exact {\ltt{}route} command you need.
+\vskip 0.4in
+\ques
+% Homework 8
+How can you find out what kind of video card is in {\it your} machine?
+\vskip 1.6in
+How would you make the 1024x768 screen resolution the default
+for your X11 window system?
+\vskip 1.2in
+\vfill\eject
+\ques
+% Homework 6
+Give the exact commands to set up a 1MB swap file called {\ltt{}/swaps/swap1}?
+\vskip 1.5in
+\ques
+% Homework 1
+\hfill\break
+Give a {\it command} that would locate the passwd command and the
+manual entries for that command.
+\vskip 0.4in
+How would you find a command that would allow you to access the USB port?
+\vskip 0.4in
+In what {\it directory} would you most likely find
+the following files:
+\hfill\break
+A) System Administration programs:
+\vskip 0.2in
+B) Configuration files:
+\vskip 0.2in
+C) Files related to booting the machine:
+\vskip 0.2in
+D) Information about the windows system configuration:
+\vskip 0.2in
+\ques
+% Homework 11
+Give the command you would use to find out
+the hardware (MAC) address of your network card?
+\vskip 0.4in
+Describe the contents of the {\ltt{}resolv.conf} file.
+\vskip 1.2in
+A machine knows about two gateways, one to cable {\ltt{}192.168.4.0}
+with a netmask of {\ltt{}255.255.255.0}, the other to the
+rest of the network.
+Give the entire routing table for this machine.
+\vskip 2.0in
+\bye

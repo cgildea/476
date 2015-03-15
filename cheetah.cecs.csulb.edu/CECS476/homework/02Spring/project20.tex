@@ -1,0 +1,32 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Project 20\hfill Spring 2002}}
+\footline{Dennis Volper \hfill 17 April 2002 (Week 11 Lecture 2)\hfill 
+Due: 22 April 2002 (Week 12, Lab 1)}
+\parindent 0pt
+
+This assignment covers SUID programs.
+
+As bob: get a copy of {\ltt{}clogit.c} and compile it.
+Name the compiled version {\ltt{}clogit}.
+Don't forget to look at it to see what it does.
+Create a file called {\ltt{}datelog} to be mode 600 and
+change the {\ltt{}clogit} command to be SUID and executable
+by everyone (mode 4711).
+
+Login as your cav476xx account: run clogit.
+
+1) Report: the last two lines in the datelog
+
+Verify security: try doing the same thing by creating a shell script that
+writes to the file using "echo" commands. (Don't be particular about
+the exact things you echo.)
+Make the shell script SUID.
+
+Login as your cav476xx account: run the shell script.
+
+2) Report: what happens.
+
+Reminder: you should NEVER login as root while doing this project.
+\bye

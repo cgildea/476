@@ -1,0 +1,216 @@
+\def\chapternumber{Chapter 9 --- Iterative Connectionless Server -- 4 June 2003}
+\input slides.tex
+\centerline{\bbf Chapter 9}
+\centerline{Iterative Connectionless Server}
+
+{\ltt{}passiveUDP}: set up a UDP server socket
+
+parameter: name/port number of service
+
+calls {\ltt{}passivesock} with name/port number and {\ltt{}"udp"}
+\vt
+{\ltt{}passivesock}: (TCP/UDP)
+\ind{--}server waits for a connection (TCP) or
+message (UDP) on this socket.
+\ind{--}this will be the ``well-known port" to which the client tries to connect (TCP)
+or send a message (UDP).
+
+parameters: 
+\break
+name or port number of the service
+\break
+tcp/udp indicator
+\break
+{\ltt{}qlen} ignored on UDP sockets
+
+This socket can be used by iterative or concurrent servers
+
+\newslide
+\centerline{passivesock}
+\centerline{Detailed Comments}
+
+see Section 9.2 for code
+
+{\ltt{}memset}: clear out the internet address structure
+
+{\ltt{}sin.sin_family=AF_INET}: we are internet protocol
+
+{\ltt{}sin.sin_addr.s_addr=INADDR_ANY}: applies mostly if the server is 
+running on a host that is a gateway 
+(a machine with several internet interfaces).
+\break
+Each interface will have its own internet address.
+\break
+This server will accept messages/connections
+on any internet address that belongs to the host.
+\break
+This also allows us to move the server software to another host with no changes.
+\newslide
+{\ltt{}getservbyname}: this part is as in the client.
+\break
+Guess 1: it is the name of a service (like {\ltt{}"telnet"}).
+\break
+Guess 2: it is a port number (like {\ltt{}"2345"}).
+\break
+Both guesses fail: error exit
+
+{\ltt{}htons(ntohs((u_short)pse->s_port)+portbase)}:
+\break
+{\ltt{}portbase=0} does nothing
+\break
+Ports below 1000 are reserved (root access only)---add an offset
+({\ltt{}portbase})
+so non-systems types can build client/server programs.
+\break
+convert to an integer, add the base, convert back to network standard
+\break
+Note: fails if {\ltt{}u_short} is not 16 bits
+\vt
+Note that gethostbyname is not needed, the server receives messages and
+replies to whoever sent them.
+\break
+It doesn't initiate interaction with another machine
+\vt
+{\ltt{}getprotobyname}: same as client
+\break
+{\ltt{}if (strcmp...}: same as client
+\vt
+{\ltt{}socket}: get a socket (same as client)
+
+\newslide
+{\ltt{}bind}: attach the socket to the well-known-address
+\break
+uses the port and address ({\ltt{}INADDR_ANY}) set up previously.
+\break
+$\Rightarrow$ uses the server address and service port.
+\break
+A failure here indicates wrong priviledge (not root) or
+the port is already in use.
+\break
+Debugging: before testing your new version of a server, be sure to kill the
+old version (or bind will fail).
+When a server is killed, the port is not released immediately.
+
+Note: two servers may be bound to the same port (using fork),
+one (randomly) will get the connection/message.
+\vt
+{\ltt{}listen}: only done for TCP connections ({\ltt{}SOCK_STREAM}),
+\break
+after this call, connections will be queued for acceptance.
+\break
+before this call, the server is not available (not responding)
+
+{\ltt{}qlen}: the maximum number of unaccepted clients that
+are allowed to be waiting. (Usually $\le5$ required by system)
+\newslide
+\centerline{\bbf Server vs. Client (Summary)}
+\vt
+\halign{
+\vtop{\parindent=0pt\hsize=3.0in\hangindent0.3em\strut#\strut}
+&\qquad
+\vtop{\parindent=0pt\hsize=3.0in\hangindent0.3em\strut#\strut}\cr
+{\bit Server}&{\bit Client}\cr
+Bind/listen&Connect\cr
+Specify server's address&Specify server's address\cr
+Specifies own address&Specifies others address\cr
+Uses the specified port&Uses any port\cr
+Accepts connect or message from any port&Connects or sends to a specific port\cr
+passivesock&connectsock\cr
+}
+\newslide
+\centerline{\bbf The Connectionless Time Server (Details)}
+
+see Section 9.4 for code
+
+{\ltt{}passiveUDP}: get a server socket (UDP type)
+
+{\ltt{}while(1)}: infinite loop (server never exits)
+
+{\program
+recvfrom(sock,buf,sizeof(buf),0,
+          (struct sockaddr *)&fsin,&alen);
+\endprogram}
+
+Receive a message
+
+{\ltt{}sock}: bound to the ``passive" socket. 
+The {\bit socket} specifies (see {\ltt{}bind}) the port this server
+is using to receive messages.
+
+{\ltt{}buf}: the variable that the message is to be placed into.
+\break
+{\ltt{}sizeof(buf)}: the message better be shorter than this
+\break
+Actually this server ignores the contents of the incoming message.
+
+{\ltt{}fsin}: (return address) 
+the variable that gets the address of sender of the message.
+\break
+(Highly useful for sending a reply!)
+\newslide
+{\ltt{}alen}: starts with the size of {\ltt{}fsin}, 
+\break
+if the actual size of the sender's address is bigger than this, it won't fit 
+in {\ltt{}fsin} and an error condition will occur.
+\break
+Ends with the actual size of the senders address.
+\break
+All internet address sturctures have the same size, so if this is not
+equal to {\ltt{}sizeof(fsin)} something is wrong; notice the program
+never checks.
+
+{\ltt{}time...}: get the information the client requested (the service).
+
+{\ltt{}UNIXEPOCH}: convert the number to conform to the protocol.
+Here we are the system's network time server, so we must conform to the 
+measure of time specified by the RFC.
+
+In a client-server pair what matters is that both the client and server
+agree on the format of the time.
+They could agree either on UNIX or Internet, or some other; as long
+as they agree.
+
+{\ltt{}htonl}: by convention all numbers are converted to network standard
+order for shipment.
+
+\newslide
+{\program
+sendto(sock,(char *)&now,sizeof(now),0,
+        (struct sockaddr *)&fsin,sizeof(fsin))
+\endprogram}
+
+Send the reply 
+
+{\ltt{}sock}: use the same socket
+
+{\ltt{}now}: send the number as a string of bytes.
+
+{\ltt{}fsin}: send to the return address.
+
+receive--the address is the source (return) address
+\break
+send--the address is the destination address
+\break
+(It's always the other machines address,
+\break
+because you should know your own.)
+\vt
+Note:
+
+An attempt to {\ltt{}connectTCP} to this particular server would fail 
+({\ltt{}connectsock} would get an error).
+\break
+This server does only UDP.
+\newslide
+\centerline{\bbf Homework Help}
+\vt
+The {\ltt{}get_port} function is designed to drop into the Comer code.
+
+Example of
+using a function to return the service, where the function returns a string.
+
+{\program
+char *service = get_port();
+\endprogram}
+
+\bye

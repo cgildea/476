@@ -1,0 +1,65 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 16 \hfill Fall 2005}}
+\footline{Dennis Volper \hfill 26 October 2005 (Week 9 Lecture 2)\hfill 
+Due: 31 October 2005 (Week 10, Lab 1)}
+\parindent 0pt
+
+This assignment covers the boot/root disks, and what is on the release CD.
+
+\bigskip
+1) {\bf fdisk}:
+For the disk you administer describe the partitions that are on the disk?
+For each partition {\it report}, where it starts, where it ends, and what kind
+of a partition it is (Linux, DOS, swap).
+Be very careful with this one, you have to be root to run fdisk,
+DO NOT MODIFY or WRITE anything with fdisk; 
+you can easily erase the disk.
+Record the information very carefully, you have to use this information
+to rebuild after your disk crash.
+
+2) {\bf pkgtool}:
+What packages are installed on the machine you administer.
+{\it Report} just the first 6. Don't bother to record the others, you will
+be told what to install in the instructions for the install project.
+
+\bigskip
+3) {\bf boot sets}:
+Examine the slackware cd image on {\ltt{}jaguar}.
+The howto describes several boot sets.
+What is the purpose of the {\ltt{}speakup.s} boot set.
+
+\bigskip
+3) {\bf root sets}:
+Exam cd rom number 4 (disk4) on {\ltt{}jaguar}.
+If you use the {\ltt{}bare.i} boot disk;
+what root disks would also be required by the boot (and
+by the install).
+List those disks. Note: {\ltt{}color.gz} does not really
+exist under this method of booting.
+
+\bigskip
+5) {\bf boot disks}:
+Build two 3.5" 1.44Mdisks from the appropriate files from the {\ltt{}djv} home directory.
+One of these disks is to be a boot disk.
+It must contain a kernel that supports IDE drives
+and networking ({\ltt{}net600.i}).
+The other should be a root disk ({\ltt{}color.gz}).
+
+You can find the disks under the {\ltt{}~djv}
+directory (visible from the machine you administer).
+
+{\it Report:} the exact commands you used to build the disks.
+
+Test: Making sure that all other users are off the machine,
+place your boot disk in the A: drive and
+reboot the machine using the shutdown command.
+Follow the instructions, paying careful attention for when to swap disks.
+Once you have booted from floppy, examine the {\ltt{}/bin} directory
+(see next report section).
+Remove your disks from the drive and reboot using the shutdown command.
+
+{\it Report:} the number of entries you found in {\ltt{}/bin}.
+
+\bye

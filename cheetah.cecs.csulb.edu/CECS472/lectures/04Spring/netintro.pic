@@ -1,0 +1,129 @@
+\def\chapternumber{netintro -- CECS 472 --- 4 June 2003}
+\input slides.tex
+\centerline{\bbf Unix}
+\centerline{Use of the Unix System on a Network}
+
+{\ltt{}man} -- read a manual entry
+\break
+{\ltt{}man ls} -- gives you the entry for {\ltt{}ls}
+\break
+{\ltt{}man 5 hosts.equiv} -- section 5 entry for {\ltt{}hosts.equiv}
+\break
+{\ltt{}man -k disk} -- lists all manual entries whose summaries include
+the work {\bit disk}
+
+Warning: machines differ
+\break
+Read the manual for the correct machine
+
+Linux pseudo terminals: 
+\break
+you have 6 terminals, alt-F1 .. alt-F6
+\break
+you can have up to 6 logins from one keyboard
+\break
+don't forget to logout on all terminals you were using
+\newslide
+\centerline{\bbf Compilers}
+
+{\ltt{}gcc} -- the standard c compiler
+
+Warning: what you compile on one machine will not run on another.
+
+{\ltt{}.o} files created by one compiler cannot be used by another.
+
+Technique: fully recompile, leave no {\ltt{}.o} files.
+
+\vt
+Example:
+
+{\ltt{}gcc x.c y.c z.c -o prog.out}
+
+Compiles 3 files, calls the executable {\ltt{}prog.out}
+\vt
+Note: sometimes the compiler is called {\ltt{}gcc}
+\break
+One file must contain a function called {\ltt{}main}
+
+\newslide
+\centerline{\bbf Network Designations}
+
+Machines have first (middle) and last names:
+
+{\ltt{}cheetah.cecs.csulb.edu}
+\break
+{\ltt{}prep.ai.mit.edu}
+
+Sometimes shorthand can be used ({\ltt{}cheetah})
+\break
+if set up by the network coordinator.
+
+Users can be refered to on remote machines.
+
+{\ltt{}hostmaster@nic.ddn.mil}
+\break
+{\ltt{}pres@whitehouse.gov}
+\break
+{\ltt{}mahoney@astro.engr.csulb.edu}
+
+Format:
+
+user name \quad {\ltt{}@} \quad machine
+
+\newslide
+\centerline{\bbf Applications you should know/learn}
+
+{\ltt{}telnet} -- connect to a machine on the network
+
+{\ltt{}telnet cheetah.cecs.csulb.edu}
+\break
+By default connects to the telnet server
+\break
+You will be asked for an account name and a password
+\vt
+{\ltt{}rlogin} -- log into another Unix machine on the network
+
+By default it uses the same account name on the machine you are trying to
+reach.
+\break
+An option allows you to access say which account you wish to access on
+the destination machine.
+\break
+A password or appropriate authorization is required.
+\vt
+{\ltt{}ftp} -- copy a files from/to another machine on a network
+
+{\ltt{}ftp cheetah.cecs.csulb.edu}
+\break
+you must login to the other machine
+\break
+{\ltt{}anonymous} login is sometimes allowed
+\break
+--i.e., you don't need an account or password
+\newslide
+{\ltt{}rcp} -- copy a file from/to another Unix machine on a network.
+
+{\ltt{}rcp  spy@cia.org:map.ps spymap.ps}
+\break
+Authorization is required.
+Either the source, the destination or both may be on other machines.
+\break
+(Example is from a remote machine to a local file)
+\vt
+\centerline{\bbf Network Information}
+
+There are several network databases that may be accessed.
+
+{\ltt{}nslookup}: (Domain name service): access data about
+machines on the network.
+
+{\ltt{}finger}: access login information about a (remote or local) user.
+The argument can be the users mail address.
+
+
+{\ltt{}whois}: access the internet user name directory service
+
+\vskip 0pt plus1filll
+The above are representative. 
+Other more elegant programs exist, but these require minimum resources.
+\bye

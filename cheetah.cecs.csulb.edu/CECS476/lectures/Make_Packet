@@ -1,0 +1,10 @@
+#!/bin/csh
+# Print side-by-side for packet
+foreach lecture ( introduction linux_intro linux_use file_organization user_administration shell_programming filesystems processes virtual_memory init cron kernel x11 tar encryption terminals network_basics nis nfs ftp install syslog printing mail security iptables www dns rdist samba quota dhcp ldap other_unix review )
+  pic -c {$lecture}.pic > {$lecture}.tex
+  tex  {$lecture}.tex
+  dvips -f < {$lecture}.dvi -o {$lecture}.ps
+  psnup -2 -d -pletter {$lecture}.ps | lpr -h -Pecsprinter
+  rm {$lecture}.tex {$lecture}.log {$lecture}.dvi {$lecture}.ps
+  sleep 10
+end

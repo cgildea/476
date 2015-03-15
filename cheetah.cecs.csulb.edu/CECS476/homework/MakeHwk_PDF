@@ -1,0 +1,15 @@
+#!/bin/csh
+# Lectures
+# Print side-by-side for packet
+# chap24-25 examples of RPC programs: dropped
+foreach topic ( 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26)
+  tex  assignment{$topic}.tex
+#  dvips -f < assignment{$topic}.dvi > assignment{$topic}.ps
+#  lpr -h assignment{$topic}.ps
+  dvips assignment{$topic}.dvi -o
+  ps2pdf assignment{$topic}.ps
+  mv assignment{$topic}.pdf ./pdfs/
+  mv assignment{$topic}.ps ./postscripts/
+  rm assignment{$topic}.log assignment{$topic}.dvi 
+#  sleep 5
+end

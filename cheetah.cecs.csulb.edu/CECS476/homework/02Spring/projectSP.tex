@@ -1,0 +1,43 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Special Project \hfill Srping 2002}}
+\footline{Dennis Volper \hfill 20 March 2002 (Week 8 Lecture 2)\hfill 
+Due: 3 April 2002 (Week 9, Lab 2)}
+\parindent 0pt
+
+Situation:
+We have installed new cabling in the lab.
+We have had to redivide and reorganize the network.
+Your machine will receive a new internet name and number.
+
+Purpose:
+Get you machine back on to the network.
+
+Restriction:
+This assignment must be done on Wednesday 3 April
+(We've got to roll the entire set of cable at once.)
+On that day at the start of lab, I will remove the
+old network cables from your machine.
+
+On the top of your machine will be a note
+with the new name, IP number and
+gateway for your machine.
+(Netmasks are not changing.)
+
+As root do the following.
+
+1) Change the hostname in {\ltt{}/etc/HOSTNAME}
+
+2) Change the IP number and gateway in {\ltt{}/etc/rc.d/rc.inet1}.
+
+3) Plug the RJ network cable into the back of your machine.
+
+4) Reboot.
+
+If something goes wrong, it was your edit at  steps 1 or 2,
+login as root and fix it, reboot.
+
+Submission: None
+
+\bye

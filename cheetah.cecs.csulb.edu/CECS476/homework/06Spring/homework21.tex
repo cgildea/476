@@ -1,0 +1,115 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Homework 21 \hfill Spring 2006}}
+\footline{Dennis Volper \hfill 19 April 2006 (Week 12 Lecture 2)\hfill 
+Due: 24 April 2006 (Week 13, Lab 1)}
+\parindent 0pt
+
+This project is about network news.
+
+A ``limited" network news is running on jaguar.
+It is limited in the following sense
+1) there are only two news groups,
+2) it is only willing to share (feed) these news groups with (to) the CECS 476
+machines,
+3) jaguar accepts newsfeeds only from the CECS 476 machines.
+In other words, we have an isolated, two news group world to play with.
+
+Jaguar only permits news readers from jaguar to read news.
+This means that (for example) from {\ltt{}lab77} you cannot
+read news using the {\ltt{}innd} on jaguar.
+However, jaguar is willing to exchange news with {\ltt{}lab77}.
+That means that the {\ltt{}innd} on {\ltt{}jaguar} is willing to transfer
+news to and from the {\ltt{}innd} on {\ltt{}lab77}.
+
+If you followed the install instructions;
+there is no {\ltt{}innd} running on the machine you are assigned to administer,
+but you did install it.
+Your job is to configure and start the news service for your machine.
+This job includes starting {\ltt{}innd}.
+You should be able to read and post news to your local machine.
+Your local machine should exchange news with {\ltt{}jaguar}.
+News posted on your machine should be sent to {\ltt{}jaguar}.
+News that {\ltt{}jaguar} has should be feed to your machine.
+
+Jaguar has two news groups, {\ltt{}local.476a} and {\ltt{}local.476b}.
+Get them both to work.
+Actually, if you get one news group to work, the other is simple.
+
+Step 1. Use news on {\ltt{}jaguar}.
+To become familiar with news I recommend that you log into {\ltt{}jaguar},
+read the messages posted in the news group.
+A reasonable news reader is {\ltt{}trn},
+but if you prefer {\ltt{}tin} you are welcome to use it.
+In addition, post a message to a new group and have someone else in your group
+read it to make sure it got through.
+\hfill\break
+{\bf Report:} no report for this step.
+
+Step 2.
+Examine the configuration files on {\ltt{}jaguar}.
+I have deliberately unprotected the configuration files so anyone can read
+them.
+The program {\ltt{}inncheck} (if you run it) will complain about this 
+because it considers this unprotecting to be a potential security hole,
+but it won't effect the ability of {\ltt{}innd} to run.
+Notice particularly those files which have been modified recently.
+\hfill\break
+{\bf Report:} no report for this step.
+
+Step 3. Configure news (and start {\ltt{}innd}) for the machine you are
+assigned to administer.
+Arrange for your news groups to be transferred to/from {\ltt{}jaguar}.
+Note: if someone successfully posts news on another lab machine, the posting
+should become available on yours.
+You should make the following three tests:
+\hfill\break
+1) Post news on your machine make sure you can read it
+on your machine.
+\hfill\break
+2) Post news on your machine read it on your {\ltt{}jaguar}.
+\hfill\break
+3) Post news on {\ltt{}jaguar} and read it on your machine.
+\hfill\break
+{\bf Report:}
+\hfill\break
+1) What files you changed (Give the full rooted path name such as
+{\ltt{}/usr/tmp/xx/yy}.
+\hfill\break
+2) For each of the files you changed, give the contents of that file.
+Do not include the comment lines, just the active/command lines.
+
+Notes: Use traditional spooling. On your computer, uses {\ltt{}bob}
+and only {\ltt{}bob} to post news. You may also use root on
+your local box to read news, do not post with root.
+On jaguar, use your class account to read and post news;
+do {\it not} use your class account to either read or post news on your
+computer. Do not do any administrative actions on this project
+while you are root; make sure you always {\ltt{}su} to news before
+doing anything administatively. To start, stop and restart news
+the use of the {\ltt{}rc.news} script is recommended.
+If you have trouble use syslog to dump {\ltt{}news.*} into a log file
+({\ltt{}jaguar} does this).
+
+Specials:
+%the install doesn't setup news quite correctly.
+The inn install wasn't in the main sequence so you have to
+install this package separately. using the following instructions
+You need to the following while loged in as root:
+%\hfill\break
+%{\ltt{}rm /usr/bin/inews}
+%\hfill\break
+%{\ltt{}ln -s /usr/lib/news/bin/inews /usr/bin/inews}
+%\hfill\break
+%{\ltt{}chmod 555 ~news/bin/inews}
+\hfill\break
+{\ltt{}tar -xzpf ~djv/inn-2.4.2-i486-1.tgz}
+\hfill\break
+{\ltt{}source install/doinst.sh}
+
+You will also have to enable the sending of news (it's not the default)
+\hfill\break
+{\ltt{}chmod a+x /usr/lib/news/bin/inews}
+
+\bye

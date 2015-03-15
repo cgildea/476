@@ -1,0 +1,158 @@
+\def\chapternumber{Broadcast --- UDP Broadcasts -- 6 January 2004}
+\input slides.tex
+\centerline{\bbf UDP Broadcasts}
+
+Client: broadcasts a request on a subnet/cable.
+
+Servers: responds to any broadcast request.
+
+Note: a broadcast is to all machines, not to all ports.
+\break
+A broadcast to the port 5432 can only be received
+by server programs running on port 5432.
+\break
+Alternate wording: single port, multiple IP addresses.
+
+Note: the server's response will provide the client
+with the IP address of the server.
+
+Uses:
+\break
+--Find a server
+\break
+--Find all servers
+
+Used by:
+\break
+--Network Information Services (yp) (network accounts)
+\break
+--Microsoft browser protocol (list shares)
+
+\newslide
+\centerline{\bbf Broadcasts--Server Side}
+
+A server is running on a ``port".
+\break
+It can receive any broadcast to that port.
+\break
+By default, the receipt of broadcasts on a port is
+disabled. Any server wanting to respond to
+broadcasts enable receipt of broadcasts on a per port basis.
+
+{\ltt{}setsockopt}
+\break
+--Sets the options for a socket.
+
+5 parameters
+
+{\ltt{}int s} -- the socket descriptor
+\break
+{\ltt{}int level} -- what level of the IP protocol stack this option modifies
+\break
+{\ltt{}int opname} -- which option is being set
+\break
+{\ltt{}const void *optval} -- the option is set to this value.
+The structure of the thing pointed to depends on the {\ltt{}opname}
+\break
+{\ltt{}socklen_t optlen} -- {\ltt{}sizeof(optval)}
+
+1 return value
+\break
+negative -- Failed
+\break
+other -- Success
+\newslide
+\centerline{\bbf setsockopt}
+
+{\cprogram
+int s = passiveUDP(service);
+int One = 1;
+setsockopt(s,SOL_SOCKET,SO_BROADCAST,
+    &One,sizeof(One));
+@endprogram}
+
+{\ltt{}s} a socket.
+
+{\ltt{}SOL_SOCKET}--the option being set applies to this socket.
+
+{\ltt{}SO_BROADCAST}--the option being set is the ability to
+receive broadcasts. This options takes a ``boolean" parameter,
+true enables the receipt of broadcasts, false disables it
+
+{\ltt{}&One}--The option takes a boolean ({\ltt{}int}), to
+match the {\ltt{}void *} this is the address of a {\ltt{}int}.
+
+{\ltt{}sizeof(One)}--as with many untyped parameters, you must
+say how large the parameter is.
+\vfill
+For the server a one line addition enables the
+enables the receipt of broadcasts.
+
+The return value of {\ltt{}setsockopt} should be checked
+and an error exit done on {\ltt{}< 0}.
+\newslide.
+\centerline{\bbf Broadcasts--Client Side}
+
+Two things must be done to the client side.
+\break
+1) the sending of broadcasts must be enabled
+\break
+2) because we do not know which server will
+respond the limitation of ``receive replies only
+from this server" must be removed.
+(Comer's code is not really setup to do this.)
+
+Setup steps:
+\break
+1) get a socket
+\break
+2) enable sending of broadcasts
+\break
+3) set as internet, receive all replies
+
+Running steps:
+\break
+Send a broadcast, i.e., send to the broadcast address.
+\break
+Receive all replies. This probably means a loop with a select,
+and the select may have a timeout.
+\newslide
+\centerline{\bbf Simple Broadcast Client}
+
+{\cprogram
+main(){
+  time_t  now;
+  int s;
+  int alen;
+  int One = 1;
+  struct sockaddr_in fsin, fsin_him;
+  /* get socket */
+  s = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  /* enable broadcast */
+  setsockopt(s,SOL_SOCKET,SO_BROADCAST,&One,
+    sizeof(One)))
+  /* connect with no limitation on reply */
+  fsin.sin_family = AF_UNSPEC;
+  fsin.sin_port = htons(5432);
+  fsin.sin_addr.s_addr = INADDR_BROADCAST;
+  connect(s,&fsin,sizeof(fsin));
+  /* send broadcast */
+  fsin.sin_family = AF_INET;
+  sendto(s," ",1,0,
+    (struct sockaddr *)&fsin, sizeof(fsin));
+  /* get first reply */
+  recvfrom(s, (char *)&now, sizeof(now), 0,
+    (struct sockaddr *)&fsin_him, &alen);
+};
+@endprogram}
+\newslide
+\centerline{\bbf Robust Client}
+
+Need to check the return values of all system
+calls and handle (error exit) any problems.
+
+Use separate variables for the different addresses.
+
+Handle multiple replies or no replies (select with bailout)
+
+\bye

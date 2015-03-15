@@ -1,0 +1,69 @@
+\input macros
+\input cstuff
+\headline{{\bf CECS 472\hfill Homework 3 \hfill Fall 2009}}
+\footline{Dennis Volper \hfill 9 September 2009 (Week 2 Lecture 2) \hfill
+Due: 14 September 2009 (Week 3, Lab 1)}
+% Lecture 3
+\parindent 0pt
+
+Purpose: This is designed to familiarize you with the primitive client
+and server. It basically forces you to read it through carefully.
+
+Running: For your server, use the machine you are on;
+for your client use the machine one higher.
+For example, if you are on the keyboard of lab35, run server on
+lab35 and your client on lab36.
+The easy way to do this is to open a separate virtual session
+(alt-F2) and telnet to the client machine.
+Do not use the keyboard on lab51 or lab79 (because there are no
+machines lab52 and lab80).
+
+Discussion: This requirement will mean that each of you is running
+their server on a different machine, so there will be no conflict
+between your servers.
+To do this you will need to to a little modification of the
+hexidecimal constant of the client given in the lecture.
+It is 0x868bf811; the last two digits need to be changed.
+This constant applies if your are on the machine 134.139.248.17;
+the last two hex digits (11) are equal to 17 in decimal.
+Hence if you are on 134.139.248.99, you need the last two hex digits
+to be 63 (the hexidecimal equivalent to 99).
+You can tell internet number of the machine you are on by looking at the label
+on the front of the machine.
+If you have trouble with the decimal to hexadecimal conversion, let me
+know, I'll assist you.
+
+This project consists of adding several ``upgrades" to the client and
+server and observing some output.
+
+Client upgrades:
+\hfill\break
+1) What socket do you get? (printf the descriptor number)
+\hfill\break
+2) What value is returned by the connect, read and write calls (printf).
+\hfill\break
+3) Send a second message to the server, {\ltt{}"Message 2"}.
+\hfill\break
+4) Receive a second reply.
+\hfill\break
+5) Print the replies you receive from the server (printf).
+
+Server upgrades:
+\hfill\break
+1) What sockets (master/client) do you get?
+\hfill\break
+2) What value is returned by the bind, listen, read and write calls.
+\hfill\break
+3) Receive a second message from the client.
+\hfill\break
+4) Send a second reply {\ltt{}"Reply 2"}.
+\hfill\break
+5) Print the messages you receive from the client (printf).
+
+{\ltt{}~volper/classes/472/shells} contains copies
+of the primitive client and server from lecture
+(you don't have to retype them).
+
+Call your finished client {\ltt{}primitive_client.c} and 
+your finished server {\ltt{}primitive_server.c}.
+\bye

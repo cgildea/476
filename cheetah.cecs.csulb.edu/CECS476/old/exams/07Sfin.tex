@@ -1,0 +1,170 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2007, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook. No digital or communications devices.
+All questions 4 points.
+
+\ques
+% Project 15
+You wish to send all error messages (level {\ltt{}err})
+from the {\ltt{}crond}(facility {\ltt{}cron})
+to the file {\ltt{}/var/log/cronerr}.
+Give the file name and the line you need in that file.
+\vskip 1.0in
+\ques
+% Project 16
+What utility is used install or inspect packages?
+\vskip 0.8in
+\ques
+% Project 22
+You wish to allow sam (and only sam) to use an {\ltt{}.htaccess} file to
+control access to the {\ltt{}private} subdirectory of his web directory.
+What file do you need to change and show the entry you need to make in that
+file.
+\vskip 2.8in
+\ques
+% Project 22
+You wish to block all web access to all home directories that are located
+inside the {\ltt{}/u4/students} directory.
+What file do you need to change and what do you need to add to that file.
+\vskip 2.3in
+\vfill\eject
+\ques
+% Project 13
+Your ypserver is {\ltt{}panther} ({\ltt{}134.139.248.21}).
+What file do you need to change and what change do you need to make?
+\vskip 1.0in
+\ques
+% Project 20
+How do you set up a setuid program?
+\vskip 1.5in
+\ques
+% Project 18
+Give the steps to enable anonymous ftp.
+\vskip 1.3in
+\ques
+% Project 19
+How do you send all mail on the subject {\ltt{}backups} to
+the file {\ltt{}backup.folder}?
+Give the file and the contents.
+\vskip 1.6in
+\vfill\eject
+\ques
+% Project 19
+You want all mail from you machine to go to {\ltt{}cheetah}
+before it goes to it's final destination.
+What file would you need to change?
+\vskip 0.6in
+\ques
+% Project 20
+You want to allow users to login even if their home directory
+is not available.
+What file do you need an entry in?
+\vskip 0.6in
+\ques
+% Project 23
+There are two machines for {\ltt{}dns.mytube.com} ({\ltt{}182.33.1.1})
+supplies name service:
+{\ltt{}a.mytube.com} ({\ltt{}182.33.2.6}) and 
+{\ltt{}b.mytube.com} ({\ltt{}182.33.2.7}).
+Give the entire zone file for the zone {\ltt{}mytube.com}.
+\vskip 4.3in
+\ques
+% Project 23
+Give the zone entry in {\ltt{}named.conf}
+for {\ltt{}mytube.com} assuming
+the name of the zone file is {\ltt{}mytube.list}.
+\vfill\eject
+\ques
+% Project 24
+Give the steps you would take on {\ltt{}lynx} to install and use
+a new {\ltt{}/etc/smb.conf} file on {\ltt{}panther}.
+You will perform the install from a file called {\ltt{}newsmb}
+located on {\ltt{}lynx}.
+Remember to you will need to restart samba.
+\vskip 2.4in
+\ques
+% Project 14
+You wish to attach the files the
+{\ltt{}/u7} directory on {\ltt{}d1.cecs.csulb.edu}
+to your file tree as {\ltt{}/net/d1/u7}.
+Give the {\ltt{}fstab} entry to do this.
+\vskip 0.9in
+\ques
+% Project 14
+You want to make your directory 
+{\ltt{}/public}
+available (read only) to all machines with numbers starting with 134.139.248.
+What file do you need to change?
+What change do you need to make?
+What command do you need to run?
+\vskip 1.6in
+\ques
+% Project 25
+You want to make a printer on your
+Linux machine available to another machine running Microsoft Windows. 
+What file do you need to change?
+What service do you need to run?
+\vskip 1.2in
+\vfill\eject
+\ques
+% Project 17
+You want to run a java compiles on your machine.
+What disk set needs to be installed?
+\vskip 0.6in
+\ques
+% Project 18
+How do you allow the accounts whose passwords are delivered
+using NIS to use the ftp service?
+What file do you change? What change do you make?
+\vskip 1.4in
+\ques
+% Project 15
+You want to enable printing, it should automatically start at boot.
+What file do you need to modify?
+What change to you need to make in the {\ltt{}rc.d} directory?
+What server should you see running (if you do a ps)?
+\vskip 1.6in
+\ques
+% Project 21
+You wish to allow {\ltt{}panther.net.cecs.csulb.edu} to read
+and post news on your machine.
+What file do you need to change?
+What change to you need to make?
+\vskip 1.4in
+\ques
+% Project 21
+You {\ltt{}innd} is sending news to and receiving news from
+{\ltt{}cougar.net.csulb.edu}.
+Give the names of the files and lines in them that
+will contain {\ltt{}cougar}.
+\vskip 2.2in
+\vfill\eject
+Analysis section. Assume {\ltt{}lab88} is a machine you administer.
+For each of the questions on this page
+state what things would you check on {\ltt{}lab88}
+and for each thing you would check give the command you would use to
+perform the check.
+
+\ques
+When {\ltt{}csa476z1} logs in he gets the
+message ``No home directory". 
+\vfill
+\ques
+Telnet from {\ltt{}cougar} doesn't work.
+Telnet from {\ltt{}lab87} does.
+\vfill
+\ques
+{\ltt{}nslookup test01.net88.csulb.edu lab88}
+give the message ``{\ltt{}SERVER FAILED}".
+\vfill
+\ques
+Your {\ltt{}httpd} doesn't start.
+\bye

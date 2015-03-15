@@ -1,0 +1,144 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 2005, Midterm, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open book, open notebook. (All question 8 points, 96 total points possible)
+\hfill\break
+\ques
+% Homework 10
+Give the exact command to make a compressed backup of {\ltt{}bob}'s home
+directory (preserving permissions) to the file {\ltt{}/tmp/bob.tgz}.
+\vskip 0.4in
+How would you make control-I be the command that a quit signal ({\ltt{}quit})
+to a running program?
+\vskip 0.4in
+\ques
+% Homework 5
+Give the command to build an Linux ext2 file system on {\ltt{}/dev/hdb2}.
+\vskip 0.5in
+Give the name of the file and the exact line that needs to be in that file to
+have the file system on {\ltt{}/dev/hdb2} attached to the directory trees
+as {\ltt{}/homes} automatically at boot time.
+\vskip 0.5in
+What does the {\ltt{}fsck} command do?
+\vskip 0.4in
+\ques
+% Homework 9
+Give the steps to build a kernel.
+\vskip 2.0in
+You wish to boot Linux from {\ltt{}/dev/hdc1} with no prompt or wait.
+The kernel is called {\ltt{}bzImage} and has already been placed into
+{\ltt{}/boot}.
+Give the exact contents of your {\ltt{}lilo.conf}.
+\vskip 1.8in
+\vfill\eject
+\ques
+% Homework 3
+The user {\ltt{}sam} has  a home directory of {\ltt{}/home/sam},
+a shell of {\ltt{}/bin/tcsh}, a user number of {\ltt{}12123}
+and a base group of {\ltt{}113}
+Give the {\ltt{}/etc/passwd} entry for {\ltt{}sam}.
+\vskip 0.4in
+What is {\ltt{}.login}?
+\vskip 0.4in
+\ques
+% Homework 7
+You have installed a new login program (called {\ltt{}pgetty}) and you
+want to have logins begin using it.
+What file do you need to change? Give the exact command to activate this change.
+\vskip 0.8in
+A system administrator wants to make a backup of the {\ltt{}/homes} directory
+{\it every} Tuesday morning at 1AM.
+How is this done? Give file name, file contents and command.
+\vskip 1.4in
+You want to automatically run the {\ltt{}/sbin/reboot} command this evening
+at 10:00 pm.
+Describe how to do this; give exact file name, file contents and command.
+\vskip 1.2in
+\ques
+% Homework 2
+Explain what is in the first three fields of a shadow file entry.
+\vskip 1.5in
+You want {\ltt{}pf} to be an alias for {\ltt{}ps aux}
+What file do you need to modify?
+\vskip 0.5in
+How are groups given names?
+You want joe to be a member of the groups {\ltt{}student}, {\ltt{}cecs472},
+and {\ltt{}cecs476}.
+What file do you need to modify?
+\vskip 0.5in
+\vfill\eject
+\ques
+% Homework 6
+Give the exact commands to set up a swap partition on {\ltt{}/dev/hdb1}.
+(Assume the disk has already been partitioned.)
+\vskip 1.5in
+\ques
+% Homework 4
+Write a script that lists the 3 files in {\ltt{}/var/log} that have changed
+most recently.
+\vskip 1.5in
+\ques
+% Homework 11
+What dirctory contains the source code for the etherwerks cards?
+\vskip 0.4in
+At {\ltt{}fullerton.edu} they want to be able to access local machines
+without typing the suffix {\ltt{}fullerton.edu}.
+Give the file needs to be changed and the exact change.
+\vskip 1.0in
+A machine with a netmask of {\ltt{}255.255.255.192}
+knows about two gateways, one ({\ltt{}192.168.5.2} to cable
+{\ltt{}192.168.2.0} with a netmask of {\ltt{}255.255.255.192}, the other 
+{\ltt{}192.168.5.1} to the rest of the network.
+Give the entire routing table for this machine.
+\vskip 2.0in
+\vfill\eject
+\ques
+% Homework 12
+How would you allow telnets to your machine only from machines
+in the lab. Hint these machines are the only ones with
+DNS domain names ending in {\ltt{}net.cecs.csulb.edu}.
+Give file name(s) and contents.
+\vskip 0.9in
+How would you allow rlogins to your machine from accounts
+on {\ltt{}cheetah} that use have the same user name.
+\vskip 0.9in
+Your IP number is 192.168.5.2 and netmask is 255.255.255.192;
+give the exact {\ltt{}ifconfig} command you need.
+\vskip 0.4in
+Your default (and only) gateway is 192.168.5.1;
+give the exact {\ltt{}route} command you need.
+\vskip 0.4in
+\ques
+% Homework 1
+Give a {\it command} that allow you to access the password file entry
+from section 5 of the manual.
+\vskip 0.4in
+How would you find a command that would allow you to eject the CDROM?
+\vskip 0.4in
+In what {\it directory} would you most likely find
+the following files:
+\hfill\break
+A) Log files:
+\vskip 0.2in
+B) Information about the CPU:
+\vskip 0.2in
+C) Interfaces to device drivers:
+\vskip 0.2in
+D) Configuration files:
+\vskip 0.2in
+\ques
+% Homework 8
+You install a serial mouse. You must change one file and one symbolic
+link. Give the name of that file and that symbolic link.
+\vskip 1.0in
+How would you make the X11 window system rotate through the available
+resolutions?
+\vskip 0.7in
+\bye

@@ -1,0 +1,198 @@
+\def\chapternumber{Chapter 6 --- Client Software -- 30 May 2002}
+\input slides.tex
+\input bigcstuff.tex
+\centerline{\bbf Chapter 6}
+\centerline{Client Software Design}
+
+1) Machine name: English readable, but doesn't tell the machine how to
+get there.
+\break
+Analogy: CECS at CSULB is a name
+
+2) Internet number: organized to provide information on how to get there.
+\break
+Principle: Raw numbers are primitive, but necessary to the machine.
+\break
+Analogy: Zip+4 = 90840-8302
+
+3) Protocol Name: English readable, but the machine works on port numbers.
+
+4) Port number: The machine can use this to look up the protocol in the 
+internal data structure.
+
+Solution: supply routines for getting numbers from names
+\vf
+5) Flexibility: In many cases the user should be allowed to designate the 
+machine they want as the server.
+\break
+{\ltt{}telnet cheetah.cecs.csulb.edu}
+
+Solution: write a program that takes arguments
+\newslide
+\centerline{\bbf Domain Name Service}
+
+Given a name you can get the internet number(s)
+\break
+Given an internet number you can get the name.
+\break
+Limited nicknames available.
+
+{\ltt{}gethostbyname}:
+given the name of the machine, returns information that includes the address.
+
+{\program
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+struct hostent *gethostbyname(char *name)
+\endprogram}
+
+You get null (name not found) or
+\break
+a pointer to a {\ltt{}hostent} structure ({\ltt{}netdb.h})
+{\program
+struct  hostent {
+  char    *h_name;        /* official name */
+  char    **h_aliases;    /* alias list */
+  int     h_addrtype;     /* host address type */
+  int     h_length;       /* length of address */
+  char    **h_addr_list;  /* list of addresses */
+#define h_addr  h_addr_list[0]  /* compatiblity */
+};
+\endprogram}
+
+{\ltt{}h_addr} is the address (IP number)
+\break
+{\ltt{}*char} type to allow any length address
+\break
+array of addresses applies to gateway machines
+\newslide
+\centerline{\bbf Byte Order}
+
+Byte order for integers varies.
+
+High byte first: SPARC, 68000, MIPS, RS6000
+
+Low byte first: Pentium,  MIPS
+\vt
+
+Needed for network communication: a standard order.
+\break
+(High byte first)
+\vt
+Needed for programming: conversion routines from host order to network order.
+
+{\ltt{}htonl} (host to network--long):
+convert a number from host order (whatever that is) to network order.
+
+{\ltt{}ntohl} (network to host--long)
+\break
+{\ltt{}htons} (host to network--short)
+\break
+{\ltt{}ntohs} (network to host--short)
+
+\newslide
+\centerline{\bbf Domain Name Service Example}
+
+{\cprogram
+#include <sys/types.h> /* u_long */
+#include <netdb.h>
+main()
+{
+  struct hostent *hp;
+  u_long addr;
+  hp = gethostbyname("cheetah.cecs.csulb.edu");
+  printf("%s\n",hp->h_name);
+  printf("%d\n",hp->h_length);
+  memcpy((char *)&addr, hp->h_addr, hp->h_length);
+  printf("%x\n",ntohl(addr));
+  printf("%s\n",inet_ntoa(addr));
+}
+@endprogram}
+
+{\ltt{}h_length} is always 4 for IP.
+\break
+copy is necessary to unfool c about length (1 for {\ltt{}char})
+\break
+{\ltt{}h_addr} is in network byte order
+\break
+{\ltt{}inet_ntoa} converts an internet number (in network byte order)
+to ascii dot notation.
+\newslide
+\centerline{\bbf Port and Services}
+
+{\program
+#include <netdb.h>
+struct servent *getservbyname(
+                   char *name, char *proto)
+\endprogram}
+
+Given a name and protocol (UDP/TCP) return the port number.
+
+{\program
+struct    servent {
+  char *s_name;  /* name of service */
+  char **s_aliases;   /* alias list */
+  int  s_port;       /* port */
+  char *s_proto; /* protocol to use */
+};
+\endprogram}
+
+{\ltt{}port} is {\ltt{}int} here, {\ltt{}u_short} in {\ltt{}sockaddr_in}
+\break
+proto and name usually echo what you entered 
+
+{\cprogram
+#include <netdb.h>
+main()
+{
+  struct servent *sp;
+  sp = getservbyname("telnet", "tcp");
+  printf("%s\n",sp->s_name); /* telnet */
+  printf("%d\n",ntohs(sp->s_port)); /* 23 */
+  printf("%s\n",sp->s_proto); /* tcp */
+}
+@endprogram}
+
+{\ltt{}s_port} is in network byte order
+\newslide
+\centerline{\bbf TCP Algorithm (6.1)}
+\centerline{(Client)}
+
+\ind{1.} Get server address and service port number
+\ind{2.} Get socket
+\ind{3.} Set up {\ltt{}sockaddr_in} struct (for 4.)
+\ind{4.} Get connection (use any local port)
+\ind{5.} Talk with server
+\ind{6.} Close the connection
+
+Message delivery guaranteed (or error is signalled)
+
+Connection establishment is ensured by protocol
+
+Close/shutdown is communicated to other end-point
+\newslide
+\centerline{\bbf UDP Algorithm (6.2)}
+\centerline{(Client)}
+
+\ind{1.} Get server address and service port number
+\ind{2.} Get socket
+\ind{3.} Set up {\ltt{}sockaddr_in} struct (for 4.)
+\ind{4.} Set socket for server (use any local port)
+\ind{5.} Send/receive messages to/from server
+\ind{6.} Close the socket
+
+No guarantee that messages will get there.
+
+Application must handle missing message problem
+
+{\ltt{}send}: Message goes to specified (default) server
+\break
+{\ltt{}write}: send to default server
+\vt
+Variations:
+
+{\ltt{}sendto}: Message destination given as an argument
+
+{\ltt{}sendmsg}: Message structure contains destination
+\bye

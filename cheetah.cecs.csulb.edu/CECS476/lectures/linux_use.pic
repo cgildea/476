@@ -1,0 +1,258 @@
+\def\chapternumber{Linux Use -- January 2014}
+\input slides.tex
+\centerline{\bbf Use of the Linux System}
+\vt
+A multiple user operating system.
+
+General Rule:
+\break
+If everything is OK, the computer says nothing
+\break
+If something goes wrong, you get an error message
+
+Commands:
+
+{\ltt{}cd} -- change directory
+\break
+{\ltt{}ls} -- List files
+
+Special file symbols:
+
+{\ltt{}../}  up a directory level
+\break
+{\ltt{}cd ../472} -- Up, over and down into 472 subdirectory
+\break
+{\ltt{}ls ../} -- list the directory above the current one.
+
+{\ltt{}~} --- your or another users home directory,
+\break
+--no user name implies your home directory
+\break
+{\ltt{}cd ~volper} -- change to volper's home directory 
+\break
+{\ltt{}ls ~} -- list your own home directory
+
+{\ltt{}*}  Match anything
+\break
+{\ltt{}ls ch*t} -- lists files starting with {\ltt{}ch} and ending with
+{\ltt{}t}
+\newslide
+
+{\ltt{}ls} -- list files 
+\break
+All commands take options.
+\break
+Some of the options for {\ltt{}ls} are:
+\break
+{\ltt{}-a} (as in ``ls -a")
+List all files in the directory.
+Ordinarily files whose names start with a ``." are omitted.
+\break
+{\ltt{}-l}
+For each file, give the details (long listing),
+including owner, date of last change, etc. 
+\break
+{\ltt{}-t}
+Sort the listing by time.
+By default it sorts by file name.
+\break
+{\ltt{}-R}
+Recursively list all subdirectories.
+
+Options may be combined:
+\break
+{\ltt{}ls -la}
+\break
+or 
+\break
+{\ltt{}ls -l -a}
+\break
+(These two are equivalent)
+
+Some options are more than one letter:
+\break
+{\ltt{}--color}
+directories are one color, executables another, ...
+\break
+These options stand alone.
+\break
+{\ltt{}ls -la --color}
+
+\newslide
+{\ltt{}cp} -- copy file or files
+
+{\ltt{}cp} list\_ of\_files destination
+\break
+if the destination is a directory,
+\break
+--the files are placed in the directory
+\break
+--keeping their original names
+\break
+if the destination is not a directory,
+\break
+--the ``list" must contain only one file
+\break
+--and ``destination" is the new name of the file
+\break
+--the file is given the 
+
+{\ltt{}cp  *.c  ~/} --- copy all c programs from the current directory
+into your home directory
+\break
+--the / is optional in this case
+\vfill
+{\ltt{}vi} -- the standard unix screen editor,
+\break
+it will always be available; others editors may not.
+\vfill
+{\ltt{}man} -- read a manual entry
+\break
+{\ltt{}man ls} -- gives you the entry for {\ltt{}ls}
+\break
+{\ltt{}man -k disk} -- lists all manual entries whose summaries include
+the work {\bit disk}
+\break
+{\ltt{}man 8 fdisk} -- gives you the section 8 entry for {\ltt{}fdisk}
+
+Warning: machines differ
+\break
+Read the manual for the correct machine
+\newslide
+{\ltt{}mail} -- send/receive mail
+
+{\ltt{}mail destination} -- sends mail
+\break
+you must enter the subject (1 line), the message,
+\break
+and any cc's (list of copies to be sent)
+\break
+to stop the message put a period ``." as the only character on a line
+\break
+option exist to include other messages, and/or files
+\break
+The mail may be a local user or a user on another machine. 
+
+{\ltt{}mail} -- read mail
+\break
+to see your options type ? at the prompt
+\break
+you can choose a message to read, delete messages, or save them to files
+
+\newslide
+\centerline{\bbf Terminal Session}
+
+Linux has 6 virtual consoles (alt-F1..alt-F6)
+\break
+You can have up to six separate login sessions from the main
+keyboard.
+\break
+(And many more from over the network!)
+\break
+Don't forget to logout of all those you've used.
+
+The characteristics for each session is programmable.
+\break
+(You can switch to any session to international or graphics character sets.)
+
+Two commands to recover from unintentionals reprogramming:
+\break
+{\ltt{}stty sane}
+\break
+{\ltt{}^Jreset^J}
+
+\newslide
+{\ltt{}startx} --- Start the X window system.
+
+Fully configurable. Button meanings are defined by your configuration file.
+
+To shut X down {\ltt{}cntl-alt-backspace}
+\break
+After leaving X, you still need to logout.
+
+Selectable window managers. (see your {\ltt{}.xinitrc})
+
+{\ltt{}twm}--
+a simple, configurable window manager.
+
+{\ltt{}fvwm2} -- light weight window manager (default).
+\newslide
+\centerline{\bbf Compilers}
+
+{\ltt{}gcc}  (aka {\ltt{}cc}) -- the standard ANSI c compiler
+
+Warning: what you compile on one machine might not run on another.
+
+{\ltt{}.o} files created one machine might not be usable by another.
+
+Technique: fully recompile, leave no {\ltt{}.o} files.
+
+{\ltt{}g++} -- the ANSI (gnu) C++ compiler
+\vt
+Example:
+
+{\ltt{}gcc x.c y.c z.c -o prog.out}
+
+Compiles 3 files, calls the executable {\ltt{}prog.out}
+\break
+One file must contain a function called {\ltt{}main}
+
+\newslide
+\centerline{\bbf Network Applications}
+
+{\ltt{}telnet} -- connect to a machine on the network
+
+{\ltt{}telnet cheetah.cecs.csulb.edu}
+\break
+By default connects to the telnet server
+\break
+You will be asked for an account name and a password
+\vt
+{\ltt{}rlogin} -- log into another Unix machine on the network
+
+By default it uses the same account name on the machine you are trying to
+reach.
+\break
+A password may be required.
+\vt
+{\ltt{}ssh} -- log into another Unix machine on the network
+
+By default it uses the same account name on the machine you are trying to
+reach.
+\break
+A password may be required.
+
+\newslide
+\centerline{\bbf Utilities}
+
+{\ltt{}grep}--look for a pattern in a list of files
+\break
+if the pattern involves spaces you must use quotes.
+
+Example:
+
+{\ltt{}grep failed /var/log/*}
+
+Search the log files for the word failed.
+
+\vt
+
+{\ltt{}less}--look at something a page at a time
+\break
+page-up, page-down and the arrow keys will allow you to
+go forward and backward
+
+With a {\ltt{}+G} option you start at the end of the file.
+
+Example:
+
+{\ltt{}less +G /var/log/messages}
+
+Look at the log file starting at the end
+
+\vt
+
+{\ltt{}tail}--a useful facility for looking at files
+\break
+see the assignment
+\bye

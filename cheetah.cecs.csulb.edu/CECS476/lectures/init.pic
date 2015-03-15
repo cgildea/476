@@ -1,0 +1,168 @@
+\def\chapternumber{Startup and Shutdown -- 1 May 2012}
+\input slides.tex
+\centerline{\bbf Startup and Shutdown}
+
+Run the code in the boot ROM (BIOS).
+
+x86 Boot: The code in the boot rom does the following.
+\break
+There is a boot order in the BIOS,
+attempt to boot from the various devices in the order given
+until one works.
+
+Disk boot:
+\break
+1) Read the Master Boot Record into RAM.
+\break
+2) Run the code you just loaded.
+\break
+The MBR contains the Linux loader (LILO)
+\break
+This loads the bootstrap program which loads the kernel
+\break
+plus its startup code, using  a list of disk sectors.
+\break
+
+The bootstrap program loads these sectors and branches to the startup code.
+
+The start up code, decompresses the kernel,
+\break
+probes the hardware, and loads the correct drivers
+
+Then starts the first process ({\ltt{}init})
+
+{\ltt{}init} starts the system daemons,
+\break
+configures network (if enabled)
+\break
+starts the login programs ({\ltt{}agetty})
+\newslide
+\centerline{\bbf Init}
+
+This is always process number 1, treat it carefully.
+
+{\ltt{}/etc/inittab} -- control init behavior
+
+Format {\ltt{}:} delimited fields (like passwd)
+\break
+First field is an identifier or capability,
+\break
+second field is a list of runlevels
+\break
+third field is an action
+\break
+---({\ltt{}wait} init should wait for completion)
+\break
+---({\ltt{}sysinit} do at boot (before {\ltt{}boot} and 
+{\ltt{}bootwait})
+\break
+fourth field is a process or command to run
+\break
+---{\ltt{}/sbin/agetty}
+
+{\ltt{}kill -HUP 1}
+\break
+reread the {\ltt{}inittab} file,
+\break
+{\ltt{}1} is the process ID of the init process
+
+At boot time {\ltt{}init} takes actions directed by files found in
+\break
+the {\ltt{}/etc/rc.d} directory
+\break
+{\ltt{}inittab} controls the use of these files
+\break
+(says which files to use and which to ignore)
+
+Linux: The main multiuser boot file is {\ltt{}/etc/rc.d/rc.M}, 
+\break
+it invokes many the other files involved in multiuser boot.
+
+\newslide
+Run-level: Linux has run levels 
+\break
+--multiuser: full capabilities
+\break
+--single user: used for basic maintenance
+
+{\ltt{}initdefault} \quad in {\ltt{}inittab} specifies default run level
+
+{\ltt{}init} commands specify the run levels to which they apply.
+
+{\ltt{}telinit}: tell {\ltt{}init} to change run levels.
+\break
+{\ltt{}/sbin/telinit 1}:  enter run-level 1 (single user)
+\break
+level 3 is multi user
+
+Booting to single user may be specified at the {\ltt{}Boot:} prompt.
+
+Shutdown: {\ltt{}init} warns all running processes by
+sending them a {\ltt{}SIGTERM}. After a wait, all
+processes that haven't voluntarily quit are forcibly
+terminated with a {\ltt{}SIGKILL}.
+
+Logging: each time a process stops, {\ltt{}init} records
+the information in {\ltt{}utmp} and {\ltt{}wtmp}.
+
+{\ltt{}last}: summarize {\ltt{}wtmp}
+\newslide
+\centerline{\bbf Shutdown}
+
+The file system is cached and live.
+\break
+Daemons are active even when no user is logged in.
+
+You must flush the cache and close the file system
+to ensure integrity.
+
+Do not power-off or reset
+
+{\ltt{}lab17# shutdown -h now}
+\break
+{\ltt{}shutdown}: Halt the daemons, flush the cache, halt the system.
+(Actually {\ltt{}init} does all the work.)
+\break
+{\ltt{}lab17# reboot}
+\break
+{\ltt{}reboot}: Halt the daemons, flush the cache, reboot the system.
+\break
+equivalent: {\ltt{}shutdown -r now}
+\break
+equivalent: {\ltt{}ctl-alt-del} (maybe, see {\ltt{}inittab})
+
+An disorderly shutdown requires a full consistency check of the file system.
+
+An orderly shutdown results in a clean file system, minimal consistency check,
+and quick boot/reboot.
+\newslide
+\centerline{\bbf System V.4 Boot}
+
+The is a directory for each run level
+\break
+level 1: {\ltt{}/etc/rc1.d}
+\break
+level 3: {\ltt{}/etc/rc3.d}
+
+In each of these directory there are files starting with {\ltt{}S}
+if they are to be used during startup and {\ltt{}K} if they to
+be used during shutwdown.
+Often these are soft links to real files in {\ltt{}/etc/init.d}
+
+Example:
+{\program
+S30inet
+S34route
+S42nfs
+\endprogram}
+
+The initializations are run in numeric order, inet first, route next, nfs
+last.
+
+{\ltt{}S} files are run with a start parameter:
+\break
+{\ltt{}S34route start}
+
+{\ltt{}K} files are run with a stop parameter
+
+\bye

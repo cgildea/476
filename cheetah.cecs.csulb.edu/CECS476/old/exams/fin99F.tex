@@ -1,0 +1,211 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Fall 1999, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, open notebook.
+
+\ques
+(4 points)
+% Project 13
+You are instructed to set your machine as an NIS client. (domainname happy,
+ypserver 134.139.136.99).  Which the files in the {\ltt{}/etc}
+directory will you need to edit, and what you need do to those files?
+(Do NOT include files files from {\ltt{}rc.d} in your answer.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 14
+Describe how you would
+export the {\ltt{}/homes} directory on your machine to all
+machines on the 134.139.136.0 cable.
+(Tell me the file name and contents)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 14
+Describe how you would make
+the {\ltt{}/homes} directory from {\ltt{}lab85.net.cecs.csulb.edu}
+available on your machine when you boot.
+(Tell me the file name and contents)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 15
+Describe how you would make
+a printer called {\ltt{}laserjet} on {\ltt{}lab85} available to
+users on your machine as the default printer.
+(Tell me the file name and contents)
+\vskip 1.0in
+% \vfill\eject
+\ques
+(4 points)
+% Project 15
+Describe how you would have
+critical ({\ltt{}crit}) messages (or higher) from {\ltt{}cron}
+go into the file {\ltt{}/var/log/cronlog}
+and
+emergency ({\ltt{}emerg}) messages from the printer subsystem {\ltt{}lpr}
+be sent to {\ltt{}lab85}.
+\vskip 1.8in
+\ques
+(4 points)
+% Project 16
+Describe how you would build a boot floppy for a machine with a
+Sanyo CD-ROM and an IDE hard drive.
+Give the exact command, including the name of the source file for
+the image.
+\vskip 1.0in
+\ques
+(4 points)
+% Project 16
+When you boot from floppies you have a choice 
+between ``ramdisk" and ``root disk".
+What is the difference between these two options?
+\vskip 1.0in
+\ques
+(4 points)
+% Project 17
+When installing the operating system, 
+you want to install networking on your machine.
+Which disk set do you need?
+\vskip 0.5in
+\ques
+(4 points)
+% Project 17
+You installed the web server software but disabled it.
+What command did you run to disable this software?
+\vskip 0.5in
+\ques
+(4 points)
+% Project 18
+Describe how anonymous ftp works.
+\vskip 1.0in
+\ques
+(4 points)
+% Project 19
+If you are trying to find out what is happening with you mail,
+you can use options to mail and sendmail to examine things.
+Give the form of the mail and sendmail commands you would use to do this.
+\vskip 1.2in
+\ques
+(4 points)
+% Project 19
+(Synthesis question, are you familiar enough with sendmail so you
+know how it would implement this.)
+Suppose that the sendmail documentation said that you could
+set up a group called {\ltt{}P} and that any mail sent to
+accounts in the group {\ltt{}P} would go directly to the printer.
+Suppose you wanted mail for the accounts {\ltt{}lp} and {\ltt{}news}
+to go directly to the printer.
+What file would you modify and what line would you add?
+\vskip 1.0in
+\ques
+(4 points)
+% Project 20
+In project 20 you used SUID to add entries to the {\ltt{}datelog} file.
+Suppose the {\ltt{}clogit} program and {\ltt{}datelog} file already exist.
+Give the commands would you run (exact format) to use SGID (Group)
+(instead of SUID) to modify the {\ltt{}datelog} file.
+\vfill\eject
+\ques
+(4 points)
+% Project 20
+Why are SUID shell scripts not allowed?
+\vskip 1.0in
+\ques
+(4 points)
+% Project 21
+You wish to forward news posted on your machine to {\ltt{}lab85}.
+What do you need to do? (Give file(s) and modifications.)
+\vskip 1.0in
+\ques
+(4 points)
+% Project 21
+You add a newsgroup called {\ltt{}local.476c}.
+What do you need to do? (Do not use {\ltt{}ctlinnd}, tell me the
+steps you would need would perform, to do it by hand. 
+Give file(s), directories and modifications.)
+\vskip 1.5in
+\ques
+(4 points)
+% Project 22
+You want all web documents to be in {\ltt{}/var/web}.
+How do you set up {\ltt{}httpd.conf} so it looks in that directory first?
+\vskip 1.0in
+\ques
+(4 points)
+% Project 22
+You want all directories not inside {\ltt{}/var/web} to be inaccessible to the
+web browers.
+What to you put in {\ltt{}httpd.conf}.
+\vfill\eject
+\ques
+(4 points)
+% Project 23
+You have two machines for which you supply name service.
+{\ltt{}joe.univ.edu} (137.199.1.1) and {\ltt{}sam.univ.edu} (137.199.1.1).
+Give the zone entries (only zone entries) of the {\ltt{}named.conf}
+for your DNS server.
+\vfill
+\ques
+(4 points)
+% Project 23
+Give the forward zone file for the above question. (Include the SOA).
+\vfill
+\ques
+(4 points)
+% Project 24
+You wish to allow user {\ltt{}sam} on {\ltt{}jaguar.cecs.csulb.edu}
+to put files onto your web server (user {\ltt{}www} on 
+{\ltt{}www.cecs.csulb.edu}). (Assume the software to do this has
+already been installed, i.e., don't show a ``tar".)
+What do you do?
+\vskip 0.7in\eject
+\ques
+(4 points)
+% Project 24
+Sam wishes to put a file called {\ltt{}newindex.html} from his home directory
+onto {\ltt{}~www/htdocs}, call it {\ltt{}index.html} and have its
+permissions be {\ltt{}6400}. What does sam do?
+\vskip 3.0in
+\ques
+(4 points)
+% Project 25
+What command would you give to index all files in you {\ltt{}~ftp/pub}
+directory?
+\vskip 0.5in
+Analysis section. Assume that the instructor as a part of this exam
+has partially disabled the machine you administer in the lab.
+
+\ques
+(4 points)
+Suppose the following work:
+
+{\program
+ ping 134.139.136.85
+ ping 134.139.136.65
+\endprogram}
+
+and the following fails:
+
+{\program
+ ping 134.139.45.6
+\endprogram}
+
+What could be misconfigured on the machine?
+\vskip 1.0in
+\ques
+(4 points)
+Assume you fix the above problem and the instructor disables your machine
+again.
+
+Suppose root and {\ltt{}john} can login, but neither you
+nor any other {\ltt{}csv...} account can.
+What could be misconfigured on the machine?
+\bye

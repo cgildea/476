@@ -1,0 +1,569 @@
+\def\chapternumber{iptables -- 1 May 2012}
+\input slides.tex
+\input bigcstuff.tex
+\centerline{\bbf Filters and Firewalls}
+
+Goal: More secure system.
+\break
+Action: Block or filter network packets.
+
+Goal: Private subnet.
+\break
+Action: rewrite network packet headers.
+
+Tool: iptables
+
+Chains:
+\break
+{\ltt{}INPUT}: actions taken on inbound packets
+\break
+{\ltt{}OUTPUT}: actions taken on outbound packets
+\break
+{\ltt{}FORWARD}: actions taken on packets that are forwarded
+\break
+Rules in a chain are applied sequentially
+
+Samples:
+
+Block all inbound ssh connections.
+\break
+{\ltt{}iptables -A INPUT -p tcp --dport ssh -j REJECT}
+
+Allow ssh from campus, reject all other ssh.
+{\cprogram
+iptables -A INPUT -p tcp --dport ssh \
+          -s 134.139.0.0/16 -j ACCEPT
+
+iptables -A INPUT -p tcp --dport ssh -j REJECT
+@endprogram}
+
+No web browsing.
+\break
+{\ltt{}iptables -A OUTPUT -p tcp --dport www -j REJECT}
+
+\newslide
+\centerline{\bbf Iptables Basic Editing Options}
+
+{\ltt{}-A}, {\ltt{}--append}: appends the rule to the end of the chain
+
+{\ltt{}-L}, {\ltt{}--list}: list all rules in a chain
+\break
+{\ltt{}iptables -L OUTPUT} list the rules in the output chain
+
+{\ltt{}-D}, {\ltt{}--delete}: delete a rule
+\break
+{\ltt{}iptables -D INPUT 2}
+\break
+delete rule 2 from the input chain
+
+{\ltt{}-I}, {\ltt{}--insert}: specify the rule # at which to insert
+\break
+{\ltt{}iptables -I INPUT 2 -p tcp --dport ftp -j REJECT}
+\break
+insert this rule at postition 2
+\break
+Other rules are moved down.
+
+{\ltt{}-R}, {\ltt{}--replace}: replace a rule, delete then insert
+
+{\ltt{}-F}, {\ltt{}--flush}: delete all rules from a chain
+
+\newslide
+\centerline{\bbf Tables}
+
+4 tables:
+{\ltt{}raw}, {\ltt{}nat}, {\ltt{}mangle}, {\ltt{}filter}.
+
+Each table has separate chains; for example,
+the output chain for {\ltt{}filter} is distinct from the output
+chain for {\ltt{}nat}.
+
+The default table is {\ltt{}filter}.
+\break
+You can specify a chain in a command:
+\break
+{\ltt{}iptables -t filter -A OUTPUT --dport www -j REJECT}
+
+\vt
+
+\centerline{\bbf What the Tables Do}
+
+{\ltt{}nat} Network Address Translation: allows the firewall
+to hide a server, yet forward packets to it
+
+{\ltt{}filter} allows packets to be rejected, dropped or accepted
+
+{\ltt{}mangle} modifies the packet header fields, such as the
+quality of service field
+
+The {\ltt{}nat} table turns your gateway in to a firewall.
+
+The {\ltt{}filter} table can be used to limit access to certain
+outside services (no web browsing).
+\break
+Like tcp wrappers ({\ltt{}hosts.allow}/{\ltt{}hosts.deny})
+it can limit in bound access to certain machines on the net.
+\break
+{\ltt{}iptables} advantages: at the kernel level (blocks always),
+more robust against denial of service
+attacks.
+\newslide
+\centerline{\bbf Flow of Processing}
+
+{\railroadfont
+.PS
+boxwid=1.7i
+boxht=0.4i
+vspace=-0.5i
+hspace=2.0i
+
+A: box "nat-PREROUTING"
+B: box with .n at A.s + (0,vspace) "local ?"
+C1: box with .n at B.s + (-hspace,vspace) "filter-INPUT"
+C2: box with .n at C1.s + (0,vspace) "local process"
+C3: box with .n at C2.s + (0,vspace) "nat-OUTPUT"
+C4: box with .n at C3.s + (0,vspace) "filter-OUTPUT"
+C5: box with .n at C4.s + (0,vspace) "routing"
+C6: box with .n at C5.s + (0,vspace) "nat-POSTROUTING"
+D1: box with .n at B.s + (hspace,vspace) "filter-FORWARD"
+D2: box with .n at D1.s + (0,vspace) "nat-POSTROUTING"
+arrow from A.s to B.n
+arrow from B.s to C1.n "yes " rjust
+arrow from B.s to D1.n " no" ljust
+arrow from C1.s to C2.n
+arrow from C2.s to C3.n
+arrow from C3.s to C4.n
+arrow from C4.s to C5.n
+arrow from C5.s to C6.n
+arrow from D1.s to D2.n
+.PE
+\centerline{\box\graph}}
+\newslide
+\centerline{\bbf Some Targets}
+
+{\ltt{}ACCEPT}: the packet is good
+
+{\ltt{}DROP}: discard the packet
+
+{\ltt{}REJECT}: discard the packet, inform the sender
+
+{\ltt{}LOG}: send info to syslog
+
+{\ltt{}DNAT}: rewrite the destination address
+
+{\ltt{}SNAT}: rewrite the source address
+
+{\ltt{}MASQUERADE}: rewrite source address (nat table only)
+\newslide
+\centerline{\bbf A Service Behind a Firewall}
+
+Suppose your web server is behind a firewall.
+\break
+Detail:
+\break
+firewall outside address {\ltt{}134.139.248.2}
+\break
+firewall outside interface {\ltt{}eth0}
+\break
+firewall inside interface {\ltt{}eth1}
+\break
+web server address {\ltt{}134.139.248.18}
+
+Tactic: block all inbound traffic except web requests.
+
+{\cprogram
+iptables -A FORWARD -i eth0 -d 134.139.248.18 -p tcp \
+         --dports 80,443 -j ACCEPT
+iptables -A FORWARD -i eth0 -d 134.139.248.18 -j REJECT
+@endprogram}
+
+Notice inside traffic is not blocked.
+\break
+So if you have a database on the web server you may access
+it from any machine behind the firewall.
+
+
+\newslide
+\centerline{\bbf A Service Behind a Firewall}
+
+Suppose your web server is on a private subnet.
+\break
+Detail:
+\break
+firewall outside address {\ltt{}134.139.248.2}
+\break
+firewall outside interface {\ltt{}eth0}
+\break
+firewall inside interface {\ltt{}eth1}
+\break
+web server address {\ltt{}192.168.1.18}
+
+On the outside,
+\break
+all web traffic appears to be to or from the firewall.
+\break
+Inbound web packets forwarded to the web server.
+\break
+Outbound web packets appear to be from the firewall.
+
+{\cprogram
+iptables -t nat -A PREROUTING -d 134.139.248.2 \
+  -i eth0 -p tcp --dport 80 -j DNAT --to 192.168.1.18:80
+iptables -t nat -A PREROUTING -s 192.168.1.18 \
+  -i eth1 -p tcp --sport 80 \
+  -j SNAT --from 134.139.248.2:80
+@endprogram}
+
+
+\newslide
+\centerline{\bbf Outbound Packets Through a Firewall}
+
+Want to allow connections originating in the private subnet to
+go out.
+
+{\cprogram
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 \
+        -o eth0 -d 0/0 -j MASQUERADE
+iptables -A FORWARD -o eth0 -m state \
+        --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -m state \
+        --state ESTABLISHED,RELATED -j ACCEPT
+@endprogram}
+
+Masquerade always rewrites the source to the firewall IP address.
+
+There is a state machine to track connection states.
+\break
+Outbound stuff is allowed.
+\break
+Inbound allowed only on established connections or
+connections getting established (related).
+\bye
+
+\newslide
+\centerline{\bbf Filtering Sample}
+
+Destination Network Address Translation (DNAT):
+Your web server is behing a firewall.
+All outside web traffic is directed to the firewall.
+The firewall forwards it to the web server.
+
+To do this it must change the destination address from the
+address of the firewall to the address of the web server.
+
+Source Network Address Translation (SNAT):
+Your web browser is behind a firewall.
+Web servers cannot send information to your browser,
+they must send it to the firewall.
+The firewall replaces the address of your machine
+ (as the source
+of the browser request) with it's address.
+When the firewall's address is sent a reply,
+ the firewall uses DNAT to forward it
+to your browser.
+
+A picture showing the above would be nice.
+
+\newslide
+\centerline{\bbf Filtering Options}
+
+Filter options may be set on the base of the source/destination pair.
+
+Drop/Deny: discard the packet.
+
+Reject: discard the packet, tell the host that sent the packet that
+ the packet was dropped
+
+Accept: allow the packet.
+
+Terminology:
+
+Chain: a set of rules 
+
+Table: there are 4 tables
+{\bit raw}, {\bit nat}, {\bit mangle}, {\bit filter}.
+
+Target: an action: drop, accept, NAT, Jump
+
+Jump: go to another chain.
+
+Rule: match and action.
+
+Ruleset: set of all rules in all tables.
+
+Match: does a packet match a rule.
+
+Source Match: does the source of a packet match a rule.
+
+Policy: chain policy, security policy
+Generally, accept everything not specifically dropped or
+drop everything not specifically accepted.
+
+State: status of the TCP connection
+
+Connection tracking: Knows when a packet is a response to another packet. 
+
+\centerline{\bbf Network Address Translation}
+
+Allows private subnets access to the Internet.
+
+Allows access to private subnets from the Internet.
+
+Private addresses are not routable outside the private subnet.
+
+\newslide
+\centerline{\bbf IP Tables Setup}
+
+Kernel:
+{\ltt{}CONFIG_NETFILTER}:required
+
+{\ltt{}CONFIG_IP_NF_CONNTRACK}: Connection tracking, you can allow responses back in.
+
+{\ltt{}CONFIG_IP_NF_IPTABLES}: required
+
+{\ltt{}CONFIG_IP_NF_NAT}: required for NAT table
+
+{\ltt{}CONFIG_IP_NF_MASQUERADE}: variant of NAT
+
+{\ltt{}CONFIG_IP_NF_TARGET_REDIRECT}: send the packet to someone specific
+
+{\ltt{}CONFIG_IP_NF_FTP}: required if you want to filter ftp.
+
+{\ltt{}CONFIG_IP_NF_MATCH_LIMIT}: useful for avoiding DOS attacks
+
+{\ltt{}CONFIG_IP_NF_MATCH_MAC}: allows filtering based on hardware addresses
+
+{\ltt{}CONFIG_IP_NF_TOS}: allows Type Of Service filtering
+
+{\ltt{}CONFIG_IP_NF_STATE}: allows filtering based on the state of a TCP connection
+
+{\ltt{}CONFIG_IP_NF_MATCH_OWNER}: allows filtering based on the owner of a socket (program)
+
+{\ltt{}CONFIG_IP_NF_TARGET_LOG}: allows a filter to log packets
+
+{\ltt{}CONFIG_PACKET}: optional
+
+\newslide
+\centerline{\bbf IP Tables and Chains}
+
+Packet destined for local machine
+
+Table: raw; Chain: PREROUTING
+  Can be used to bypass connection tracking
+
+Connection tracking code is executed
+
+Table: mangle; Chain: PREROUTING
+  Can modify the packet to change it's parameters  
+
+Table: nat; Chain: PREROUTING
+  DNAT is done here
+
+Routing decision is made, is it still local or does it now need
+ to be forwarded
+
+Table: mangle; Chain: INPUT
+  A chance to modify packets after it is decided they are local
+
+Table: filter; Chain: INPUT
+  Filtering decisions for packets destined to this host.
+
+Packet (if not Drop/Denied) is handed to the local application
+-----
+Packet from the local machine
+  Packet from a local application has it's source address set. 
+
+Table: raw; Chain: OUTPUT;
+  Can be used to bypass connection tracking
+
+Table: mangle; Chain: OUTPUT;
+  Used to modify packet headers
+
+Table: nat; Chain: OUTPUT;
+  Can NAT the outbound packet.
+
+Routing decision is made
+
+Table Filter; Chain: OUTPUT;
+  Can decide to drop outbound packets.
+
+Table: mangle; Chain: POSTROUTING;
+  Another chance to modify the packet header
+
+Table: nat; Chain: POSTROUTING
+  SNAT is done here
+-----
+Packet to be forwarded
+
+Table: raw; Chain: PREROUTING
+  Can be used to bypass connection tracking
+
+Table: mangle; Chain: PREROUTING
+  Used to modify packet headers
+
+Table: nat; Chain: PREROUTING
+  DNAT done here (do SNAT further down)
+
+Routing decision is made
+
+Note: Any packet getting forwarded goes through the next two
+
+Table: mangle; Chain: FORWARD
+  Used to modify packet headers of packets to be forwarded
+
+Table: filter; Chain: FORWARD
+  Can decide to drop packets instead o forwarding.
+
+Table: mangle; Chain: POSTROUTING
+  Used to modify packet headers
+
+Table: nat; Chain: POSTROUTING
+  SNAT should be done here.
+
+
+Connection tracking code is executed
+
+Picture
+            raw
+         PREROUTING
+           mangle
+         PREROUTING
+            nat
+         PREROUTING
+       routing decision
+  mangle           mangle
+  INPUT            FORWARD
+  filter           filter
+  INPUT            FORWARD
+local process dest
+
+local process orig
+routing decision
+   raw
+  OUTPUT
+  mangle
+  OUTPUT
+   nat
+  OUTPUT
+  filter
+  OUTPUT
+      routing decision
+          mangle
+        POSTROUTING
+           nat
+        POSTROUTING
+
+
+Mangle table: may change the following header fields
+ TOS: Type Of Service
+ TTL: Time To Live
+ MARK, SECMARK, CONSECMARK
+
+Nat table: may do the following
+ DNAT, SNAT, MASQUERADE, REDIRECT
+
+Raw table:
+ cause packets to by pass connection tracking (NOTRACK)
+
+Filter table:
+  DROP/ACCEPT
+
+JUMP rule:
+  used like a subroutine call.
+  Jumps to a user specified chain, runs the chain, then returns to the rule
+   after the jump.
+
+Build in chains can have a default policy at the end,
+user specified chains cannot
+
+Matching rule: specifies if the chain traversal should or shouldnot continue.
+
+
+The state machine (connection tracker)
+
+States: NEW, ESTABLISHED, RELATED, INVALID
+
+NEW: packet is the first, often a SYN
+ESTABLISHED: traffic has been seen in both directions SYN-ACK
+RELATED: to an established connection Spawned by as is done by ftp.
+INVALID: packet can't be identified
+UNTRACKED: marked as NOTRACK by the raw table.
+
+UDP: client request = NEW, server response = ESTABLISTHER
+
+SYN (NEW) -> ICMP (reponse) Net Unreach (RELATED)
+
+Building rules
+
+iptables [-t table] command [match] [target/jump]
+iptables [-t table] command chain parameters(rule specification)
+iptables -A OUTPUT --dport 22 DROP (no outbound ssh)
+iptables -D OUTPUT 5  (delete rule five from the output chain)
+iptables -F INPUT  (delete all rules from the input chain)
+iptables -A INPUT -s 134.139.0.0/16 ACCEPT (allow camput packets)
+iptables -A INPUT -s 0.0.0.0/0 DROP    (disallow all others)
+
+defaults to table 'filter' (nat, mangle, raw)
+
+Commands
+
+-A, --append: appends the rule to the end of the chain
+
+-D, --delete: delete-specify the entire rule or the rule number
+
+-R, --replace: as delete, but installs a new reult
+
+-I, --insert: specify the rule # at which to insert
+
+-L, --list: list all rules in specified chain
+
+-F, --flush: delete all rules from specified chain
+
+-Z, --zero: zero all counters
+
+-N, --new-chain: add a chain, with the specified name
+
+-X, --delete-chain: delete the chain with the specified name
+
+-P, --policy: add a default target (policy) to a chain Legal targets DROP,ACCEPT
+
+-E, --rename-chain
+
+Options:
+With list, append, insert, delete, replace
+ -v, --verbose; -x, --exact; -n, --numeric
+With list: -n, --numeric; --line-numbers; -c, --set-counters
+With insert, append, replace
+ --modprobe
+
+Matches: Chain name
+-p, --protocol: tcp, udp, icmp
+-s, --source: ip-addr or subnet-addr/netmask (134.139.0.0/24)
+-d, --dst, --destination: ip-addr or subnet-addr
+-i, --in-interface: input interface (eth0)
+-o, --out-interface
+-f, --fragment
+--sport, --source-port: --sport 22
+--dport, --destination-port
+--tcp-flags: allowed SYN,FIN,ACK,FIN,RST,URG,PSH,ALL,NONE
+--syn (obs)
+--tcp-option
+--icmp-type
+
+Explicit matches
+ANYCAST,BLACKHOLE,BROADCAST,LOCAL,MULTICAST,NAT,PROHIBIT
+THROW,UNICAST,UNREACHABLE,UNSPEC,XRESOLVE
+Explicit match options
+--src-type
+--dst-type
+
+--src-range: (start ipaddr - end ipaddr)
+--dst-range
+-m, --multiport:  -m --dport 80,8080,8888
+--pkt-type:  -m pkttype --pkt-type unicast
+--state: -m state --state ESTABLISHED
+
+
+STOPPED at Chapter 9. The state machine
+
+

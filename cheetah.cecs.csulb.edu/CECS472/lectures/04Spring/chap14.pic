@@ -1,0 +1,69 @@
+\def\chapternumber{Chapter 14 --- Multiple Protocol Servers -- 16 January 2001}
+\input slides.tex
+\centerline{\bbf Chapter 14}
+\centerline{Multiple Protocol Servers}
+
+{\bit Motivation:}
+Separate servers take more RAM and, because of context switches, more CPU.
+One server handling both UDP and TCP connections is efficient.
+
+{\bit OS support:}
+UDP and TCP are separate connections
+\break
+even on the same port.
+
+{\bit Implementation:}
+Open one socket for TCP and one for UDP.
+Use {\ltt{}select} to determine which one needs service. 
+
+Example: daytime has both UDP and TCP hooks.
+
+TCP ``connect" is handled by an accept, write, close.
+
+UDP ``send" is handled by a receive-from, send-to.
+\newslide
+\centerline{\bbf Detailed Analysis}
+
+See section 14.5 for code.
+
+{\ltt{}tsock =}: get the TCP master socket
+\break
+{\ltt{}usock =}: get the UDP socket
+\break
+{\ltt{}nfds =}: just big enough to include both sockets
+
+{\ltt{}FD_SET}: only the two sockets are in the set.
+
+{\ltt{}select}: wait for a connect (TCP) or send (UDP)
+
+{\ltt{}if...tsock}: do the standard thing for TCP,
+\break
+{\ltt{}accept}, generates a slave socket
+\break
+{\ltt{}write}, using the slave socket
+\break
+{\ltt{}close} the slave socket
+
+{\ltt{}if..usock}: do the standard thing for UDP
+\break
+{\ltt{}recvfrom}, gets the return address 
+\break
+{\ltt{}sendto}, using the return address
+\newslide
+\centerline{\bbf Behavior}
+
+If a client does a {\ltt{}connectTCP}:
+
+Input will arrive on {\ltt{}tsock}
+\break
+Server will do an accept.
+\vf
+If a client does a {\ltt{}send} (after a {\ltt{}connectUDP}):
+
+Input will arrive on {\ltt{}usock}
+\break
+Server will do a recvfrom.
+\vf
+In both cases this server replies.
+\bye
+

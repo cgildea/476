@@ -1,0 +1,368 @@
+\def\chapternumber{X Windows -- 14 February 2012}
+\input slides.tex
+\centerline{\bbf Installing and Configuring xorg}
+
+A full window system (X11R6) is available from
+{\ltt{}xorg}
+
+Supports various window managers.
+\break
+KDE Gnome Unity fvwm twm fluxbox blackbox ...
+
+Supports a virtual screen that is bigger (often 3x3)
+than the actual screen.
+\break
+With some window managers you just keep scrolling
+\break
+with others you have separate panels.
+
+Issue: different video chip sets have different capabilities and 
+different command sets.
+
+Issue: different monitors have different capabilities.
+
+When started X11 probes for the chip set and the monitor.
+\break
+It selects drivers and a screen resolution that are compatible with both.
+
+If you have an old monitor, it may not support a probe and you may
+need to use manual configuration. (See next slide.)
+
+\newslide
+\centerline{\bbf Configuring X11}
+
+X will read information from a configuration file if it exists.
+That file is:
+\break
+{\ltt{}/etc/X11/xorg.config}
+\break
+but an individual user can override this with a configuration file 
+in their home directory.
+
+Building the configuration file:
+\break
+Run  {\ltt{}X -configure} (or {\ltt{}xorgsetup}) and answer the questions.
+
+{\ltt{}xorgsetup} will build the configuration file
+
+Notes on the questions will be covered in the following slides.
+
+X always prints what it finds and sets up (whether it uses a configuration
+file or probes) into a log file called {\ltt{}Xorg.0.log} which it places
+in the standard log directory.
+
+\newslide
+
+\centerline{\bbf Mice}
+
+Mouse: X likes 3 buttons, some older mice have 2.
+
+(Again newer mice support a probe so they won't need this.)
+
+{\bit{}Emulate3Buttons:} press both buttons for middle button
+
+{\bit{}ChordMiddle:} the middle button is there, but it pretends
+\break
+its a combined left/right press
+
+Is the mouse on the serial, PS/2 or USB port
+\break
+For full options listing see manual entry for {\ltt{}xorg.config}
+or the comments in the configuration file
+
+Usually the config specifies {\ltt{}/dev/mouse} which is
+a soft link to the real device driver interface.
+
+\newslide
+\centerline{\bbf Monitor}
+
+Monitor Identifier: 
+\break
+for reference from other sections
+
+{\bit Horizontal sync rate:}
+number of lines (of dots) per second which can be drawn on the screen.
+\break
+(dot clock / dots per line is an upper limit)
+\break
+Needs also tolerance for start/stop/fly back
+\break
+Usually 15-90 KHz
+\break
+Specify the limits of your monitor, 
+\break
+video card takes care of itself
+
+{\bit Vertical Refresh rate:} 
+number of times screen per second the screen is redrawn
+\break
+(Horiz rate / lines per screen is an upper limit)
+\break
+Needs tolerance, especially fly back
+\break
+Usually 50-100 Hz
+\break
+76Hz:  Monitor can do 76 vertical refreshes per second.
+\break
+Be careful, this is for a particular resolution,
+\break
+at higher resolutions the rate may be slower.
+
+\newslide
+Mode entries: (modelines)
+\break
+On many newer cards, the card gives enough information so X11
+can compute the allowed mode entries.
+\break
+Mode entries can use either one line or structure format.
+
+
+{\ltt{}Modeline "640x480" 25.5 640 664 760 800 480 491 493 525}
+\break
+A list of possible modes for the monitor.
+\break
+A resolution, a clock rate, timing information and flags.
+\break
+If an entry in this list doesn't fall within the monitor limitations,
+it is ignored
+\break
+monitor supports this resolution at this dot clock speed.
+\break
+clock: dot clock rate used for this resolution
+\break
+Horizontal timings: the number of dots per line,
+the number of dots drawn,
+start overlap, stop overlap, fly back allowance
+\break
+You've got to start early to build horizontal speed.
+affects your left margin
+\break
+You can't stop on a dime (stop overlap)
+\break
+You need time to get to the start of the next line.
+\break
+Verticle timings: lines per screen, overlaps and flybacks
+\break
+Wrong numbers: screen offcenter, not full width/height,
+bad display at borders.
+
+X automatically generates modelines if there is no configuration file
+(see the log file).
+
+\newslide
+
+\centerline{\bbf Video Chip Set}
+
+Identifier
+\break
+driver to use
+\break
+display information
+\break
+Dot clock rates supported.
+
+The driver tells X11 how to talk to the video card.
+There are numerous drivers (you can get a list when you
+run
+\break
+{\ltt{}X -configure}
+
+
+{\bit Screens}
+\break
+A screen is a combination of a device and a monitor.
+
+It has an identifier, a device, a monitor, a color depths,
+and a list of supported resolutions.
+Display subsections (color depth, list of resolutions)
+
+
+{\bit ServerLayout}
+\break
+Associates a screen, a pointer device (mouse) and a keyboard.
+
+\newslide
+\centerline{\bbf Programs and Hot Keys}
+
+{\ltt{}startx}: start the window system
+
+{\ltt{}control-alt-backspace} will shutdown X and return you
+to a non-graphical screen.
+
+{\ltt{}xvidtune}: display the settings being used
+\break
+(and allow you to exprement with overriding them)
+
+{\ltt{}control-alt+} (the {\ltt{}+} on the number pad) will step
+you to the next allowable resolution (if there is one).
+
+{\ltt{}control-alt-} (the {\ltt{}-} on the number pad) will step
+you to the previous allowable resolution (if there is one).
+
+Stepping cycles, when you reach the end of the list of Modes, it stps back
+to the first one in the list.
+
+\newslide
+\centerline{\bbf Control Files}
+\centerline{{\ltt{}.xinitrc}}
+
+Controls initial windows and selection of window manager.
+
+{\cprogram
+xterm -n "x1" -g 80x56-0+0 -sb -sl 300 &
+xterm -n "x2" -g 80x24+0+0 -sb -sl 300 &
+xterm -n "x3" -g 80x24+0-0 -sb -sl 300 &
+xsetroot -solid blue
+twm
+@endprogram}
+
+At startup there are three windows.
+\break
+An 80x65 in the upper right.
+\break
+An 80x24 in the upper left.
+\break
+An 80x10 in the lower left.
+\break
+For these windows a scroll bar is activated and the
+scroll length is set to 300 lines.
+
+The background is set to blue.
+
+The {\ltt{}twm} window manager is started.
+
+Note: {\ltt{}twm} must be last
+\break
+When twm exits, X will shutdown.
+
+System default: {\ltt{}/etc/X11/xinit/xinitrc}
+\break
+(A link to the rc for the default window manager.)
+\break
+User override: {\ltt{}~/.xinitrc},
+
+\newslide
+\centerline{\bbf Application Defaults}
+
+User override {\ltt{}~/.Xdefaults}
+\break
+System: {\ltt{}/etc/X11/app-defaults/APPNAME}
+
+Sets default values for various applications.
+
+Example:
+\break
+Launch options ({\ltt{}-sl 100}) can override these defaults.
+
+{\cprogram
+xterm*scrollBar:on
+xterm*scrollLines:300
+xterm*VisualBell:on
+xterm*JumpScroll:on
+@endprogram}
+
+On starting an xterm:
+\break
+There is a scroll bar, the scroll length is 300.
+\break
+If the program beeps at you, the window "blinks"
+\break
+When you scroll down a line, the window jumps
+\break
+(it doesn't smoothly scroll)
+
+In the system files
+({\ltt{}/etc/X11/app-defaults/XTerm})
+\break
+the "{\ltt{}xterm}" is omitted
+(e.g. {\ltt{}*scrollBar:on})
+
+\newslide
+\centerline{\bbf Window Managers}
+
+
+Menus, task bars, the overall format of the screen
+and the borders of windows
+\break
+are controlled by the window manager.
+
+The contents of a window
+\break
+are controlled by the application.
+
+
+Most/all keystrokes and mouse clicks in a window
+\break
+are handled by the application.
+\break
+Other keystrokes and mouse clicks
+\break
+are handled by the window manager.
+
+\vt
+
+You may select from several window managers.
+\break
+Each of the window managers is configurable.
+
+Some window managers use configuration files,
+\break
+some use whole directories.
+
+We will cover a sample of some of these configurations in the
+following slides.
+
+Some allow system defaults all allow user overrides.
+
+\newslide
+
+\centerline{\bbf twm}
+
+Configuration file: {\ltt{}.twmrc}
+
+File content examples:
+
+
+{\cprogram
+Button1 = : title : f.raise
+"F1" = : window : f.lower
+Button1 = : root : f.menu "Xterm"
+menu "Xterm"
+{
+"Xterm" f.title
+"65:" f.exec "xterm -n 'x4' -g 80x65+0+0 &"
+}
+@endprogram}
+
+Clicking left mouse button in title bar brings window to front.
+
+Hitting F1 key when in the window, pushes window behind others.
+
+Left mouse down while not in a window brings up the xterm menu.
+
+The xterm menu has one selection that pops up a 65 line window.
+\newslide
+
+\centerline{\bff fvwm}
+
+Configuration file: {\ltt{}.fvwm/.fvwm2rc}
+
+File content example:
+
+{\program
+AddToMenu MenuName
+ + Xterm  Exec exec xterm -e tcsh
+\endprogram}
+
+\vf 
+
+\centerline{\bbf gnome}
+
+Configuation directory: {\ltt{}.gnome/}
+
+The configuration directory contains a database.
+
+You edit this database with {\ltt{}gconftool} or
+{\ltt{}gconf-editor}.
+
+\bye

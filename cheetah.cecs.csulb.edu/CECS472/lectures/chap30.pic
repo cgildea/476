@@ -1,0 +1,223 @@
+\def\chapternumber{Chapter 30 --- Advanced Techniques -- 4 May 2006}
+\input slides.tex
+\centerline{\bbf Chapter 30 -- Advanced Techniques}
+\centerline{Background}
+
+Production servers disconnect themselves from the terminal and run
+in background.
+
+Method 1) {\ltt{}mutd &}
+\break
+Advantage: no extra code
+\break
+Disadvantage: if you forget the {\ltt{}&}
+
+Method 2) The server backgrounds itself.
+
+{\cprogram
+/* This code backgrounds the server */
+i = fork ();
+if (i < 0 ) {
+  exit(1); /* Error occurred in fork */
+}
+if (i != 0 ) {
+  /* parent exits */
+  exit(0); 
+}
+/* Child continues */
+@endprogram}
+
+Forks a child.
+\break
+The child is in the background.
+\break
+The parent is in the forground.
+\break
+The parent exits.
+\break
+The child continues.
+\newslide
+\centerline{\bbf More techniques}
+
+1) A good idea to close all unused descriptors.
+\break
+Did you start from the command line or with an execv.
+\break
+With execv you inherit open descriptors, close them
+all just incase.
+
+{\cprogram
+nfds = getdtablesize();
+for (i=0; i < nfds ; i++ ) close(i);
+@endprogram}
+
+Technically you fail if the descriptor isn't open, 
+but you don't care. WARNING: if you are printing
+debugging information, do not close descriptor 2.
+
+\vt
+2) A good idea to disconnect from the tty. 
+
+{\cprogram
+fd = open("/dev/tty", O_RDRW);
+ioctl(fd, TTIOCNOTTY, 0);
+close(fd);
+@endprogram}
+
+Open the terminal that controls the process.
+\break
+Use {\ltt{}ioctl} to disconnect from that terminal.
+\break
+close the file descriptor (see 1 above)
+
+3) A good idea to run in a known directory.
+
+If you crash, that is where the core dump goes.
+
+{\cprogram
+chdir("/");
+@endprogram}
+
+\newslide
+4) Process groups
+
+All processes belong to process groups.
+\break
+Usually the group includes the parent and child processes.
+\break
+Some signals are sent to all processes in a group.
+\break
+You can start a new process group.
+
+{\cprogram
+setpgrp(0, getpid());
+@endprogram}
+
+Put me in a new process group.
+\break
+Don't send me anyone elses signals.
+
+5) Make sure only one server is running.
+
+Use flock.
+
+{\cprogram
+lf = open("/usr/mydir/my.lock", O_RDWR|O_CREAT,
+          0640);
+if (lf < 0) exit(1); /*file system failure */
+if (flock(lf, LOCK_EX|LOCK_NB)) exit(0);
+@endprogram}
+
+Exit if we can't get an flock using the lock file.
+
+Recall flocks are removed if a server dies.
+
+\newslide
+6) Put your PID somewhere so it's easy to find
+who the server is.
+(Why not use the lock file.)
+
+{\cprogram
+char pbuf[10]; /*pid buf*/
+sprintf(pbuf, "%d\n", getpid());
+write(lf, pbuf, strlen(pbuf));
+@endprogram}
+
+Put your pid into a string buffer,
+\break
+write the string into the lock file.
+
+Any wanting the PID of the server
+\break
+can look in the lock file
+
+7) If you fork processes don't forget the wait
+\break
+(see the reaper from browserd)
+
+8) Block signals you don't want
+
+{\cprogram
+signal(SIGINT, SIG_IGN);
+@endprogram}
+
+9) If you have a config file, 
+use a signal to re-read it.
+
+{\cprogram
+signal(SIGHUP, reload);
+...
+reload() {
+  int fd;
+  fd = open("mut.conf", O_RDONLY );
+  /* Read new config into globals */
+  close(fd);
+}
+@endprogram}
+\newslide
+\centerline{{\bbf Locating a Server} }
+
+If you are looking for a server on the same subnet you
+can automatically locate it.
+
+Use a combination of the multiprotocol server
+\break
+(does both TCP and UDP)
+\break
+and broadcasts.
+
+1) Client sends a broadcast.
+
+2) Server responds to the broadcast.
+
+3) Client receives servers response; it now has the address of the
+server.
+
+4) Client connects (TCP) to server.
+\newslide
+\centerline{{\bbf Syslog} }
+
+Problem: There is no screen for a server to print to.
+\break
+Solution: Log a message to the system log.
+\break
+Use a generalized messaging system that allows the administrator to
+say where the messages go.
+
+{\program
+#include <syslog.h>
+openlog("ProgName",options,facility);
+syslog(loglevel,"message");
+\endprogram}
+
+{\ltt{}openlog}: called once per program
+\break
+Establishes syslog defaults.
+\break
+Name of program.
+\break
+options--such as include the pid with the message.
+\break
+facility--default log to use
+
+{\ltt{}syslog}: called for each message to be logged
+\break
+Sends a message to {\ltt{}syslogd}.
+\break
+log level--the importance of this message
+\break
+message--to be recorded.
+
+{\ltt{}syslogd}--gets the message, handles it as defined by the configuration
+file {\ltt{}/etc/syslog.conf}.
+
+{\program
+openlog("MyServer",LOG_PID,LOG_USER);
+syslog(LOG_NOTICE,"Failed");
+\endprogram}
+
+Log the process ID with the message.
+\break
+Log as facility {\ltt{}user} \qquad
+Level is {\ltt{}notice}
+\bye

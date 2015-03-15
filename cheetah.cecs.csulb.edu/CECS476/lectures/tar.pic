@@ -1,0 +1,137 @@
+\def\chapternumber{Backups -- 1 May 2012}
+\input slides.tex
+\centerline{\bbf Backups}
+
+It is a good idea to backup your disks.
+
+The larger the system the more formal the backup process should be.
+
+The more dynamic the disk the more frequent it should be backed up.
+
+{\ltt{}tar} -- build a tape archive.
+\break
+The archive can actually be built on any media.
+\break
+The archive can be built in a file.
+
+(Software releases are often sent as compressed {\ltt{}tar} files.)
+
+{\ltt{}tar} {\bit{}options list}
+
+The files/directories in the list are placed into the archive
+or extracted from the archive.
+
+If a directory is in the list, the subtree under that directory
+is archived.
+
+Links are archived, but not followed.
+
+Archives may span media (several CDs or tapes).
+
+\newslide
+\centerline{\bbf tar Details}
+
+Some common options:
+\break
+{\ltt{}c}: create an archive
+\break
+{\ltt{}x}: extract from an archive
+\break
+{\ltt{}t}: list the contents of an archive
+\break
+{\ltt{}f}: specify archive file/device
+\break
+{\ltt{}L}: media size in 1K blocks
+\break
+{\ltt{}z}: compress using gzip
+\break
+{\ltt{}j}: compress using bzip2 (large files)
+\break
+{\ltt{}J}: compress using xz
+\break
+\break
+{\ltt{}p}: extract all protection information
+\break
+{\ltt{}C}: change directory
+
+Examples:
+
+{\ltt{}tar -cf /dev/nrst0 /u1}
+\break
+back up the {\ltt{}/u1} directory to the SCSI tape 
+
+{\ltt{}tar -xf ftp/gcc.tar} 
+\break
+Extract everything from the archive file {\ltt{}gcc.tar}
+\break
+The leading {\ltt{}/} is removed by tar so you are able
+to extract into any local directory.
+
+{\ltt{}tar -xf /dev/nrst0  u1/john/.cshrc}
+\break
+Extract one file from the tape archive
+\newslide
+
+{\ltt{}tar -tzf  ftp/gcc.tgz}
+\break
+list the archive contents (archive is compressed)
+
+{\ltt{}tar -cfL /dev/nrst0 1000000 /u1 }
+\break
+back up to one or more 1GB tapes
+
+{\ltt{}tar -cfL jaguar:/dev/nrst0 1000000 /u1 }
+\break
+the tape drive is on another machine ({\ltt{}jaguar}).
+
+{\ltt{}tar -xpf ftp/gcc.tar} 
+\break
+Preserve the protection and ownership information.
+\break
+You must be root to effectively use this.
+
+{\ltt{}tar -xjf /usr/local/src/kernel.bz2} 
+\break
+Extract a file using bzip2 decompression
+\break
+Convention: {\ltt{}.bz2} is a bzip'd tar.
+
+{\ltt{}tar -xf bob.tar -C /home/bob} 
+\break
+Normally tar extracts into the current directory,
+here we tell it to extract into bob's home directory.
+
+{\ltt{}tar -cJf etcbu.txz /etc} 
+\break
+This creates a backup usings xz compression.
+
+\newslide
+\centerline{\bbf Compression}
+
+Several compression programs exist and can be run independent of tar.
+
+{\ltt{}zip}  Compatible with windows.
+
+{\ltt{}gzip}  Unix version of that compresion.
+
+{\ltt{}bzip2}  Compresses a block at at time.
+Does better than zip/gzip on large files.
+
+{\ltt{}xz} The most recent (advanced) compression routine.
+Compresses by default. Removes old file by default.
+\break
+{\ltt{}xz junk}
+\break
+compresses {\ltt{}junk}, creates {\ltt{}junk.xz}, removes {\ltt{}junk}
+\break
+{\ltt{}xz -d junk.xz}
+\break
+decompresses {\ltt{}junk.xz} into {\ltt{}junk}, removes {\ltt{}junk.xz}
+\break
+{\ltt{}xz -z <file1  >file2}
+\break
+compresses stdin ({\ltt{}file1}), outputs to stdout ({\ltt{}file2})
+
+\break
+
+\bye

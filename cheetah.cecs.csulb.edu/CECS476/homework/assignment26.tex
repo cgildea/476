@@ -1,0 +1,52 @@
+\input macros
+\rightskip=0pt plus 1fill
+\input cstuff
+\headline{{\bf CECS 476\hfill Assignment 26 \hfill Spring 2014}}
+\footline{Nathan Pickrell \hfill 29 April 2014 (Week 14 Lecture 1)\hfill 
+Due: 1 May 2014 (Week 14, Lab 2)}
+\parindent 0pt
+
+This project is about dhcp and remote booting.
+
+You dhcp server is jaguar.
+You will examine the setup of the dhcp server on jaguar for this project.
+
+Be careful that the you submit answers to the questions are correct
+for the machine you administer.
+
+Examine the {\ltt{}dhcpd.conf} file and answer the following questions.
+What file does your machine use to boot?
+What domain name server does your machine use?
+Give the lines that set the subnet, netmask and router for
+your machine.
+Give the lines that set the name and IP address of your machine.
+
+Search the {\ltt{}rc.d} directory. 
+Which file starts {\ltt{}dhcp}?
+
+The file from the previous questions also starts the trivial file
+transfer protocol server.
+It is started with an option, what does that option mean?
+
+Examine the {\ltt{}in.tftpd} process on jaguar.
+What option is it running with?
+What does that option mean?
+
+Examine the {\ltt{}in.tftpd} entry in {\ltt{}inetd.conf}.
+What options does it start {\ltt{}in.tftpd} with?
+What do these option mean?
+
+Which is more secure, the {\ltt{}inetd.conf} or the way
+the instructor actually started it?
+(This is what happens when you get in a hurry.)
+
+Examine the {\ltt{}default} config file {\ltt{}pxelinux.cfg}.
+How many boot options are there?
+(Hint: Did you see boot options when you did the install.)
+
+Examine the {\ltt{}default.std} config file {\ltt{}pxelinux.cfg}
+(this file is not used).
+How many boot options are there?
+Which kernels can be booted?
+Which message files can be displayed?
+\bye

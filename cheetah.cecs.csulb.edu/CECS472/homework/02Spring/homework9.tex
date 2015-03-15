@@ -1,0 +1,154 @@
+\input macros
+\input cstuff
+\nopagenumbers
+\headline{{\bf CECS 472\hfill Project 8 \hfill Spring 2002}}
+\footline{Dennis Volper \hfill 29 April 2002 (Week 13 Lecture 1)\hfill
+Due: 15 May 2002 2000 (Week 15 Lecture 2)}
+\parindent 0pt
+
+% Note, previously issued Week 13 Lecture 1
+
+Purpose: Explore Routing, Domain Name Service and Subnetting Utilities
+
+Submission: 
+For the network topology question you will submit a picture which may be hand 
+drawn. 
+For all other you will submit short answers.
+Remember, your analysis of the output of the command is an important part
+of the assignment.
+
+1)
+Data link layer.
+(Manual entries: arp, ping,)
+
+Give the arp table for jaguar.
+You must include the arp entries for cheetah, puma, and lab07.
+
+ping is used only to make sure the arp table cache has the entries you want.
+
+\vfill
+2) Routing tables. (Manual entries: netstat, ifconfig)
+
+a) What cables is the machine connected to.
+b) What are the IP numbers of its interfaces to each of those cables.
+c) What gateways does the machine know about.
+
+Answer questions (a), (b) and (c) for each of the following machines:
+\hfil\break
+i) cheetah
+\hskip1in
+ii) jaguar
+\hskip1in
+
+\vfill
+3) Interface configuration. (Manual entries: ifconfig, netstat)
+
+For each IP interface give the following:
+a) The IP number (from previous question).
+b) The name of the interface
+c) The netmask.
+d) The broadcast address
+
+netstat is listed here only because it is used
+to determine the names of the interfaces.
+
+Answer questions (a), (b), (c) and (d) for each of the following machines:
+\hfil\break
+i) cheetah
+\hskip1in
+ii) jaguar
+\hfil\break
+
+\vfill
+4) Remote access of data.
+(Manual entry: snmpnetstat, snmpstatus)
+
+The College of Engineering gateways have multiple interfaces.
+One of these gateways has an interface with the IP address 134.139.147.65,
+another is 134.139.4.1.
+a) For each of these gateways list the type of gateway and the
+number of interfaces that are ``down" (this is the status of
+the gateway).
+b) For each of these gateways list
+the interfaces are currently active on these gateways
+are their internet numbers.
+Notes: The 134.139.147.65 gateway uses the word Port\_xx to designate 
+interfaces,
+where as cheetah uses eth0 and eth1 and the
+gateway 134.139.4.1 uses designations such as et.1.2.
+{\ltt{}cheetah} supports snmpnetstat and snmpstatus.
+The gateway 134.139.4.1 will not report out it's routing table,
+but it will respond to the {\ltt{}-i} option of {\ltt{}snmpnetstat}.
+
+Remember: each port has {\it one} IP number, obviously
+one of the ports has the IP number given above.
+
+5) Network topology. 
+(Manual entries: traceroute)
+
+Draw a map of the ``interesting" part Internet.
+Include the following machines in your map and include all gateways
+that connect those machines.
+Your map should include IP numbers of as many of the network connections
+as possible.
+
+\medskip
+
+{\obeylines\parskip=0pt
+
+puma.net.cecs.csulb.edu
+jaguar.cecs.csulb.edu
+cheetah.cecs.csulb.edu
+aardvark.cecs.csulb.edu
+unix77.cecs.csulb.edu
+linux157.cecs.csulb.edu
+heart.cecs.csulb.edu
+lab71.net.cecs.csulb.edu
+lab07.net.cecs.csulb.edu
+linux30.cecs.csulb.edu
+charlotte.cecs.csulb.edu
+
+}
+
+\vfill\eject
+6) Broadcast addresses.
+
+Write a UDPtime broadcast client (and server).
+
+For the server, 
+modify {\ltt{}UDPtime.c}, so that (1) it runs
+on your personal port, and (2) it accepts packets
+addressed to the broadcast addresses.
+Call it {\ltt{}myUDPtimebd.c}
+
+For the client,
+modify your {\ltt{}myUDPtime.c} so that 
+(1) it is allowed to send a broadcast address
+and
+(2) it sends one time request packet and
+loops on responses so it can catch answers from
+multiple servers.
+Call it {\ltt{}myUDPtimeb.c}
+
+(You can eliminate or ignore the ftime stuff.)
+
+The loop on responses should be a loop
+that contains a select with a timeout set
+to one second.
+If the select exits due to the time out (remember
+it returns the number of active sockets, and in
+the case of a timeout this is 0),
+terminate (exit) the program.
+
+Testing:
+
+Set up two copies of your server on different machines
+in the lab, run your client and make sure it
+gets both responses.
+Remember, for broadcast to work, all machines must
+be on the same subnet.
+
+Submit:
+
+The source code of your two programs.
+\bye

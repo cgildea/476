@@ -1,0 +1,173 @@
+\def\chapternumber{Chapter 2 --- Client/Server Model -- 6 November 1995}
+\input slides.tex
+\centerline{\bbf Chapter 2}
+\centerline{Client/Server Model}
+\vt
+A structured programming method for networks
+\vt
+Analogy
+
+{\program
+    Customer         -------          Waiter
+    (Client)                         (Server)
+ orders from menu                  delivers dinner
+\endprogram}
+\vt
+{\program
+     Waiter           -------          Cook
+    (Client)                         (Server)
+  submits order                     cooks food
+\endprogram}
+
+For each job you either request or deliver service
+\vt
+Analogy 2:
+{\program
+  main program         -------      procedure
+    (Client)                         (Server)
+  makes call                       delivers answer
+\endprogram}
+
+\newslide
+\centerline{\bbf Client/Server Example}
+\vt
+
+{\lttk{}telnet cheetah.cecs.csulb.edu}
+\vt
+{\ltt{}telnet} is a client program
+
+This client is directed to request service from {\ltt{}cheetah}
+
+\vt
+{\ltt{}telnetd} is a server program
+
+This server is running on cheetah waiting for service requests
+\vt
+What is produced: a login session.
+
+{\ltt{}telnet} delivers user commands to {\ltt{}telnetd} on cheetah
+
+{\ltt{}telnetd} executes them (on cheetah)
+\break
+and returns the answer to the client
+\newslide
+\centerline{\bbf Typical Client Actions}
+
+\ind{1.} Open a connection to a server.
+
+\ind{2.} Send requests to the server and receive replies.
+
+\ind{3.} Close the connection.
+\vt
+Analogy (Phone)
+
+\ind{1.} Make a phone call.
+
+\ind{2.} Ask questions, get replies.
+
+\ind{3.} Hang up.
+
+\vt
+Analogy (Mail)
+
+\ind{1.} Write letter.
+
+\ind{2.} Mail letter.
+
+\ind{3.} Get reply.
+
+\newslide
+\centerline{\bbf Typical Server Actions}
+
+\ind{1.} Await a connection.
+
+\ind{2.} Receive requests from a client and send replies.
+
+\ind{3.} Close the connection after client does.
+\vt
+Analogy (Phone)
+
+\ind{1.} Wait in office.
+
+\ind{2.} Answer phone.
+
+\ind{3.} Listen to questions, give replies.
+
+\ind{4.} Hang up after the customer does.
+\vt
+Analogy (Mail)
+
+\ind{1.} Wait for mail.
+
+\ind{2.} Read each letter.
+
+\ind{3.} Give reply.
+\newslide
+\centerline{\bbf Connection-Oriented vs. Connectionless Models}
+
+Connection-Oriented Model (TCP)
+\break
+{\bit Transmission Control Protocol}
+\break
+Analogy: Phone
+\ind{}A connection must be established.
+\ind{}Connection is interactive.
+\ind{}Once connection is made, reliable delivery
+
+Note: TCP guarantees delivery of information in the order sent or
+an error will be signaled.
+\vt
+Connectionless Model (UDP)
+\break
+{\bit User Datagram Protocol}
+\break
+Analogy: Mail
+\ind{}Messages are sent.
+\ind{}A message is not interactive.
+\ind{}Delivery not confirmed, not guaranteed.
+
+Note: With UDP it is up to the letter writers to provide
+confirmation, and use a series of messages to achieve interaction.
+\newslide
+\centerline{\bbf Client/Server Problems}
+\vt
+\ind{1.} memory and programs don't survive a crash (reboot)
+
+\ind{2.} messages get lost
+
+\ind{3.} messages get duplicated
+
+\ind{4.} messages don't always arrive in the same order they were sent
+\vt
+A server that relies on the history of the interaction often behaves 
+incorrectly if any of the above occur.
+
+A server that relies on the history of an interaction,
+must ensure that the history is accurate.
+
+Conclusion: models that depend the history of an interaction (states)
+are harder to program.
+\mfill
+Note: 2,3,4 will not happen with TCP
+\newslide
+\centerline{\bbf The Stateless Model}
+\vt
+Principle: server doesn't have a memory
+
+Consequence: each message received by the server must be self-contained
+
+Principle: client doesn't rely on server's remembering.
+
+Consequence Each message a client sends must contain a self-contained
+command.
+
+\ind{}Do not depend on a previous command
+\break
+(get-record(6) is ok,
+but get-{\bit{}next}-record isn't)
+\vt
+Stateless type problems: 
+\ind{}Did the request get through? 
+\ind{}How do you know?
+\ind{}Due to confusion a command could be done twice!
+\bye
