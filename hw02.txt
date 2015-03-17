@@ -2,54 +2,86 @@ Cody Gildea
 csa476u1
 lab68.net.cecs.csulb.edu
 
-1) id -u volper
+Purpose: This assignment is to familiarize you with users and logins.
+Submission: You will submit hw02.txt with the “˜grader/submit 02” command like in previous assigments.
+Examine the password and group files on cheetah and answer the following questions:
+For the old instructor’s account (volper) answer the following questions:
+1) What is the UID (user) number?
+
 100
 
-2) id -g volper
+2) What is the GID (group) number?
+id -g volper
 30
 
-3) echo ~volper
+3) What is the home directory?
+ echo ~volper
 /net/aardvark/u1/volper
 
-4) 
+4) What is the login shell?
+ 
 /bin/csh
 
-5) 
+5) What is the name of the base group the instructor belongs to? 
 faculty:x:30:
 
-6) id -G djv
+6) The user djv belongs to three additional groups, what are the names of this group? 
+id -G djv
 30 10 12 100
 
-7) 
+7) What are the group numbers for the groups named guest, cecsu and cecsg?
+
 guest:x:60:
 cecsu:x:71:
 cecsg:x:72:
 
-8) 
+Examine the shadow file on the lab66 machine (Should be world readable, if not, inform the instructor)
+and answer the following questions:
+8) List the local accounts that have (encrypted) passwords. Hint: there are a very small number of such
+accounts. 
 root:$1$BB2sRjzi$Ik9DrbLXMknCgOtwXKFBE/:16457:0:::::
 
-9) 
+9) When (approximately) was the password on the root account changed? Give me a month and year. This
+will be approximate, that is, it may be off by a couple days.
+Hint, use bc to help compute the year it was changed (assume 365.25 days per year), and roughly estimate
+the month (assume 30 days per month).
+
 January, 2015
 
-10)
+10) There is an alternate command available to show this on your machine (but not all Unix systems).
+Give this command.
+
 chage -l root
 
-11)
+11) Explain why marking the shadow file world readable is a poor decision.
+
 It is possible that the encryption strategy used to encrypt the password could be cracked in the future like MD5 was and give an unauthorized user access to encrypted passwords.
 
-12) vim ~/.cshrc
+Examine your .cshrc and answer the following questions:
+12) How many aliases are setup?
+
+vim ~/.cshrc
 3
 alias lf ls -aCF
 alias l ls -al
 alias term 'set noglob ; eval `tset -rsQ \!*` ; set glob'
 
-13)echo $PATH
+13) How many directories in your path?
+
+echo $PATH
 /net/cheetah/u3/c/csa476/u1/bin:/usr/ucb:/usr/bin:/bin:/etc:/usr/etc:/usr/cecs/bin:/sbin:/usr/sbin:/usr/bin/X11:/usr/local/bin:.
 12
 
-14) 
+Modify your .cshrc. Remember, the .cshrc file is only read when you login. I recommend you modify in
+one window and use a second window to login and test your changes (that way you won’t lock yourself out.
+Be sure to verify that your changes work.
+14) Add an alias have p be a shorthand for ps aux. Give the command to do this.
+
 alias p 'ps aux'
 
-15) 
+15) Add the directory ~djv to the end of your path. After you have done this, from your home directory,
+you should be able to run the hello program (which prints Hello). This program exists only in the ~djv
+directory.
+
 Inserted ~djv into the path in ~/.cshrc, logged out and back in and typed hello and got Hello as a response.
 

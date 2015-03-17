@@ -2,7 +2,20 @@ Cody Gildea
 csa476u1
 lab68.net.cecs.csulb.edu
 
-A)
+Build and boot with a new installation of the kernel.
+A copy of the configuration file used for your standard kernel is found in /boot/config. Use this file only
+to copy it to /usr/src/linux/ as .config, do not modify it.
+I recommend you compile and install to make sure it works. (I.e., skip the “eliminate” part of step A for
+now and compile and install a ”stock” kernel to make sure you know the procedure). This kernel should be
+almost the same size as the stock kernel and should work exactly like the stock kernel
+A) Configure the kernel.
+Desirable: Eliminate any unnecessary drivers and/or components so that your kernel is as small as
+possible. Minimal: Eliminate at least one unnecessary kernel component so your kernel is smaller than the
+stock kernel (hint, your system does not have firewire ports).
+
+Your machine has: an IDE hard drive, a SATA Hard drive, a PCI bus, a PS/2 mouse and an Intel
+PRO/1000 on board network adapter.
+
 cp /boot/config /usr/src/linux/.config
 
 make config
@@ -12,37 +25,49 @@ make menuconfig
 make dep
 
 
-B)
+If you get into trouble in step B, copy it in as .config and start again.
+B) Build a new kernel (bzImage).
+
 Make the kernel image:
 
 make bzImage -
 
-1)
+1) Report: the date stamp on the bzImage file.
 -rw-r--r--  1 root root 5866464 Feb 23 14:23 bzImage
 
-C)
+C) Modify the lilo.conf file to have a second linux bootable configuration. Duplicate the 4 lines and two
+comment lines (total of 7 lines), change the image to bzImage and the label to bz. Make sure the original
+bootable configuration entry stays first so that it is the default
+
 image = /boot/bzImage
   root = /dev/sda2
   label = bz
   read-only  # Partitions should be mounted read-only for checking
 # Linux bootable partition config ends
 
-D)
+D) Move the new kernel so that it is /boot/bzImage. (Do NOT under ANY circumstances remove or
+replace vmlinuz)
+
 mv bzImage /boot/
 
-E)
+E) Run lilo, it should show two “Added” reports.
+
 lilo
 Warning: LBA32 addressing assumed
 Added linux *
 Added bz
 One warning was issued.
 
-F)
-2)
+F) Reboot, shift key down; select bz. Note: If shift key doesn’t work, uncomment “prompt” and “timeout
+= 500” in lilo.conf and rerun lilo.
+
+Make sure your kernel is working by, i) can bob login (and ls his home dir) ii) can your personal account
+login (and ls your home dir).
+2) Report: the contents of /proc/sys/kernel/version
 Kernel Verson:
 #2 SMP Mon Feb 23 14:23:12 PST 2015
 
-3)
+3) Report: the size of you new kernel and the size of the stock kernel
 New:
 -rw-r--r-- 1 root root 5.6M Feb 23 14:23 bzImage
 

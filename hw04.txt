@@ -2,13 +2,32 @@ Cody Gildea
 csa476u1
 lab68.net.cecs.csulb.edu
 
-1)
+On all assignments, be sure to indicate the name of the machine you are assigned to administer.
+This first question of this assignment emphasizes shell programming, the remaining questions have you
+examine the file system.
+Make sure the user bob exists on your machine.
+Simple shell script.
+As bob, write a shell script that examines all the processes on the system and “reports” c-shell processes
+into a file called cshlog. First, this script should append to the cshlog the date. Then, it should do a ps
+aux, and all lines (use grep) containing the letters csh but not containing the letters cpeek should be
+appended to the cshlog. Your script file should be called cpeek
+Test your shell script by running your command several times with various users logged in (for example
+root and your csa account) (i.e., just make sure it works).
+1) Report: the exact contents of cpeek. (Do NOT report the contents of your cshlog.)
+
 #!/bin/csh
 date >> cshlog.txt
 ps aux | grep csh | grep -v "cpeek" >> cshlog.txt
 
 
-2)
+More advanced shell script.
+As bob, write a shell script called clook. This shell script takes an argument that should be the name of
+the directory. If it is given the name of something that isn’t a directory (or doesn’t exist) it should print
+“Sorry”. If it is given the name of a directory it should print the names of any items in that directory that
+are files and are executable.
+Test your shell script by running your command on /etc/printcap (it’s a file and should print “Sorry”)
+and on ~djv (do an ls to see confirm the names of the executables.
+2) Report: the exact contents of clook.
 #!/bin/csh
 if( "$1" != "" && -d $1 ) then
 	if( -x $file )
@@ -21,14 +40,18 @@ else
 endif 
 
 
-3)
+On the cheetah examine and report the following:
+3) What three hard drives are attached to the file tree and where (mount/df)? Linux lists one hard drive
+as a softlink called /dev/root. You can determine which hard drive this is by doing an ls -l on this link.
+
 csa476u1@cheetah:~$ ls -l /dev/root
 lrwxrwxrwx 1 root root 4 Jan 12 20:19 /dev/root -> sda2
 csa476u1@cheetah:/$ df
 /dev/sdb1                             480720616  9057372 447243968   2% /u3
 /dev/sdc1                             480720616 55250604 401050736  13% /u4
 
-4)
+4) On the root (/) file system, how much disk is available (df)?
+
 csa476u1@cheetah:/$ df
 Filesystem                            1K-blocks     Used Available Use% Mounted on
 /dev/root                             432649064 12250176 398421544   3% /
@@ -47,7 +70,10 @@ tmpfs                                  979M     0  979M   0% /dev/shm
 jaguar:/sdb/slack13.37-64/slackware64  147G   12G  129G   8% /mnt/nate
 aardvark.cecs.csulb.edu:/u1            413G   16G  377G   4% /net/aardvark/u1
 
-5) The filesystem type is ext4 and is read/write
+5) On the root (/) file system, what is the file system type and is the file system read only or read/write
+(mount)?
+
+The filesystem type is ext4 and is read/write
 csa476u1@cheetah:/$ mount
 /dev/root on / type ext4 (rw,relatime,barrier=1,stripe=1,data=ordered)
 proc on /proc type proc (rw)
@@ -60,7 +86,7 @@ nfsd on /proc/fs/nfsd type nfsd (rw)
 jaguar:/sdb/slack13.37-64/slackware64 on /mnt/nate type nfs (rw,addr=134.139.248.18)
 aardvark.cecs.csulb.edu:/u1 on /net/aardvark/u1 type nfs (rw,soft,intr,nsfvers=2,sloppy,vers=4,addr=134.139.248.3,clientaddr=134.139.248.2)
 
-6)
+6) In your home directory, how much space have you used (not much yet) (du)?
 csa476u1@cheetah:~$ du -h
 4.0K	./476/.git/branches
 8.0K	./476/.git/refs/heads
@@ -108,16 +134,27 @@ csa476u1@cheetah:~$ du -h
 20K	./.ssh
 520K	.
 
-7)
+7) Your home directory is on one of the hard drive partitions. Report the line in the fstab that causes
+that partition to be mounted.
+
 /dev/sda1        swap             swap        defaults         0   0
 
 
-8) dumpe2fs /dev/sda2 | less
+On the system you administer, using the system administrator account; examine the superblock of the
+linux partition on your hard drive (/dev/sda2) using the dumpe2fs command.
+8) Report: The file system state, the block size and the number of groups in that file system.
+ 
+dumpe2fs /dev/sda2 | less
 Filesystem state: not clean
 Block size: 4096
 Groups: 537 (0 - 536)
 
-9)fdisk -l
+9) fdisk -l: For the disk you administer describe the partitions that are on the disk? For each partition
+report, what cylinder it starts at, what cylinder it ends at, and what kind of a partition it is (Linux, DOS,
+swap). Be very careful with this one, DO NOT MODIFY or WRITE anything with fdisk; you could erase
+your hard drive.
+
+fdisk -l
 Device Boot	Start		End		Blocks		Id	System
 /dev/sda1	2048		15630148	7814050+	82	Linux swap
 /dev/sda2	15630149	156301487	70335669+	83	Linu
