@@ -2,17 +2,21 @@
 ###CHAPTER 1
 
 1.1 Define computer security.
+
 - The protection afforded to an automated information system in order to attain the applicable objectives of preserving the integrity, availability and confidentiality of information system resources (includes hardware, software, information, data...).
 
 1.2 What is the OSI security architecture?
+
 - It defines a systematic approach for managers, describing a way of organizing the task of providing security.
 
 1.3 What is the difference between passive and active security threats?
+
 - Passive attacks have to do with eavesdropping on, or monitoring transmissions. Email, file transfers, and client/server exchanges are examples of transmissions that can be monitored. 
 
 - Active attacks include the modification of transmitted data and attempts to gain unauthorized access to computer systems.
 
 1.4 List and briefly define categories of passive and active network security attacks.
+
 -Passive: Unauthorized Disclosure
 
 -Active: 
@@ -21,6 +25,7 @@
 ---> Usurpation (An event that results in control of system services of functions by an unauthorized entity)
 
 1.5 List and briefly define categories of security services.
+
 1. Authentication
 2. Access Control
 3. Data Confidentiality
@@ -29,6 +34,7 @@
 6. Availability
 
 1.6 List and briefly define categories of security mechanisms.
+
 1. Encipherment
 2. Digital Signature
 3. Access Control
@@ -138,6 +144,7 @@ Digital Envelope - Bob does the following:
 Review Questions:
 
 3.1 In general terms, what are four means of authenticating a user's identity?
+
 1. **Something the individual knows**: Examples includes a password, a personal identification number (PIN), or answers to a prearranged set of questions. 
 
 2. **Something the individual possesses**: Examples include electronic key-cards, smart cards, and physical keys. This type of authenticator is referred to as a token. 
@@ -147,6 +154,7 @@ Review Questions:
 4. **Something the individual does (dynamic biometrics)**: Examples include recognition by voice pattern, handwriting characteristics, and typing rhythm.
 
 3.2 List and briefly describe the principal threats to the secrecy of passwords?
+
 - **Offline dictionary attack**: The attacker obtains the system password file and compares the password hashes against hashes of commonly used passwords. If a match is found, the attacker can gain access by that ID/password combination. 
 
 - **Specific account attack**: The attacker targets a specific account and submits password guesses until the correct password is discovered. 
@@ -162,10 +170,12 @@ Review Questions:
 - **Exploiting multiple password use Electronic monitoring**: If a password is communicated across a network to log on to a remote system, it is vulnerable to eavesdropping."
 
 3.3 What are the two common techniques used to protect a password file?
+
 1. Using a salt value. This salt is stored in plaintext with the hash from (salt + password). 
 2. Password File Access Control. The hashed passwords are kept in a separate file from the user Ids referred to as shadow password file. Only privileged users have access to this file.
 
 3.4 List and briefly describe four common techniques for selecting or assigning passwords.
+
 1. **User education**
 
 2. **Computer-generated passwords**
@@ -175,11 +185,13 @@ Review Questions:
 4. **Proactive password checking**: The user chooses his password based on rules given by thesystem (eg. at least eight characters long etc.)
 
 3.5 Explain the difference between a simple memory card and a smart card.
+
 - Memory Card: Stores but does not process data. 
 
 - Smart Card: Has a microprocessor, different types memory, I/O ports etc. May also have a crypto coprocessor and an embedded antenna.
 
 3.6 List and briefly describe the principal characteristics used for biometric identification.
+
 - Facial characteristics 
 
 - Fingerprints
@@ -195,6 +207,7 @@ Review Questions:
 - Voice
 
 3.7 In the context of biometric user authentication, explain the terms, enrollment, verification, and identification.
+
 - **Enrollment**: Each individual who is to be included in the database of authorized users must first be enrolled in the system. 
 
 - **Verification**: The user enters a PIN and also uses a biometric sensor. Identification: The individual uses the biometric sensor but presents no additional information.
@@ -202,6 +215,7 @@ Review Questions:
 - **Identification**: The individual uses the biometric sensor but presents no additional information. THe system compares the presented template to a stored one and determines a match.
 
 3.8 Define the terms false match rate and false non-match rate, and explain the use of a threshold in relationship to these two rates.
+
 - False match rate: It measures the percent of invalid inputs which are incorrectly accepted. 
 
 - False non-match rate: It measures the percent of valid inputs which are incorrectly rejected.
@@ -209,6 +223,7 @@ Review Questions:
 By moving the threshold, the probabilities can be altered but note that a decrease in false match rate necessarily results in an increase in false non-match rate, and vice versa.
 
 3.9 Describe the general concept of a challenge-response protocol.
+
 - The host generates a random number r and returns it to the user (=challenge). In addition, the host specifies two functions, a hash function h() and another function f() to be used in the response. The user calculates f(r', h(P')), where r' = r and P' is the user's password. When the response arrives, the host compares the incoming result to the calculated f(r, h(P)) and if it matches the user is authenticated. Advantages: Only the hashes of the passwords have to be stored and they do not have to be transmitted directly, so i cannot be captured during transmission.
 
 
@@ -217,35 +232,43 @@ By moving the threshold, the probabilities can be altered but note that a decrea
 Review Questions:
 
 4.1 Briefly define the difference between DAC and MAC -- 
+
 - **Discretionary access control (DAC)** controls access based on the identity of the requestor and on access rules (authorization) stating what requestors are (or are not) allowed to do.
 - **Mandator access control (MAC)** controls access based on comparing security labels with security clearances.
 
 4.2 How does RBAC relate to DAC and MAC -- 
+
 - **Role-based access controil** controls access based on the roles that users have within the system and on rules stating what accesses are allowed to users in given roles.
 RBAC seems to be somewhat of a combination of DAC and MAC.
 
 4.3 List and define three classes of subject in an access control system --
+
 - **Owner**: This may be the creator of a resource, such as a file. 
 - **Group**: In addition to the privileges assigned to an owner, a named group of users may also be the granted access rights.
 - **World**: The latest amount of access is granted to users who are able to access the system but are not included in the categories owner and group of this resource.
 
 4.4 In the contect of AC, what is the diffence between a subject and object --
+
 - A subject is an entity capable of accessing objects (eg. user, application, process). 
 An object is resource to which access is controlled. An object is an entity used to contain information (eg. records, files, directories, processors, communication ports)
 
 4.5 What is an access right? --
+
 - An access right describes the way in which a subject may access an object. Eg. read, write, execute, delete.
 
 4.6 What is the difference between an access control list and a capability ticket? --
+
 - In practice, an access matrix is usually sparse and is implemented by decomposition in one of two ways. 
 The matrix may be decomposed by columns, yielding access control lists. 
 For each object, an ACL lists users and their permitted access rights.
 Decomposition by row yields capability tickets. A capability ticket specifies authorized objects and operations for a particular user.
 
 4.7 What is a protection domain? --
+
 - A protection domain is a set of objects together with access rights to those objects. In terms of the access matrix, a row defines a protection domain. Although, in the protection domain model a user can spawn processes with a subset of access rights of the user. This is useful for servers to spawn processes for different classes of users and for not fully trusted processes to reduce their access rights to a safe subset.
 
 4.8 Briefly define the four RBAC models of Figure 4.8a. --
+
 - **RBAC0**: contains the minimum functionality for an RBAC system. 
 - **RBAC1**: includes the RBAC0 functionality and adds role hierarchies, which enable one role to inherit permissions from another role. 
 - **RBAC2**: includes RBAC0 and adds constraints, which restrict the ways in which the components of a RBAC system may be configured. 
@@ -259,17 +282,20 @@ Decomposition by row yields capability tickets. A capability ticket specifies au
 | RBAC3 | Yes    |    Yes |
 
 4.9 List and define the four types of entities in a base model RBAC system. --
+
 1. **User**: An individual that has access to this computer system. Each individual has an associated user ID. 
 2. **Role**: A named job function within the organization that controls this computer system. 
 3. **Permission**: An approval of a particular mode of access to one or more objects.
 4. **Session**: A mapping between a user and an activated subset of the set of roles to which the user is assigned.
 
 4.10 Describe three types of role hierarchy constraints. --
+
 1. **mutually exclusive roles**: These are roles such that a user can be assigned to only one role in the set. 
 2. **cardinality**: This refers to a maximum number with respect to roles. One such constraint is to set a maximum number of users that can be assigned to a given role.
 3. **prerequisite roles**: May dictate that a user can only be assigned to a particular role if it is already assigned to some other specified role.
 
 4.11 In the NIST RBAC model, what is the difference between SSD and DSD? --
+
 - **Static Separation of Duty Relations**: SSD enables the definition of a set of mutually exclusive roles. SSD can place a cardinality constraint on a set of roles. 
 - **Dynamic Separation of Duty Relations**: DSD limit the availability of the permissions by placing constraints on the roles that can be activated within or across a user's session.
 
@@ -402,6 +428,7 @@ NIST defines four **deplorment models**:
 ###CHAPTER 20
 
 20.1 What are the essential ingredients of a symmetric cipher?
+
 - Plaintext
 - Encryption algorithm
 - Secret key
@@ -409,39 +436,49 @@ NIST defines four **deplorment models**:
 - Decryption algorithm
 
 20.2 What are the two basic functions used in encryption algorithms?
+
 1. substitution: each element in the plaintext is (bit, letter, group of bits or letters) is mapped into another element 
 2. transposition: elements in the plaintext are rearranged
 
 20.3 How many keys are required for two people to communicate via a symmetric cipher?
+
 - Sender and receiver use the same key, so only one key is required.
 
 20.4 What is the difference between a block cipher and a stream cipher?
+
 - A block cipher processes the input one block of elements at a time, producing an output block for each input block. A stream cipher processes the input elements continuously, producing output one element at a time, as it goes along.
 
 20.5 What are the two general approaches to attacking a cipher?
+
 1. **brute-force approach** = trying all possible keys 
 
 2. **cryptanalysis** = statistical analysis of the ciphertext (attacker must have some general idea of the type of plaintext that is encrypted)
 
 20.6 Why do some block cipher modes of operation only use encryption while others both encryption and decryption?
+
 - In some modes, the plaintext does not pass through the encryption function, but is XORed with the output of the encryption function. For decryption in these cases, the encryption function must also be used .
 
 20.7 What is triple encryption?
+
 - A plaintext block is encrypted by passing it through an encryption algorithm , the result is then passed through the same encryption algorithm two more times.
 
 20.8 Why is the middle portion of 3DES a decryption rather than an encryption?
+
 - There is no cryptographic significance to the use of decryption for the second stage. Its only advantage is that it allows users of 3DES to decrypt data encrypted by users of the older single DES by repeating the key.
 
 20.9 What is the difference between link and end-to-end encryption?
+
 - There is a difference between link encryption and end-to-end encryption in that link encryption encrypts and decrypts all traffic at each end of a communication line whereas with end-to-end encryption the message is encrypted by the sender at the point of origin and only decrypted by the intended reader
 
 20.10 List ways in which secret keys can be distributed to two communicating parties.
+
 1. A key could be selected by A and physically delivered to B. 
 2. A third party could select the key and physically deliver it to A and B. 
 3. If A and B have previously and recently used a key, one party could transmit the new key to the other, encrypted using the old key.
 4. If A and B each have an encrypted connection to a third party C, C could deliver a key on the encrypted links to A and B.
 
 20.11 What is the difference between a session key and a master key?
+
 -A session key is a temporary encryption key 
 used between two principals. 
 -A master key is a long-lasting key that is 
@@ -452,24 +489,30 @@ Typically, the master keys are distributed by
 noncryptographic means.
 
 20.12 What is a key distribution center?
+
 - A KDC determines which systems are allowed to communicate with each other. When permission is granted for the two systems to establish a connection, the key distribution center provides a one-time session key for that connection.
 
 
 ###CHAPTER 21
 
 21.1 In the context of a hash function, what is a compression function?
+
 - A function for a single block of bits in a hash function is referred to as compression function.
 
 21.2 What basic arithmetical and logical functions are used in SHA?
+
 - circular shifts, AND, OR, NOT and XOR
 
 21.3 What changes in HMAC are required in order to replace one underlying hash function with another?
+
 - If it is desired to replace a given hash function, all that is required is to remove the existing hash function module and drop in the new module.
 
 21.4 What is a one-way function?
+
 - This is a function that is easy to computer on every input, but hard to invert a given image of a random input. Here "easy" and "hard" are to be understood in the sense of computational complexity theory.
 
 21.5 Briefly explain Diffie-Hellman key exchange.
+
 - The security relies on the fact that, while it is relatively easy to calculate exponentials modulo a prime number, it is infeasible for large prime numbers to calculate discrete logarithms. 
 Steps:
 1. q prime number, a a primitive root of q
@@ -479,13 +522,4 @@ Steps:
 5. User A computers the key as K = (YB)XA mod q
 6. User B computers the key as K = (YA)XB mod q
 These two calculations produce identical results -> A and B have exchanged a secret value.
-
-
-
-
-
-
-
-
-
 
