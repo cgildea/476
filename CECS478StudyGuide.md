@@ -5,17 +5,17 @@
 - The protection afforded to an automated information system in order to attain the applicable objectives of preserving the integrity, availability and confidentiality of information system resources (includes hardware, software, information, data...).
 
 1.2 What is the OSI security architecture?
-..* It defines a systematic approach for managers, describing a way of organizing the task of providing security.
+- It defines a systematic approach for managers, describing a way of organizing the task of providing security.
 
 1.3 What is the difference between passive and active security threats?
-..* Passive attacks have to do with eavesdropping on, or monitoring transmissions. Email, file transfers, and client/server exchanges are examples of transmissions that can be monitored. 
+- Passive attacks have to do with eavesdropping on, or monitoring transmissions. Email, file transfers, and client/server exchanges are examples of transmissions that can be monitored. 
 
-..* Active attacks include the modification of transmitted data and attempts to gain unauthorized access to computer systems.
+- Active attacks include the modification of transmitted data and attempts to gain unauthorized access to computer systems.
 
 1.4 List and briefly define categories of passive and active network security attacks.
-..*Passive: Unauthorized Disclosure
+-Passive: Unauthorized Disclosure
 
-..*Active: 
+-Active: 
 ---> Deception
 ---> Disruption
 ---> Usurpation (An event that results in control of system services of functions by an unauthorized entity)
@@ -41,11 +41,11 @@
 
 --CIA--
 **Confidentiality**:
-..* **Data Confidentiality** -- Assures that private information is not made available or disclosed to unauthorized individuals.
-..* **Privacy** -- Assures that individuals control or influence what information related to them may be collected and stored and by whom and to whom that information may be disclosed
+- **Data Confidentiality** -- Assures that private information is not made available or disclosed to unauthorized individuals.
+- **Privacy** -- Assures that individuals control or influence what information related to them may be collected and stored and by whom and to whom that information may be disclosed
 **Integrity**
-..* **Data integrity** -- Assures that information and programs are changed only in a specific and authorized manner.
-..* **System integrity** -- Assurs that a system performs its intended function in an unimpaired manner, free from deliberate or inadvertent unauthorized manipulation of the system.
+- **Data integrity** -- Assures that information and programs are changed only in a specific and authorized manner.
+- **System integrity** -- Assurs that a system performs its intended function in an unimpaired manner, free from deliberate or inadvertent unauthorized manipulation of the system.
 **Availability** -- Assures that systems work promptly and service is not denied to authorized users.
 
 **Least privilege** -- means that every process and ever user of the system should operate using the least set of privileges necessary to perform the task.
@@ -56,32 +56,38 @@
 ###CHAPTER 2
 
 2.1 What are the essential ingredients of a symmetric cipher?
-..* Plaintext
-..* Encryption algorithm
-..* Secret key
-..* Ciphertext
-..* Decryption algorithm
+
+- Plaintext
+- Encryption algorithm
+- Secret key
+- Ciphertext
+- Decryption algorithm
 
 2.2 How many keys are required for two people to communicate via a symmetric cipher?
-..* one - it's used for both encryption and decryption
+
+- one - it's used for both encryption and decryption
 
 2.3 What are the two principal requirements for the secure use of symmetric encryption?
-..* A strong encryption algorithm. The opponent should be unable to decrypt ciphertext or discover the key even if he or she is in possession of a number of ciphertexts together with the plaintext that produced each ciphertext.
 
-..* Sender and receiver must have obtained copies of the secret key in a secure fashion and must keep the key secure.
+- A strong encryption algorithm. The opponent should be unable to decrypt ciphertext or discover the key even if he or she is in possession of a number of ciphertexts together with the plaintext that produced each ciphertext.
+
+- Sender and receiver must have obtained copies of the secret key in a secure fashion and must keep the key secure.
 
 2.4 List three approaches to message authentication.
-..* Using conventional encryption 
-..* Using public-key encryption 
+
+- Using conventional encryption 
+- Using public-key encryption 
 .** Using a secret value
 
 2.5 What is a message authentication code?
-..* A small block of data, that is appended to a message to assure that the sender is authentic and that the message is unaltered.
+
+- A small block of data, that is appended to a message to assure that the sender is authentic and that the message is unaltered.
 
 2.6 Briefly describe the three schemas illustrated in Figure 2.3.
 
 
 2.7 What properties must a hash function have to be useful for message authentication?
+
 1. H can be applied to a block of data of any size.
 2. H produces a fixed-length output. 
 3. H(x) is relatively easy to compute for any given x, making both hardware and software
@@ -93,27 +99,32 @@ property).
 collision resistant)
 
 2.8 What are the principal ingredients of a public-key cryptosystem?
-..* Plaintext
-..* Encryption algorithm
-..* Public and private keys
-..* Ciphertext
-..* Decryption algorithm
+- Plaintext
+- Encryption algorithm
+- Public and private keys
+- Ciphertext
+- Decryption algorithm
 
 2.9 List and briefly define three uses of a public-key cryptosystem.
+
 1. Encryption/decryption: The sender encrypts a message with the recipient's public key. 
 2. Digital signature: The sender "signs" a message with its private key. 
 3. Key exchange: Two sides cooperate to exchange as session key. Several different approaches are possible, involving the private key(s) of one or both parties
 
 2.10 What is the difference between a private key and a secret key?
-..* The key used in conventional encryption is typically referred to as a secret key. The two keys used for public-key encryption are referred to as the public key and the private key.
+
+- The key used in conventional encryption is typically referred to as a secret key. The two keys used for public-key encryption are referred to as the public key and the private key.
 
 2.11 What is a digital signature?
-..* A mechanism for authenticating a message. Bob uses a secure hash function, such as SHA-512, to generate a hash value for the message and then encrypts the hash code with his private key, creating a digital signature. Bob sends the message with the signature attached. When Alice receives the message she calculates a hash value for the message, decrypts the signature using Bob's public key and compares the calculated hash value to the decrypted hash value. If the two hash values match, Alice is assured that the message must have been signed by Bob. It is important to emphasize that the digital signature does not provide confidentiality.
+
+- A mechanism for authenticating a message. Bob uses a secure hash function, such as SHA-512, to generate a hash value for the message and then encrypts the hash code with his private key, creating a digital signature. Bob sends the message with the signature attached. When Alice receives the message she calculates a hash value for the message, decrypts the signature using Bob's public key and compares the calculated hash value to the decrypted hash value. If the two hash values match, Alice is assured that the message must have been signed by Bob. It is important to emphasize that the digital signature does not provide confidentiality.
 
 2.12 What is a public-key certificate?
-..* A certificate consists of a public key plus a user ID of the key owner, with the whole block signed by a trusted third party (= certificate authority CA). The user can then publish the certificate and anyone needing this user's public key can obtain the certificate and verify that it is valid by means of the attached signature.
+
+- A certificate consists of a public key plus a user ID of the key owner, with the whole block signed by a trusted third party (= certificate authority CA). The user can then publish the certificate and anyone needing this user's public key can obtain the certificate and verify that it is valid by means of the attached signature.
 
 2.13 How can public-key encryption be used to distribute a secret key for symmetric encryption?
+
 Digital Envelope - Bob does the following: 
 1. Prepare a message 
 2. Generate a random symmetric key that will be used this time only. 
@@ -136,19 +147,19 @@ Review Questions:
 4. **Something the individual does (dynamic biometrics)**: Examples include recognition by voice pattern, handwriting characteristics, and typing rhythm.
 
 3.2 List and briefly describe the principal threats to the secrecy of passwords?
-..* **Offline dictionary attack**: The attacker obtains the system password file and compares the password hashes against hashes of commonly used passwords. If a match is found, the attacker can gain access by that ID/password combination. 
+- **Offline dictionary attack**: The attacker obtains the system password file and compares the password hashes against hashes of commonly used passwords. If a match is found, the attacker can gain access by that ID/password combination. 
 
-..* **Specific account attack**: The attacker targets a specific account and submits password guesses until the correct password is discovered. 
+- **Specific account attack**: The attacker targets a specific account and submits password guesses until the correct password is discovered. 
 
-..* **Popular password attack**: A variation of the preceding attack is to use a popular password and try it against a wide range of user Ids. 
+- **Popular password attack**: A variation of the preceding attack is to use a popular password and try it against a wide range of user Ids. 
 
-..* **Password guessing against single user**: The attacker attempts to gain knowledge about the account holder and system password policies and uses that knowledge to guess the password. 
+- **Password guessing against single user**: The attacker attempts to gain knowledge about the account holder and system password policies and uses that knowledge to guess the password. 
 
-..* **Workstation hijacking**: The attacker waits until a logged-in workstation is unattended. 
+- **Workstation hijacking**: The attacker waits until a logged-in workstation is unattended. 
 
-..* **Exploiting user mistakes**: Strict polices force more complicated password and the user is more likely to write it down because it is difficult to remember. An attacker may trick the user or an account manager into revealing a password (also: preconfigured passwords for system administrators are a threat)
+- **Exploiting user mistakes**: Strict polices force more complicated password and the user is more likely to write it down because it is difficult to remember. An attacker may trick the user or an account manager into revealing a password (also: preconfigured passwords for system administrators are a threat)
 
-..* **Exploiting multiple password use Electronic monitoring**: If a password is communicated across a network to log on to a remote system, it is vulnerable to eavesdropping."
+- **Exploiting multiple password use Electronic monitoring**: If a password is communicated across a network to log on to a remote system, it is vulnerable to eavesdropping."
 
 3.3 What are the two common techniques used to protect a password file?
 1. Using a salt value. This salt is stored in plaintext with the hash from (salt + password). 
@@ -164,41 +175,41 @@ Review Questions:
 4. **Proactive password checking**: The user chooses his password based on rules given by thesystem (eg. at least eight characters long etc.)
 
 3.5 Explain the difference between a simple memory card and a smart card.
-..* Memory Card: Stores but does not process data. 
+- Memory Card: Stores but does not process data. 
 
-..* Smart Card: Has a microprocessor, different types memory, I/O ports etc. May also have a crypto coprocessor and an embedded antenna.
+- Smart Card: Has a microprocessor, different types memory, I/O ports etc. May also have a crypto coprocessor and an embedded antenna.
 
 3.6 List and briefly describe the principal characteristics used for biometric identification.
-..* Facial characteristics 
+- Facial characteristics 
 
-..* Fingerprints
+- Fingerprints
 
-..* Hand geometry
+- Hand geometry
 
-..* Retinal pattern
+- Retinal pattern
 
-..* Iris
+- Iris
 
-..* Signature
+- Signature
 
-..* Voice
+- Voice
 
 3.7 In the context of biometric user authentication, explain the terms, enrollment, verification, and identification.
-..* **Enrollment**: Each individual who is to be included in the database of authorized users must first be enrolled in the system. 
+- **Enrollment**: Each individual who is to be included in the database of authorized users must first be enrolled in the system. 
 
-..* **Verification**: The user enters a PIN and also uses a biometric sensor. Identification: The individual uses the biometric sensor but presents no additional information.
+- **Verification**: The user enters a PIN and also uses a biometric sensor. Identification: The individual uses the biometric sensor but presents no additional information.
 
-..* **Identification**: The individual uses the biometric sensor but presents no additional information. THe system compares the presented template to a stored one and determines a match.
+- **Identification**: The individual uses the biometric sensor but presents no additional information. THe system compares the presented template to a stored one and determines a match.
 
 3.8 Define the terms false match rate and false non-match rate, and explain the use of a threshold in relationship to these two rates.
-..* False match rate: It measures the percent of invalid inputs which are incorrectly accepted. 
+- False match rate: It measures the percent of invalid inputs which are incorrectly accepted. 
 
-..* False non-match rate: It measures the percent of valid inputs which are incorrectly rejected.
+- False non-match rate: It measures the percent of valid inputs which are incorrectly rejected.
 
 By moving the threshold, the probabilities can be altered but note that a decrease in false match rate necessarily results in an increase in false non-match rate, and vice versa.
 
 3.9 Describe the general concept of a challenge-response protocol.
-..* The host generates a random number r and returns it to the user (=challenge). In addition, the host specifies two functions, a hash function h() and another function f() to be used in the response. The user calculates f(r', h(P')), where r' = r and P' is the user's password. When the response arrives, the host compares the incoming result to the calculated f(r, h(P)) and if it matches the user is authenticated. Advantages: Only the hashes of the passwords have to be stored and they do not have to be transmitted directly, so i cannot be captured during transmission.
+- The host generates a random number r and returns it to the user (=challenge). In addition, the host specifies two functions, a hash function h() and another function f() to be used in the response. The user calculates f(r', h(P')), where r' = r and P' is the user's password. When the response arrives, the host compares the incoming result to the calculated f(r, h(P)) and if it matches the user is authenticated. Advantages: Only the hashes of the passwords have to be stored and they do not have to be transmitted directly, so i cannot be captured during transmission.
 
 
 ###CHAPTER 4
@@ -206,39 +217,39 @@ By moving the threshold, the probabilities can be altered but note that a decrea
 Review Questions:
 
 4.1 Briefly define the difference between DAC and MAC -- 
-..* **Discretionary access control (DAC)** controls access based on the identity of the requestor and on access rules (authorization) stating what requestors are (or are not) allowed to do.
-..* **Mandator access control (MAC)** controls access based on comparing security labels with security clearances.
+- **Discretionary access control (DAC)** controls access based on the identity of the requestor and on access rules (authorization) stating what requestors are (or are not) allowed to do.
+- **Mandator access control (MAC)** controls access based on comparing security labels with security clearances.
 
 4.2 How does RBAC relate to DAC and MAC -- 
-..* **Role-based access controil** controls access based on the roles that users have within the system and on rules stating what accesses are allowed to users in given roles.
+- **Role-based access controil** controls access based on the roles that users have within the system and on rules stating what accesses are allowed to users in given roles.
 RBAC seems to be somewhat of a combination of DAC and MAC.
 
 4.3 List and define three classes of subject in an access control system --
-..* **Owner**: This may be the creator of a resource, such as a file. 
-..* **Group**: In addition to the privileges assigned to an owner, a named group of users may also be the granted access rights.
-..* **World**: The latest amount of access is granted to users who are able to access the system but are not included in the categories owner and group of this resource.
+- **Owner**: This may be the creator of a resource, such as a file. 
+- **Group**: In addition to the privileges assigned to an owner, a named group of users may also be the granted access rights.
+- **World**: The latest amount of access is granted to users who are able to access the system but are not included in the categories owner and group of this resource.
 
 4.4 In the contect of AC, what is the diffence between a subject and object --
-..* A subject is an entity capable of accessing objects (eg. user, application, process). 
+- A subject is an entity capable of accessing objects (eg. user, application, process). 
 An object is resource to which access is controlled. An object is an entity used to contain information (eg. records, files, directories, processors, communication ports)
 
 4.5 What is an access right? --
-..* An access right describes the way in which a subject may access an object. Eg. read, write, execute, delete.
+- An access right describes the way in which a subject may access an object. Eg. read, write, execute, delete.
 
 4.6 What is the difference between an access control list and a capability ticket? --
-..* In practice, an access matrix is usually sparse and is implemented by decomposition in one of two ways. 
+- In practice, an access matrix is usually sparse and is implemented by decomposition in one of two ways. 
 The matrix may be decomposed by columns, yielding access control lists. 
 For each object, an ACL lists users and their permitted access rights.
 Decomposition by row yields capability tickets. A capability ticket specifies authorized objects and operations for a particular user.
 
 4.7 What is a protection domain? --
-..* A protection domain is a set of objects together with access rights to those objects. In terms of the access matrix, a row defines a protection domain. Although, in the protection domain model a user can spawn processes with a subset of access rights of the user. This is useful for servers to spawn processes for different classes of users and for not fully trusted processes to reduce their access rights to a safe subset.
+- A protection domain is a set of objects together with access rights to those objects. In terms of the access matrix, a row defines a protection domain. Although, in the protection domain model a user can spawn processes with a subset of access rights of the user. This is useful for servers to spawn processes for different classes of users and for not fully trusted processes to reduce their access rights to a safe subset.
 
 4.8 Briefly define the four RBAC models of Figure 4.8a. --
-..* **RBAC0**: contains the minimum functionality for an RBAC system. 
-..* **RBAC1**: includes the RBAC0 functionality and adds role hierarchies, which enable one role to inherit permissions from another role. 
-..* **RBAC2**: includes RBAC0 and adds constraints, which restrict the ways in which the components of a RBAC system may be configured. 
-..* **RBAC3**: contains the functionality of all the other three models.
+- **RBAC0**: contains the minimum functionality for an RBAC system. 
+- **RBAC1**: includes the RBAC0 functionality and adds role hierarchies, which enable one role to inherit permissions from another role. 
+- **RBAC2**: includes RBAC0 and adds constraints, which restrict the ways in which the components of a RBAC system may be configured. 
+- **RBAC3**: contains the functionality of all the other three models.
 
 | Models        | Hierarchies           | Constraints  |
 | :------------- |:-------------:| :-----:|
@@ -259,8 +270,8 @@ Decomposition by row yields capability tickets. A capability ticket specifies au
 3. **prerequisite roles**: May dictate that a user can only be assigned to a particular role if it is already assigned to some other specified role.
 
 4.11 In the NIST RBAC model, what is the difference between SSD and DSD? --
-..* **Static Separation of Duty Relations**: SSD enables the definition of a set of mutually exclusive roles. SSD can place a cardinality constraint on a set of roles. 
-..* **Dynamic Separation of Duty Relations**: DSD limit the availability of the permissions by placing constraints on the roles that can be activated within or across a user's session.
+- **Static Separation of Duty Relations**: SSD enables the definition of a set of mutually exclusive roles. SSD can place a cardinality constraint on a set of roles. 
+- **Dynamic Separation of Duty Relations**: DSD limit the availability of the permissions by placing constraints on the roles that can be activated within or across a user's session.
 
 
 ###CHAPTER 5
@@ -317,13 +328,14 @@ Robert'; DROP TABLE STUDENTS; --
 * **User Input** -- Attackers inject SQL commands by providing suitably crafted user inpute.
 
 * **Server Variables** -- Server variables are a collection of variables that contain HTTP headers, network protocol headers, and environmental variables. 
-..* If these variables are logged in a database without sanitation, this could create an SQL inject vulnerability becasue attackers could forge the values that are placed in HTTP and network headers, they can exploit the vulnerability by placing data directly into the headers.
+- If these variables are logged in a database without sanitation, this could create an SQL inject vulnerability becasue attackers could forge the values that are placed in HTTP and network headers, they can exploit the vulnerability by placing data directly into the headers.
 
 * **Second-order Injection** -- Second-order injection occurs whne incomplete prevention mechanisms against SQL injection attacks are in place.  An attacker could use data already present in the system or database to trigger an SQL injection, i.e. an attack that does not come from the user but from within the server itself.
 
 * **Cookies** -- When a client returns to a web application, cookies can be used to restore the client's state information.  An attacker could alter a cookie to have the application server build an SQL query based on the cookie's content.
 
-* **Physical User Input** -- By supplying user input that constructs an attack outside the realm of web requests. i.e. barcodes, RFID tags, or even paper forms which are scanned using optical character recoggnition and passed to a database management system.
+- **Physical User Input** -- By supplying user input that constructs an attack outside the realm of web requests. i.e. barcodes, RFID tags, or even paper forms which are scanned using optical character recoggnition and passed to a database management system.
+
 ---
 
 **__Attack Types__**
@@ -340,8 +352,8 @@ This injection effectively disables the password check and turns the WHERE claus
 ---
 
 **Inferance Attack** -- The attacker is able to reconstruct the information by sending particular requests and observing the results behavior of the Website/database server.
-..* **Illegal/logically incorrect queries** -- The default error message is usally too descriptive or the fact that there is an error could reveal information about the database structure.
-..* **Blind SQL Injection** -- The attacker asks the server ture/false questions.  If the statement is true, the site continues to function normally, if it is false, the page differs significantly from the normal functioning page.
+- **Illegal/logically incorrect queries** -- The default error message is usally too descriptive or the fact that there is an error could reveal information about the database structure.
+- **Blind SQL Injection** -- The attacker asks the server ture/false questions.  If the statement is true, the site continues to function normally, if it is false, the page differs significantly from the normal functioning page.
 
 ###5.5 Database Access Control
 
@@ -354,9 +366,9 @@ This injection effectively disables the password check and turns the WHERE claus
 **Cascading Authorization** -- The grant option enables an access right to cascade through a number of users.  
 
 **Role-Based Access Control (RBAC)** 
-..* **Application Owner** -- An end user owns database objects as part of an application.
-..* **End user other than application owner** -- An end user who operates on database objects via a particular application but does not own any of the database objects.
-..* **Administrator** -- User who has administration responsibility for part or all of the database.
+- **Application Owner** -- An end user owns database objects as part of an application.
+- **End user other than application owner** -- An end user who operates on database objects via a particular application but does not own any of the database objects.
+- **Administrator** -- User who has administration responsibility for part or all of the database.
 
 ###5.6 Inference
 
@@ -390,21 +402,21 @@ NIST defines four **deplorment models**:
 ###CHAPTER 20
 
 20.1 What are the essential ingredients of a symmetric cipher?
-..* Plaintext
-..* Encryption algorithm
-..* Secret key
-..* Ciphertext
-..* Decryption algorithm
+- Plaintext
+- Encryption algorithm
+- Secret key
+- Ciphertext
+- Decryption algorithm
 
 20.2 What are the two basic functions used in encryption algorithms?
 1. substitution: each element in the plaintext is (bit, letter, group of bits or letters) is mapped into another element 
 2. transposition: elements in the plaintext are rearranged
 
 20.3 How many keys are required for two people to communicate via a symmetric cipher?
-..* Sender and receiver use the same key, so only one key is required.
+- Sender and receiver use the same key, so only one key is required.
 
 20.4 What is the difference between a block cipher and a stream cipher?
-..* A block cipher processes the input one block of elements at a time, producing an output block for each input block. A stream cipher processes the input elements continuously, producing output one element at a time, as it goes along.
+- A block cipher processes the input one block of elements at a time, producing an output block for each input block. A stream cipher processes the input elements continuously, producing output one element at a time, as it goes along.
 
 20.5 What are the two general approaches to attacking a cipher?
 1. **brute-force approach** = trying all possible keys 
@@ -412,16 +424,16 @@ NIST defines four **deplorment models**:
 2. **cryptanalysis** = statistical analysis of the ciphertext (attacker must have some general idea of the type of plaintext that is encrypted)
 
 20.6 Why do some block cipher modes of operation only use encryption while others both encryption and decryption?
-..* In some modes, the plaintext does not pass through the encryption function, but is XORed with the output of the encryption function. For decryption in these cases, the encryption function must also be used .
+- In some modes, the plaintext does not pass through the encryption function, but is XORed with the output of the encryption function. For decryption in these cases, the encryption function must also be used .
 
 20.7 What is triple encryption?
-..* A plaintext block is encrypted by passing it through an encryption algorithm , the result is then passed through the same encryption algorithm two more times.
+- A plaintext block is encrypted by passing it through an encryption algorithm , the result is then passed through the same encryption algorithm two more times.
 
 20.8 Why is the middle portion of 3DES a decryption rather than an encryption?
-..* There is no cryptographic significance to the use of decryption for the second stage. Its only advantage is that it allows users of 3DES to decrypt data encrypted by users of the older single DES by repeating the key.
+- There is no cryptographic significance to the use of decryption for the second stage. Its only advantage is that it allows users of 3DES to decrypt data encrypted by users of the older single DES by repeating the key.
 
 20.9 What is the difference between link and end-to-end encryption?
-..* There is a difference between link encryption and end-to-end encryption in that link encryption encrypts and decrypts all traffic at each end of a communication line whereas with end-to-end encryption the message is encrypted by the sender at the point of origin and only decrypted by the intended reader
+- There is a difference between link encryption and end-to-end encryption in that link encryption encrypts and decrypts all traffic at each end of a communication line whereas with end-to-end encryption the message is encrypted by the sender at the point of origin and only decrypted by the intended reader
 
 20.10 List ways in which secret keys can be distributed to two communicating parties.
 1. A key could be selected by A and physically delivered to B. 
@@ -430,9 +442,9 @@ NIST defines four **deplorment models**:
 4. If A and B each have an encrypted connection to a third party C, C could deliver a key on the encrypted links to A and B.
 
 20.11 What is the difference between a session key and a master key?
-..*A session key is a temporary encryption key 
+-A session key is a temporary encryption key 
 used between two principals. 
-..*A master key is a long-lasting key that is 
+-A master key is a long-lasting key that is 
 used between a key distribution centre and a 
 principal for the purpose of encoding the 
 transmission of session keys. 
@@ -440,25 +452,25 @@ Typically, the master keys are distributed by
 noncryptographic means.
 
 20.12 What is a key distribution center?
-..* A KDC determines which systems are allowed to communicate with each other. When permission is granted for the two systems to establish a connection, the key distribution center provides a one-time session key for that connection.
+- A KDC determines which systems are allowed to communicate with each other. When permission is granted for the two systems to establish a connection, the key distribution center provides a one-time session key for that connection.
 
 
 ###CHAPTER 21
 
 21.1 In the context of a hash function, what is a compression function?
-..* A function for a single block of bits in a hash function is referred to as compression function.
+- A function for a single block of bits in a hash function is referred to as compression function.
 
 21.2 What basic arithmetical and logical functions are used in SHA?
-..* circular shifts, AND, OR, NOT and XOR
+- circular shifts, AND, OR, NOT and XOR
 
 21.3 What changes in HMAC are required in order to replace one underlying hash function with another?
-..* If it is desired to replace a given hash function, all that is required is to remove the existing hash function module and drop in the new module.
+- If it is desired to replace a given hash function, all that is required is to remove the existing hash function module and drop in the new module.
 
 21.4 What is a one-way function?
-..* This is a function that is easy to computer on every input, but hard to invert a given image of a random input. Here "easy" and "hard" are to be understood in the sense of computational complexity theory.
+- This is a function that is easy to computer on every input, but hard to invert a given image of a random input. Here "easy" and "hard" are to be understood in the sense of computational complexity theory.
 
 21.5 Briefly explain Diffie-Hellman key exchange.
-..* The security relies on the fact that, while it is relatively easy to calculate exponentials modulo a prime number, it is infeasible for large prime numbers to calculate discrete logarithms. 
+- The security relies on the fact that, while it is relatively easy to calculate exponentials modulo a prime number, it is infeasible for large prime numbers to calculate discrete logarithms. 
 Steps:
 1. q prime number, a a primitive root of q
 2. User A selects a random integer XA < q and computes YA=aXA mod q
