@@ -2,7 +2,7 @@
 ###CHAPTER 1
 
 1.1 Define computer security.
-..* The protection afforded to an automated information system in order to attain the applicable objectives of preserving the integrity, availability and confidentiality of information system resources (includes hardware, software, information, data...).
+- The protection afforded to an automated information system in order to attain the applicable objectives of preserving the integrity, availability and confidentiality of information system resources (includes hardware, software, information, data...).
 
 1.2 What is the OSI security architecture?
 ..* It defines a systematic approach for managers, describing a way of organizing the task of providing security.
