@@ -1,0 +1,19 @@
+{
+  "name": "Bookmark Search",
+  "version": "0.1",
+  "description": "A bookmark browser that allows for indexed searches over webpage content.",
+  "permissions": [
+    "<all_urls>",
+	"chrome://favicon/",
+	"bookmarks",
+	"tabs",
+	"identity"
+  ],
+  "browser_action": {
+      "default_title": "Bookmakr Search",
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+  },
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+}
