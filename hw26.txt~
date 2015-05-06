@@ -1,0 +1,47 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+This project is about dhcp and remote booting.
+Your dhcp server is jaguar. You will examine the setup of the dhcp server on jaguar for this project.
+Be careful that the submit answers to the questions are correct for the machine you administer.
+Examine the dhcpd.conf file and answer the following questions. What file does your machine use to
+boot? What domain name server does your machine use? Give the lines that set the subnet, netmask and
+router for your machine. Give the lines that set the name and IP address of your machine.
+
+
+
+Search the rc.d directory. Which file starts dhcp?
+
+
+
+The file from the previous questions also starts the trivial file transfer protocol server. It is started with an
+option, what does that option mean?
+
+
+
+Examine the in.tftpd process on jaguar. What option is it running with? What does that option mean?
+
+
+
+Examine the in.tftpd entry in inetd.conf. What options does it start in.tftpd with? What do these
+option mean?
+
+
+
+Which is more secure, the inetd.conf or the way the instructor actually started it? (This is what happens
+when you get in a hurry.)
+
+
+
+Examine the default config file pxelinux.cfg. How many boot options are there? (Hint: Did you see
+boot options when you did the install.)
+
+
+
+Examine the default.std config file pxelinux.cfg (this file is not used). How many boot options are
+there? Which kernels can be booted? Which message files can be displayed?
+
+
+

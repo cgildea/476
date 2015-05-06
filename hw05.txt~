@@ -1,0 +1,151 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+Purpose: This assignment covers disk and file system administration.
+Submission: You will submit hw05.txt using “˜grader/submit 05” as before. Your instructor will also test
+your configurations while grading.
+1) On the machine you administer there is a second drive. It should be sdb, if you don’t locate such a disk
+let the instructor know.
+
+fdisk /dev/sdb
+Command (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x01e05c57
+
+   Device Boot      Start         End      Blocks   Id  System
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4, default 1): 1
+First sector (2048-58633343, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-58633343, default 58633343): +3GB
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4, default 2): 2
+First sector (5861423-58633343, default 5861423): 
+Using default value 5861423
+Last sector, +sectors or +size{K,M,G} (5861423-58633343, default 58633343): +27GB
+
+ommand (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x26292ac9
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048     5861422     2929687+  83  Linux
+/dev/sdb2         5861423    58595797    26367187+  83  Linux
+
+Command (m for help): t   
+Partition number (1-4): 1
+Hex code (type L to list codes): 82
+Changed system type of partition 1 to 82 (Linux swap)
+
+Command (m for help): p
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x26292ac9
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048     5861422     2929687+  82  Linux swap
+/dev/sdb2         5861423    58595797    26367187+  83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Run fdisk on sdb. Remove all existing partitions and create two partitions. The first partition should use
+about 10 percent of the disk, and the second partition should contain the remainder. Change the type of
+the first partition to linux swap. (You can have fdisk give you a list of partition codes that it uses.)
+While running fdisk make sure the second parition you created is marked as “linux native” or “linux”,
+this is almost always the default when you make a partition, but it is always worth checking when using a
+version of fdisk you haven’t used before. Save your partition table.
+Run mke2fs to build an ext2 file system on the second disk partition (the large one) and attach that file
+system as /newdisk. Be careful not to modify (or damage) your main drive which is sda or you will
+destroy your system.
+Now mount the file system you just created by hand (this is the safest way to make sure it is set up right).
+Submit: 1a) a brief description what you did with fdisk and a listing of your partition table. 1b) the exact
+form of the mount command you used and the disk free df report on the new file system.
+
+
+1b)
+root@lab68:/dev# mke2fs sdb2
+root@lab68:/dev# mkdir /newdrive
+root@lab68:/dev# mount -w /dev/sdb2 /newdrive
+
+root@lab68:/dev# df -h /newdrive/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb2        25G   44M   24G   1% /newdrive
+
+2) Modify your system so that the mount will occur automatically at boot. Test this by rebooting the
+machine.
+Submit: the line you added to your fstab.
+
+root@lab68:/dev# vim /etc/fstab
+--I added this line into the fstab file:
+/dev/sdb2        /newmount        ext2        defaults         1   1
+
+root@lab68:~# df -h /newdisk/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb2        25G   44M   24G   1% /newdisk
+
+
+3) You will need a floppy disk or flashdrive for questions 3 and 4. Set-up an ext2 file system on this device
+(similar process to setting up second disk); Make an entry in fstab that allows any user to insert and
+mount an ext2 floppy/flashdrive using /mnt/extdisk as the mount point. Change the permissions on
+/mnt/extdisk to 777 (chmod 777 /mnt/extdisk). Login as bob (not root), plug in your ext2 device,
+mount it, copy a file to the device, unmount and remove the device.
+Submit: the line you entered into fstab and the exact mount command you used.
+
+root@lab68:/dev# mke2fs fd0
+root@lab68:/dev# mkdir /mnt/extdisk
+root@lab68:/dev# mount -w /dev/fd0 /mnt/extdisk
+root@lab68:/dev# vim /etc/fstab
+--I added this line into the fstab file:
+/dev/fd0        /mnt/extdisk        ext2        user         0   0
+root@lab68:/dev# chmod 777 /mnt/extdisk
+
+4) As the system administrator: run an fsck on your device. Remember: Unix/Linux usually wants the file
+system being checked to be unmounted, so it is not changing while the check is performed. If the file
+system is clean you may need to force a check (-f option) to see one actually occur.
+Submit: the exact command you used and summarize what the command output.
+
+root@lab68:/dev# umount /dev/fd0
+root@lab68:/dev# fsck /dev/fd0
+fsck from util-linux 2.19
+e2fsck 1.41.14 (22-Dec-2010)
+/dev/fd0: clean, 23/184 files, 55/1440 blocks
+
+root@lab68:/dev# chmod 755 /mnt
+
+
+Clean up: Change the permissions on /mnt back to 755. Unmount the device before removing and
+returning it. Leave the hard drive mounted, leave the fstab for the instructor to examine.
+
+
+
+
+

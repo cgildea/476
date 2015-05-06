@@ -1,0 +1,79 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This assignment covers the boot/root disks, and what is on the release DVD.
+1) fdisk: For the disk you administer describe the partitions that are on the disk? For each partition
+report, where it starts, where it ends, and what kind of a partition it is (Linux, DOS, swap). Be very
+careful with this one, you have to be root to run fdisk, DO NOT MODIFY or WRITE anything with fdisk;
+you can easily erase the disk. Record the information very carefully, you have to use this information to
+rebuild after your disk crash.
+
+
+root@lab68:~# fdisk -l
+
+Disk /dev/sda: 80.0 GB, 80026361856 bytes
+255 heads, 63 sectors/track, 9729 cylinders, total 156301488 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0xedf40540
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1            2048    15630148     7814050+  82  Linux swap
+/dev/sda2        15630149   156301487    70335669+  83  Linux
+
+Disk /dev/sdb: 30.0 GB, 30020272128 bytes
+255 heads, 63 sectors/track, 3649 cylinders, total 58633344 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x26292ac9
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048     5861422     2929687+  82  Linux swap
+/dev/sdb2         5861423    58595797    26367187+  83  Linux
+
+2) pkgtool: What packages are installed on the machine you administer. Report just the first 6. Don't
+bother to record the others, you will be told what to install in the instructions for the install project.
+
+pkgtool
+hit R to view installed packages, just dont remove any!
+
+Consolekit, M2Crypto, PyQt, QScintilla, a2p2, aaa_base
+
+3) etherboot: Examine the installation DVD image on jaguar (slack13.37. What is an etherboot?
+Hint 1: it's a PXE installer. Hint 2: see the README.
+
+Allows botting from a single floppy disk.
+
+This is simple enough it can be summed up in point form:
+
+ - Ensure your DHCP, TFTP, & NFS servers are up & running.
+ - Boot the client from the Etherboot floppy.
+ - Select an appropriate driver from which to boot. If you're unsure
+   which to choose, try several at random until one works.
+ - Once you see the "Welcome to Slackware" banner, you will be running
+   the installer itself. Carry on with a normal NFS install.
+
+
+
+4) dhcp/tftp: Examine the dhcpd.conf jaguar. What is the name of the file that will be download using
+tftp to start the boot sequence on your machine? What is the host entry for your machine?
+
+In /etc/dhcpd.conf
+filename "/tftpboot/pxelinux.0";
+
+  host lab68 {
+    #hardware ethernet 00:11:11:92:09:db ;
+    hardware ethernet 00:22:4d:4c:79:03 ;
+    fixed-address 134.139.248.68 ;
+  }
+
+5) The installation DVD is available using "boot from network". Boot the installation DVD from the
+network. (I want to make sure you can do this before we erase your harddrive.)
+Report the number of entries you found in /bin. (This answer doesn't have any importance, it's just to
+make sure that you've been able to do the boot.)
+
+195 entries in /bin/
+

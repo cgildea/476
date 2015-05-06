@@ -1,0 +1,82 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This project is about configuring mail.
+1) As bob modify your incoming mail handling as follows (you'll need to create a .procmailrc file if it
+doesn't exist):
+a) If the Subject line contains the word "Late" place the mail in a file called latestuff.
+b) If it is from csa476xx (use your account here) place the mail in a file called importantstuff
+c) If the body of the mail contains the word Bargain place the mail in a file called junkmail
+If an incoming mail matches multiple actions, the first actions specified should be taken. Use lockfiles in all
+cases.
+Report: the contents of bob's .procmailrc
+
+in .procmailrc:
+:0:late
+* ^Subject.*Late*
+$HOME/Inbox/latestuff
+
+:0:important
+* ^From:csa476u1
+$HOME/Inbox/importantstuff
+
+:0:junk B:
+*Bargain*
+$HOME/Inbox/junkmail
+
+
+For the next question, examine the sendmail.cf file on your machine. (If you have changed yours, you
+may examine the one on panther.)
+2) Report the number of the ruleset that converts header names to masqueraded form.
+
+in /etc/mail/sendmail.cf
+###################################################################
+###  Ruleset 93 -- convert header names to masqueraded form     ###
+###################################################################
+
+SMasqHdr=93
+
+
+For the next question use the manual and possibly some additional commands.
+3) Report the name and full path name of the pop3 server.
+
+In /etc/inetd.conf
+# Post Office Protocol version 3 (POP3) server:
+#pop3    stream  tcp     nowait  root    /usr/sbin/tcpd  /usr/sbin/popa3d
+
+
+Make a copy of the standard slackware mc macros. (/usr/share/sendmail/cf/cf) Modify the copy of the
+macros so jaguar is setup as being the "smart host" for your machine. Modify the copy of the macros so
+jaguar is setup as being the "mail hub" for your machine. Build the macros into a cf (Build), install the
+cf as the new mail configuration, restart sendmail.
+Modify the new sendmail configuration so that mail for bob and root is to be delivered locally and not to
+the mail hub.
+Test the mail hub change by (from root) sending mail to your csa account (should be reabable on jaguar)
+and to bob (should be readable on your machine) with no @ signs.
+Test the smart host change by (from root) sending mail to your csa account @panther (should be readable
+on panther and the log on your machine should say "relay = jaguar.net.cecs.csulb.edu").
+
+root@lab68:~# vim /usr/share/sendmail/cf/cf/sendmail-slackware.mc
+root@lab68:~# cd /usr/share/sendmail/cf/cf/                  
+root@lab68:/usr/share/sendmail/cf/cf# ./Build sendmail-slackware.mc
+root@lab68:/usr/share/sendmail/cf/cf# cp sendmail-slackware.cf /etc/mail/slackware.cf
+root@lab68:/usr/share/sendmail/cf/cf# mv /etc/mail/slackware.cf /etc/mail/sendmail.cf
+root@lab68:/usr/share/sendmail/cf/cf# killall -HUP sendmail
+root@lab68:/usr/share/sendmail/cf/cf# sendmail csa476u1 < /etc/mail/sendmail.cf 
+
+4) Report the changes you made to the macros.
+
+In /usr/share/sendmail/cf/cf/sendmail-slackware.mc
+define(`SMART_HOST',`jaguar.net.cecs.csulb.edu')
+define(`MAIL_HUB',`jaguar.net.cecs.csulb.edu')
+
+5) Report: the change you made to the cf (the special case stuff for bob and root).
+
+In /etc/mail/sendmail.cf:
+# class L: names that should be delivered locally, even if we have a relay
+CLroot bob
+
+root@lab68:/usr/share/sendmail/cf/cf# killall -HUP sendmail
+
+

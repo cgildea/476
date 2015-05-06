@@ -1,0 +1,117 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This project is about ftp.
+1) On you local machine, check your ftpusers and proftpd.conf files to make sure that both network
+(NIS/yp) accounts and anonymous ftp are allowed.
+
+/etc/ftpusers contains users that cannot ftp. Remove ftp from list to allow anonymous ftp.
+
+2) Log into jaguar. Ftp to your local machine. Use the username anonymous. Get the dummy test file. (If
+you don't have a dummy test file under ~ftp, make one up.)
+Report: The ftp command used, and what it says when you login.
+
+From Jaguar:
+ftp lab68
+anonymous
+(enter) for password
+get test.txt
+
+csa476u1@jaguar:~$ ftp lab68
+Connected to lab68.net.cecs.csulb.edu.
+220 ProFTPD 1.3.3e Server (ProFTPD Default Installation) [134.139.248.68]
+Name (lab68:csa476u1): anonymous
+331 Anonymous login ok, send your complete email address as your password
+Password:
+230 Anonymous access granted, restrictions apply
+Remote system type is UNIX.
+Using binary mode to transfer files.
+
+ftp> get test.txt
+local: test.txt remote: test.txt
+200 PORT command successful
+550 test.txt: No such file or directory
+
+3) Modify the anonymous account so it will put up a greeting message when at the start of an anonmyous
+ftp.
+Test: go back to jaguar, ftp to anonymous on your machine and make sure you see the message.
+Report: what changes did you make (give file names too).
+
+As root@lab68:
+echo "Welcome anonymous user" >> ~ftp/welcome.msg
+
+From Jaguar:
+csa476u1@jaguar:~$ ftp lab68
+Connected to lab68.net.cecs.csulb.edu.
+220 ProFTPD 1.3.3e Server (ProFTPD Default Installation) [134.139.248.68]
+Name (lab68:csa476u1): anonymous
+331 Anonymous login ok, send your complete email address as your password
+Password:
+230-Welcome anonymous user
+230 Anonymous access granted, restrictions apply
+Remote system type is UNIX.
+Using binary mode to transfer files.
+
+4) Go back to jaguar. Ftp to your local machine. Use the username bob. Get the demo file. (If you didn't
+remember to make a demo file when you created bob, login as bob and create a text file called demo.)
+Report: The commands used.
+
+csa476u1@jaguar:~$ ftp lab68
+Connected to lab68.net.cecs.csulb.edu.
+220 ProFTPD 1.3.3e Server (ProFTPD Default Installation) [134.139.248.68]
+Name (lab68:csa476u1): bob
+331 Password required for bob
+Password:
+230 User bob logged in
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> get demo
+local: demo remote: demo
+200 PORT command successful
+150 Opening BINARY mode data connection for demo (26 bytes)
+226 Transfer complete
+26 bytes received in 0.0572 secs (0.44 Kbytes/sec)
+
+5) Change the settings on ftp so that bob may not use ftp. All other ftp capabilities should still be allowed.
+Note: several other users are usually not allowed to use ftp, including root, uucp news; do not change
+these permissions.
+Test: make sure that bob cannot use ftp into your machine and your account can.
+Report: Exactly what change you made and to what file/directory you made that change.
+
+In /etc/ftpusers:
+#ftp
+root
+uucp
+news
+bob
+
+csa476u1@jaguar:~$ ftp lab68
+Connected to lab68.net.cecs.csulb.edu.
+220 ProFTPD 1.3.3e Server (ProFTPD Default Installation) [134.139.248.68]
+Name (lab68:csa476u1): bob
+331 Password required for bob
+Password:
+530 Login incorrect.
+Login failed.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+
+6) Dynamically and statically loaded libraries. Compare the clogitA and clogitB commands found in
+~djv. Examine the size of the two commands and use ldd to look at the dynamically loaded libraries.
+Report: the difference between the two commands (sizes and dynamic libraries).
+
+root@lab68:/net/cheetah/u3/volper# ldd clogitA
+	linux-vdso.so.1 =>  (0x00007fff27dff000)
+	libc.so.6 => /lib64/libc.so.6 (0x00007fb22cb6d000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007fb22cf29000)
+root@lab68:/net/cheetah/u3/volper# ldd clogitB
+	not a dynamic executable
+
+root@lab68:/net/cheetah/u3/volper# ls -alh | grep clogit
+-rw-r--r--  1 djv  faculty  695 Jan 23  2008 clogit.c
+-rwxr-xr-x  1 djv  faculty 9.0K Mar 14  2013 clogitA*
+-rwxr-xr-x  1 djv  faculty 848K Mar 14  2013 clogitB*
+
+clogitA is a dynamic library and clogitB is a static library and much larger than clogitA
+

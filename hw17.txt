@@ -1,0 +1,27 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+Suddenly, the machine which you are assigned to administer, contains an empty hard drive. (When your
+are ready to do this project, let me know so I can “clean” your machine’s hard drive.)
+Configure the machine according to the attached page (carefully). If you don’t include the correct software,
+later projects won’t work.. If you botch the network configuration, your home directories won’t be available.
+Do not configure the sdb drive, that will be done by students next semester.
+The root password should be set to the same as before.
+Once you have configured the system, create one local user (called bob). Don’t forget his home directory.
+Report: Boot from the hard drive. Login with your csa476xx account, run ls to make sure your home
+directory is there. Then run df, and report the amount disk free on on all of your mounts. This report (in
+addition to the one line df) should contain your machine name. (Note: for the final, you really want to
+know the steps of the install; for the report, all I want is to verify the install worked. Save your notes
+about the install!)
+
+csa476u1@lab68:~$ ls
+476/  cheetah.cecs.csulb.edu/  demo  timestamp.sh*  timestamp.sh~*
+
+csa476u1@lab68:~$ df
+Filesystem         1K-blocks     Used Available Use% Mounted on
+/dev/root           69208116  4021020  61671472   7% /
+tmpfs                1001832        0   1001832   0% /dev/shm
+134.139.248.17:/u3 480720640  9154560 447146752   3% /net/cheetah/u3
+134.139.248.17:/u4 480720640 55510528 400790784  13% /net/cheetah/u4

@@ -1,0 +1,88 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+Since NIS is running, this project mostly involves only information gathering and configuration
+examination:
+1) What is the NIS domain name of your machine. Report the command you ran to find this out and the
+domain name.
+
+cat /etc/defaultdomain
+	cecsnet
+
+2) What NIS server is your machine using. Report the command you ran to find this out and the server
+name.
+
+ypwhich     
+	cheetah.cecs.csulb.edu
+
+cat yp.conf 
+	ypserver 134.139.248.17
+
+3) How many password lines does NIS deliver on your machine. Report: the exact command you used and
+the number of lines.
+
+ypcat passwd | wc -l
+	97
+
+4) Examine the NIS password information arriving at your machine. For your 476 account report the exact
+line of information that arrives. You are NOT allowed to use the same yp command you used in the
+previous question, use another command to match the line in the password file. Report the exact command
+you used to get that information.
+
+ypmatch csa476u1 -k passwd
+	csa476u1 csa476u1:$1$D6HZwCFD$Zcjnnk5kqbnG8kY3/K0pr0:20275:40:student:/net/cheetah/u3/c/csa476/u1:/bin/bash
+
+5) Examine the /var/yp directory tree on your machine. Report: what in this subtree is dependent upon
+your domain name.
+
+The bindings:
+/var/yp/bindings
+	cecsnet.1  cecsnet.2
+
+6) Examine your yp.conf file, what is there.
+
+cat yp.conf
+        ypserver 134.139.248.17
+THe yp.conf file contains the name of the ypserver as an IP address.
+
+7) Examine the start-up code for the yp client program. What is the exact (full) pathname of the program
+that is run (that means the name starting with the /). Under what condition is this program started?
+
+In /etc/rc.d/rc.yp
+	if [ -d /var/yp ]; then
+  		echo "Starting NIS services:  /usr/sbin/ypbind "
+  		/usr/sbin/ypbind
+	fi
+This program is started if /var/yp exists and is a directory
+
+8) Examine your nsswitch.conf. Is it set up to use yp for passwords? How do you know?
+
+In nsswitch.conf:
+	passwd:         files nis
+	shadow:         files nis
+	group:          files nis
+It is setup to use nis for passwords but only after files.
+
+9) On cheetah, examine the /etc/netgroup file. Report: How many machines are in the cslabd netgroup.
+
+csa476u1@cheetah:~$ vim /etc/netgroup 
+	cslabd (panther,-,) (puma,-,) (lynx,-,)
+
+10) On the machine you administer, the groups that cheetah is delivering using NIS are being used. Do
+the following. Turn off the use of NIS groups on your machine. (A HUP is not necessary in this case.) An
+ls -l ~sue should give the number 72 instead of a name for the "group" of sue's files. When this works,
+turn back on the use of NIS groups. Again use the ls -l ~sue, this time to make sure that a name is
+given for the group of sue's files. Report: What did you do to turn on/off the use of NIS groups?
+
+Comment out NIS groups in the /etc/nsswitch.conf file:
+	group:          files #nis
+
+NIS groups disabled:
+root@lab68:/var/yp# ls -l ~sue            
+	total 4
+	-rw-r--r-- 1 sue 72 26 Jan 29 18:55 demo
+NIS groups enabled:
+	total 4
+	-rw-r--r-- 1 sue cecsg 26 Jan 29 18:55 demo
+
