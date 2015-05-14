@@ -1,0 +1,318 @@
+\input header.tex
+\parindent=0in
+\nopagenumbers
+\newcount\quesno
+\quesno=1
+\def\ques{\number\quesno) \advance\quesno by 1}
+\def\aspace{\vskip 1.5in}
+\headline{{\rm CECS 476, Spring 2013, Final, Dennis Volper\hfill \ifnum\pageno=1
+Name:\infoline{2.5in}\else Page \number\pageno\fi}}
+
+Open Book, notebook.
+Access to any machine inside the ECS 405 lab.
+No other electric devices or network links allowed.
+All questions 4 points.
+
+\ques
+% Project 13
+Your wish to begin using NIS for groups, password and shadow on your machine.
+Your NIS server is {\ltt{}cougar}, your NIS domain name is {\ltt{}nis3}.
+What files do you need to change and what changes do you need to make?
+\vskip 1.8in
+\ques
+
+ypserver cougar
+/bin/domainname nis3
+In nsswitch.conf:
+passwd: compat
+group: compat 
+shadow: compat
+
+% Project 25
+A user has a hard quota of 1M.
+What happens if the user tries to store a 10M file?
+\vskip 0.8in
+\ques
+
+writing file: disk quota exceeded
+failed to extend file: disk quota exceeded
+
+% Project 14
+You wish to mount the files from the
+{\ltt{}/usr/share} directory on {\ltt{}panter.net.cecs.csulb.edu}
+to your file tree as {\ltt{}/auto} (assume panther makes the directory available) read write,
+using the automounter.
+Give the files and contents you needed to do this.
+\vskip 1.8in
+\ques
+
+File:
+/etc/fstab
+Contents:
+panther.net.cecs.csulb.edu:/usr/share /auto nfs
+bg,soft 0 0
+Command:
+mount /auto
+
+% Project 21
+{\ltt{}sue} wants to make items in her directory
+{\ltt{}public_html/friends} available to friends to whom she gives a password.
+Give the file name, file location and file contents to do this.
+(Just the main file, don't show how to set up the passwords and password file.)
+\vskip 2.2in
+\vfill\eject
+\ques
+
+In public_html/friends:
+Create .htaccess file:
+AuthName "MyCluster"
+AuthType Basic
+AuthUserFile /home/sue/public_html/friends/pwd
+require valid-user
+
+% Project 16
+What two kernels, and one tester, are available to install.
+\vskip 0.8in
+\ques
+
+
+
+% Project 17
+In the installation process, describe what a target is.
+\vskip 1.0in
+\ques
+
+The target fs to install the kernel onto
+
+% Project 18
+You wish to log information
+from an application
+using the {\ltt{}local3} facility and
+send that information to log files on panther.
+Give the name of the file you need to modify and the line you need to
+add to that file.
+\vskip 1.0in
+\ques
+
+In /etc/syslog.conf:
+local3.*   @panther
+
+% Project 18
+You want the default (and only) printer for your machine to be the printer
+called {\ltt{}hp2300} that is attached to the machine {\ltt{}cougar}.
+What file should you modify?
+What line do you need in that file?
+\vskip 1.0in
+\ques
+
+In /etc/printcap:
+hp2300|lp:lp=:rm=cougar.cecs.csulb.edu:rp=cougar.net.cecs.csulb.edu:sd=/var/spool/hp2300:
+
+% Project 20
+You want to abort any login process where the user
+gets the password wrong 4 times.
+What file do you need to change?
+\vskip 0.6in
+\ques
+
+In /etc/login.defs:
+LOGIN_RETRIES   4
+
+% Project 19
+You want to put all mail with the word {\ltt{}Homework} in its body
+into a file called {\ltt{}/home/bob/homework}.
+What file do you need to create, in what directory is that file created
+and what does that file need to contain?
+\vskip 1.6in
+\vfill\eject
+\ques
+
+File:
+.procmailrc (User's home dir)
+Lines:
+:0:
+* ^Body.*Homework
+/home/bob/homework
+
+% Project 15
+How do you determine what libraries a dynamically linked executable
+requires?
+\vskip 0.6in
+\ques
+
+ldd {{executable file}}
+
+% Project 22
+There are two machines for which {\ltt{}n.edu} ({\ltt{}129.1.1.1})
+supplies name service:
+{\ltt{}o.cs.edu} ({\ltt{}134.139.245.1}) and 
+{\ltt{}t.cs.edu} ({\ltt{}134.139.245.2}).
+Give the entire forward zone file for {\ltt{}cs.edu}.
+\vskip 4.2in
+\ques
+
+$TTL 86400
+@  IN  SOA  n.edu. root.n.edu. (
+                        2011032500 ; Serial
+                        28800      ; Refresh
+                        14400      ; Retry
+                        3600000    ; Expire
+                        86400 )    ; Minimum
+     IN   NS  cs.edu
+  IN   A    129.1.1.1
+o IN A 134.139.245.1
+t IN A 134.139.245.2
+    
+% Project 22
+Give the {\ltt{}named.conf} entry on {\ltt{}n.edu} for the {\ltt{}cs.edu} zone.
+(Do not give the whole file, just the one zone entry.)
+\vskip 1.2in
+\vfill
+\eject
+\ques
+
+zone "cs.edu" IN {
+     type master;
+     file "named.host";
+};
+
+% Project 19
+What is the difference between a ``mail hub" and a ``smart host"?
+\vskip 1.2in
+\ques
+
+mail hub:
+All mail destined for local machine goes to this machine instead
+smart host:
+All non-local mail sent here and relayed to destination machine
+(use if behind a firewall)
+
+% Project 21
+You want no CGIs allowed to {\ltt{}/var/www/thru},
+but you do want CGI allowed inside {\ltt{}/var/www/thru/cgi}.
+Give the {\ltt{}httpd.conf} entries to do this.
+\vskip 1.8in
+\ques
+% Project 23
+Give the steps you would take on {\ltt{}lynx} to install and use
+a new {\ltt{}/etc/printcap} file on {\ltt{}lab99}.
+You will perform the install from a file called {\ltt{}newprintcap}
+located on {\ltt{}lynx}.
+To activate the new printcap you will need to issue the command
+{\ltt{}lpc restart} on {\ltt{}lab99}.
+Include file names, contents and command.
+\vskip 2.0in
+\ques
+
+In lab99 home, .rhosts:
+lynx.net.cecs.csulb.edu csa476t1
+Create dist file in lynx:
+~/newprintcap -> csa476t1@lab99.net.cecs.csulb.edu
+       install /etc/printcap ;
+       special "lpc restart" ;
+rdist -f distfile
+
+% Project 24
+You want to make a directory called {\ltt{}/usr/share} on your
+Linux machine available to all machines running Microsoft Windows as
+{\ltt{}myshare}.
+What file do you need to change?
+What lines do you need to add to that file?
+\vskip 1.2in
+\vfill\eject
+\ques
+
+In smb.conf:
+[myshare]
+  path = /usr/share
+  public = yes
+  writable = yes
+  printable = yes
+
+% Project 15
+You want to prohibit the user {\ltt{}sue} from using ftp.
+Give the file name and modification to do this.
+\vskip 1.0in
+\ques
+
+In /etc/ftpusers:
+bob
+
+% Project 20
+{\ltt{}bob} wants all students to deposit homework in one of his
+directories.
+Describe how you would set up a {\it program} to allow students to do this.
+\vskip 1.3in
+\ques
+
+/#!/bash
+iptables -A INPUT -p tcp --dport ssh \
+       -s 134.139.0.0/16 -j ACCEPT
+
+% Project 14
+You want to make your directory
+{\ltt{}/load}
+available to all unix machines on your subnet (read write).
+Give the name of the file you need to modify, the line you need to
+add to that file and the command you need to run to activate this.
+\vskip 1.0in
+\ques
+
+In /etc/exports:
+/load(rw)
+ls /load will load the directory
+
+% Project 26
+When the machine {\ltt{}01:02:03:04:05:06} boots from the network
+it is to be assigned the name {\ltt{}lab13} and the IP address
+{\ltt{}134.139.248.13} and boot {\ltt{}/tftpboot/pxelinux.0}.
+What entries must be in what file on the dhcpd server
+for this to happen?
+\vskip 2.0in
+\vfill\eject
+
+In dhcpd.conf:
+filename "/tftpboot/pxelinux.0";
+host lab13 {
+  hardware ethernet 01:02:03:04:05:06 ;
+  fixed-address 134.139.248.13
+}
+
+Analysis section. Assume these happen on the machine you administer.
+For each of the questions on this page
+state what things would you check on the machine you administer
+and for each thing you would check give the command you would use to
+perform the check. (If you wish to examine the file you may give the
+command as {\ltt{}vi}).
+
+\ques
+Your {\ltt{}csa476} account receives the message ``no home directory"
+when you log in.
+\vfill
+\ques
+
+The user home was not specified, or not created when adding the user
+
+A web page on your machine gives the message ``internal server
+error" back to a browser.
+\vfill
+\ques
+
+The machine's resolv.conf was not correctly configured,
+or the user page has bad permissions on a file,
+or htaccess has a syntax error
+
+After a new install (assignment 17):
+You can ssh to the machine next to you, but you can't
+ssh to panther.
+\vfill
+\ques
+
+sshd is not running on panther,
+your iptables are not set up correctly to interact with panther
+
+You can ftp into your machine using {\ltt{}bob}, but not
+using using your {\ltt{}csa476} account.
+\bye
+
+Your home account is in /etc/ftpusers
