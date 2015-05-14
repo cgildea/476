@@ -1,0 +1,81 @@
+13
+setup nist
+check nfs.conf
+
+14 
+authorize a subnet, what entry in the file?
+what does it mean for a filesystem to be read only / rw
+what command do you use to export the filesysytem
+
+15
+anonymous ftp how do you set up? what files do you edit?
+if you log in and it doesnt work, what do you do?
+what is the service called to do it on start up
+how do you ftp to a server, doing the get, pull the file
+
+16
+you want to install a web browser, what category do you look in?
+how do you extract a package?
+you want to install a second operating system, how do you partiction a disk?
+
+17
+you have taken down half the room, what did you do wrong?
+you put your ip address as the gateway
+you forgot to install something? how do you go back and fix it
+you get an error on setup and got swap partition not found, you forogt to add swap!
+
+18
+how do you turn on syslog?
+what does log level debug/error mean?
+how do you forward it to a remote server?
+full printcap entry from copter to host printer
+
+19
+how does sendmail work?
+what does the mail client say to the server? Hello!
+sendmail.cf (spam folder by keyword)
+how to use the mc fails.
+how to make a remote server handle mail for you
+
+20
+how do you make a set UID program work?
+what is the chmod command to do this?
+why does this not work on a script and only a binary?
+
+21
+write an .htaccess
+block something
+what is wrong with the config entry?
+how do you enable cgi?
+
+22
+specific entries in the zone, 
+zone definition for localhost
+how do you do the atr record 
+what is the header that goes on the top of the host file?
+how to use the nslookup? You want to point the a dns server? host name sever, nslookup server 
+
+23
+how to insert a 
+
+24
+give me the share definition for insert arbirary share name
+script to start the samba service
+
+25
+fstab entry to start quota
+difference between a hard and soft quota
+
+26
+what is the config file?
+give an entry for a MAC address entry
+give a definition for an IP pool
+how to start tftp
+what is the advantage of using a PXE setup
+
+
+
+
+
+
+
