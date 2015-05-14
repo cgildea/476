@@ -2,6 +2,11 @@ Cody Gildea
 csa476u1
 lab68.net.cecs.csulb.edu
 
+This part of the assignment is designed to familiarize you with the commands involving Unix processes.
+Submission: You will submit hw06.txt with “˜grader/submit 06”. Your instructor will also test your swap
+configurations while grading.
+For Cheetah: 1) how long has it been since it has been rebooted, 2) how many users are logged in, 3) how
+busy is the machine (short, medium and long term load).
 
 1)
 csa476u1@cheetah:~$ uptime
@@ -10,6 +15,10 @@ csa476u1@cheetah:~$ uptime
 6 users,  
 3)
 load average: 0.00, 0.01, 0.05
+
+For Cheetah: 4) What percentage of the cpu is the operating system spending in each of user mode, system
+mode and idle? 5) How much memory is in use and how much is idle? 6) What 3 processes have the largest
+resident set size?
 
 4)
 User: 0.2%
@@ -38,7 +47,10 @@ top 3 processes:
  5267 root      20   0  160m  13m 1144 S    0  0.7   1:19.06 named                                                                         
 18589 csa476u1  20   0 32128 3840 2748 S    0  0.2   0:00.20 vim   
 
-7)
+For the machine you administer answer the following: 7) How many processes called agetty are running?
+8) There are several commands running that include the letters rpc, list all those commands. 9) What is
+the resident set size and total (virtual memory or VM) size of the inetd process.
+
 csa476u1@cheetah:~$ ps auxww | grep agetty
 root      1949  0.0  0.0   4200     8 tty2     Ss+  Jan12   0:00 /sbin/agetty 38400 tty2 linux
 root      1950  0.0  0.0   4200     8 tty3     Ss+  Jan12   0:00 /sbin/agetty 38400 tty3 linux
@@ -64,11 +76,21 @@ root@lab68:~# ps auxww | grep inetd
 root      1592  0.0  0.0   6300   652 ?        Ss   16:17   0:00 /usr/sbin/inetd
 root      1898  0.0  0.0   6848   984 pts/0    S+   17:13   0:00 grep inetd
 
-10)
+This part of the assignment is designed to familiarize you with the commands involving virtual memory
+and swapping.
+10) As it is set up, does your machine use a swap partition or a swap file? Report which it is. Report the
+full name of the swap partition or file.
+
 csa476u1@cheetah:~$ vim /etc/fstab
 /dev/sda1        swap             swap        defaults         0   0
 
-11)
+11) Report the following in kilobytes:
+a) the amount of memory available (minus the kernel),
+b) the amount of memory in use,
+c) the amount of memory used for buffers,
+d) the amount of swap space available,
+e) the amount of swap space in use,
+
 csa476u1@cheetah:~$ free -m   
              total       used       free     shared    buffers     cached
 Mem:          1956       1862         94          0        206       1439
@@ -81,7 +103,10 @@ c) the amount of memory used for buffers: 206 MB
 d) the amount of swap space available: 47658 MB
 e) the amount of swap space in use: 34 MB
 
-12)
+On the lab machine you are assigned to administer:
+Set up a 4 MB swap file, call it /swapfile. Turn on swapping for that file.
+12) Report the exact commands you used to do this.
+
 root@lab68:~# dd if=/dev/zero of=/swapfile bs=1024 count=4096   
 4096+0 records in
 4096+0 records out
@@ -98,7 +123,9 @@ root@lab68:~# swapon /swapfile
 
 In /etc/fstab:
 /swapfile       none             swap        sw               0   0 
-13)
+
+
+13) Report the amount of swap space available and the amount in use before and after turning swapping on.
 
 root@lab68:~# grep -i --color swap /proc/meminfo
 SwapCached:            0 kB
@@ -116,7 +143,19 @@ SwapCached:            0 kB
 SwapTotal:       7814044 kB
 SwapFree:        7814044 kB
 
-14) 
+Turn off swapping and remove your file.
+Note for subsequent questions: If you did the fdisk as directed in the previous home work, the swap
+partion you created should be /dev/sdb1; this is your “second” swap partition. The swap partition I
+created is /dev/sda1 and is already in use.
+First, set up the swap structure in your second swap partition. Second, modify your fstab so that
+swapping in that partition is turned on automatically at boot. (Use the swapon -a command to make sure
+you’ve got everything setup correctly, else the next step will lock up!!!) Now that you’ve tested to make
+sure things work, reboot (This is to make sure the “automatically at boot” is working.) This new swap
+partition is permanent, do not remove it.
+
+14) Report the amount of swap space available and the amount in use. (This should be different from your
+previous report of swap space, by approximately the size of your new swap partition!)
+
 With my swap: 7818136
 After removing it: 7814044
 7818136 - 7814044 = 4092 the size of my swap partition!

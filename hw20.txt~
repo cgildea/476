@@ -1,0 +1,104 @@
+Questions 1 and 2 cover SUID programs. While doing questions 1 and 2 you should NOT be root.
+You must pay particular attention to which user you are when doing the parts of this project. Be sure you
+are the user you are instructed to be at each step of the project.
+As bob: get a copy of ~djv/clogit.c and compile it (gcc something.c -o binaryfile). Name the compiled
+version clogit. Don’t forget to look at it to see what it does. Create a file called datelog to be mode 600
+and change the clogit command to be SUID and executable by everyone (mode 4711).
+Login as your account: run clogit.
+
+bob@lab68:~> cp ~djv/clogit.c .
+bob@lab68:~> gcc clogit.c -o clogit
+bob@lab68:~> vim datelog.txt       
+bob@lab68:~> chmod 600 datelog.txt
+bob@lab68:~> chmod 4711 clogit
+csa476u1@lab68:~$ ~bob/./clogit
+
+1) Report: the last two lines in the datelog
+
+
+In ~bob/datelog:
+csa476u1  Thu Apr 23 14:51:26 2015
+
+
+Verify security: try doing the same thing by creating (as bob) a shell script that writes to the file using
+”echo” commands. (Don’t be particular about the exact things you echo.) Make the shell script SUID.
+Login as your account: run the shell script.
+2) Report: what happens.
+
+
+bash: /home/bob/./test.sh: Permission denied.
+
+
+
+Examine the login.defs file on your machine.
+If you want to enable time restrictions on logins, a variable needs to be set and a file needs to be modified.
+3) Report the variable and the file name.
+
+In /etc/login.defs:
+PORTIME_CHECKS_ENAB 	yes
+
+File that needs to be modified:
+/etc/porttime
+
+If a home directory for a user cannot be found when that user attempts to login, the user may or may not
+be allowed to complete the login 
+4) Report the name of the variable that controls this behavior
+
+DEFAULT_HOME	yes
+
+Make (and test) the following modifications to your login.defs file:
+
+a) Log all su activity
+
+In /etc/login.defs:
+SYSLOG_SU_ENAB	yes
+SULOG_File	/var/log/sulog
+
+
+b) Limit su to root to be from the wheel only. To test this, add bob to the wheel group (gid 10), but do
+not add your account, make sure bob can su and you cannot.
+
+5) Report: the changes you made and the last line of your su log.
+
+In /etc/group: 
+wheel:x:10:root,bob
+usermod -G wheel bob
+
+In /etc/login.defs:
+SU_WHEEL_ONLY	yes
+
+
+csa476u1@lab68:~$ su -
+You are not authorized to su root 
+
+In /var/log/sulog:
+SU 04/23 15:31 + /dev/tty1 bob-root
+
+On cheetah examine the login history.
+6) Report: Ignoring your account, who where the last 3 logins, to what accounts, what hours were they on
+and where did they login from.
+
+
+csa476t1 pts/4        2015-04-23 15:13 (panther.net.cecs.csulb.edu)
+csa476t1 pts/7        2015-04-23 15:20 (panther.net.cecs.csulb.edu)
+csa476t1 pts/7        2015-04-23 15:28 (10.39.87.175)
+
+
+Use iptables to block ssh into your machine from panther only. To test this, try to ssh into your machine
+from both panther and cougar.
+7) Report: The command you issued.
+
+iptables -A INPUT -s 134.139.248.21 -j DROP
+
+iptables --flush
+
+
+Clean up: flush all iptables entries.
+On cheetah, examine /usr/local/bin/iptables-rules.sh to see cheetah’s firewall rules.
+8) Report: What rule allows established inbound connections (it differs slightly from the lecture notes).
+
+In /usr/local/bin/iptables-rules.sh:
+$IPT -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+
+

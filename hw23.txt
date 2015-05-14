@@ -1,0 +1,42 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This project is about rdist.
+You will use rdist to install a file from panther to the machine you administer.
+1) On the machine you administer, if you didn't include rdist in your reload, mount the cd from panther
+and install the rdist capabilities.
+
+2) Create a file called junk in your home directory (~css476x4). Put some ASCII message in this file like
+"Hello". This is the file to be distributed from panther to your machine.
+
+csa476u1@panther:~$ touch junk (hehe)
+
+3) Set up an rdist command file that does the following:
+
+A) copies the file onto your machine as /tmp/junk
+
+B) changes the mode on that file to be 755
+
+In distfile:
+junk -> bob@lab68.net.cecs.csulb.edu
+install /tmp/junk ;
+special "chmod 755 /tmp/junk" ;
+
+4) Set the machine you administer so that the bob account on that machine (or whatever account you
+created) will accept rdist from your class account on panther.
+
+in .rhosts:
+panther.net.cecs.csulb.edu csa476u1
+
+5) login to panther (using your class account). Run the rdist command.
+Check on the machine you administer to make sure the junk file appeared and has the right mod.
+Submit: what exactly did you do at step (4), a copy of your rdist command file and the exact form of the
+rdist command you used.
+
+csa476u1@panther:~$ rdist -f distfile
+bob@lab68.net.cecs.csulb.edu: updating host lab68.net.cecs.csulb.edu
+bob@lab68.net.cecs.csulb.edu: junk: installing
+bob@lab68.net.cecs.csulb.edu: special "chmod 755 /tmp/junk"
+bob@lab68.net.cecs.csulb.edu: updating of bob@lab68.net.cecs.csulb.edu finished
+

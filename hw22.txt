@@ -1,0 +1,138 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+This homework is about setting up Domain Name Service.
+Set up the files for the machine you administer to be a DNS name server (Remember, cheetah holds
+configuration files that may be used as examples). You will claim to be a primary server for the domain
+netXX.cecs.csulb.edu where XX is the number of your machine. (For example those of you on lab28 will
+set up as a primary for the domain net28.cecs.csulb.edu.) You will also claim to be a primary server
+(reverse lookup) for the 192.168.1.0 subnet.
+To make this project simpler, you domain has only two machines. Your DNS files should have
+name/number and reverse mappings for the machine test01.netXX.cecs.csulb.edu with a number of
+192.168.1.1 and for the for the machine test02.netXX.cecs.csulb.edu with a number of 192.168.1.2
+You will need to build named.conf, named.local and the forward and reverse files. You should use a copy
+of an existing root.cache. You should place named.conf in /etc and all other files in /etc/named. When
+you have the files set up, you should start /usr/sbin/named (the program), by hand. Note: If you run into
+issues, /var/log/syslog may contain valuable information to help troubleshoot (particularly on syntax
+errors).
+Modify your machine so that named will start automatically when the machine is booted.
+To prevent everything from crashing if you goof up your configuration, I recommend you do not change
+your resolv.conf. This means that "normal" name look-ups will still go to cheetah. The only time you
+will use your server is if you specify it or to specifically switch to your it.
+
+
+
+Testing: Use an nslookup or dig or host specifically specifying your machine as the server and look up
+test01.netXX.cecs.csulb.edu and make sure it finds the IP number. Repeat this test looking up the IP
+number (192.168.1.1) and make sure it finds the name. Do this for the other name and address as well.
+
+
+
+Report: Which files did you install and what was in them. Suggestion: Put each of the files into your
+submission. As the first or second line in the file put a comment that contains the name of the file.
+
+In /etc/named.conf:
+zone "net68.cecs.csulb.edu" IN {
+        type master;
+        file "/etc/named/named.hosts";
+};
+zone "1.168.192.in-addr.arpa" IN {
+        type master;
+        file "/etc/named/named.rev";
+};
+zone "." IN {
+        type hint;
+        file "/etc/named/named.root";
+};
+
+zone "localhost" IN {
+        type master;
+        file "/etc/named/named.local";
+        allow-update { none; };
+};
+zone "0.0.127.in-addr.arpa" IN {
+        type master;
+        file "/etc/named/named.local";
+};
+
+In /etc/named/named.hosts:
+
+$TTL    86400
+@       IN      SOA     net68.cecs.csulb.edu. root.net68.cecs.csulb.edu.  (
+                                      2011032500 ; Serial
+                                      28800      ; Refresh
+                                      14400      ; Retry
+                                      3600000    ; Expire
+                                      86400 )    ; Minimum
+              IN      NS      lab68.net.cecs.csulb.edu.
+test01 IN A 192.168.1.1
+test02 IN A 192.168.1.2
+
+In /etc/named/named.rev:
+
+$TTL  86400
+@   IN  SOA  net68.cecs.csulb.edu. root.net68.cecs.csulb.edu.  (
+                   2012111300 ; Serial
+                   28800      ; Refresh
+                   14400      ; Retry
+                   3600000    ; Expire
+                   86400 )    ; Minimum
+   IN      NS      lab68.net.cecs.csulb.edu.
+
+1  IN  PTR  test01.net68.cecs.csulb.edu.
+2  IN  PTR  test02.net68.cecs.csulb.edu.
+
+
+In /etc/named/named.local:
+
+$TTL    86400
+@       IN      SOA     lab68.net.cecs.csulb.edu. root.lab68.net.cecs.csulb.edu.  (
+                                      2011032500 ; Serial
+                                      28800      ; Refresh
+                                      14400      ; Retry
+                                      3600000    ; Expire
+                                      86400 )    ; Minimum
+              IN      NS      lab68.net.cecs.csulb.edu.
+1 IN PTR localhost.
+
+
+
+
+
+
+
+
+Report: Give exactly one of your tests. This will indicate which command you used in testing and the
+exact format of that command.
+
+
+root@lab68:/etc/named# nslookup test01.net68.cecs.csulb.edu lab68
+Server:		lab68
+Address:	134.139.248.68#53
+
+Name:	test01.net68.cecs.csulb.edu
+Address: 192.168.1.1
+
+
+root@lab68:/etc/named# nslookup 192.168.1.1 localhost
+Server:		localhost
+Address:	127.0.0.1#53
+
+1.1.168.192.in-addr.arpa	name = test01.net68.cecs.csulb.edu.
+
+
+root@lab68:/etc/named# nslookup test02.net68.cecs.csulb.edu lab68
+Server:		lab68
+Address:	134.139.248.68#53
+
+Name:	test02.net68.cecs.csulb.edu
+Address: 192.168.1.2
+
+
+root@lab68:/etc/named# nslookup 192.168.1.2 localhost            
+Server:		localhost
+Address:	127.0.0.1#53
+
+2.1.168.192.in-addr.arpa	name = test02.net68.cecs.csulb.edu.

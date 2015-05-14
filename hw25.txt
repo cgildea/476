@@ -1,0 +1,46 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This project is about disk quotas.
+On the machine you administer.
+Set up user quotas (version 2) on your hard drive. Specifically, set up only user quotas; do not set up group
+qoutas.
+Give bob a quota of one megabyte (1024 blocks) of disk space.
+Do not put any limit on his quota of inodes.
+Testing: as bob, try to copy in ~djv/etherboot.img. (There is nothing special about this file, it's just a
+big file that is also used for something else.) You should get a "Disk quota exceeded message".
+Report:
+1) A summary of the steps you took to set up quotas. That is, what commands did you issue and in what
+order.
+
+quotacheck -a -m
+equota -u bob
+
+2) The modified line from fstab.
+
+/dev/sda1        /                ext2        usrquota         1   1
+
+3) The quota entry for bob as displayed by edquota.
+
+root@lab68:~# edquota -u bob
+skipping 4 old session files
+reading /tmp//EdP.abnzZwh
+Read /tmp//EdP.abnzZwh, 3 lines, 216 chars
+                                          Disk quotas for user bob (uid 13101):
+  Filesystem                   blocks       soft       hard     inodes     soft     hard
+  /dev/root                       104          0       1024         22        0        0
+
+4) The size of the etherboot.img file in ~djv and the size of the etherboot.img in ~bob.
+
+Quota (quotaon -a):
+bob@lab68:~> cp ~djv/etherboot.img .
+cp: writing `./etherboot.img': Disk quota exceeded
+cp: failed to extend `./etherboot.img': Disk quota exceeded
+
+-rw-r--r-- 1 bob  wheel 937984 Apr 30 19:11 etherboot.img
+
+No quota (quotaoff -a):
+-rw-r--r-- 1 bob  wheel 1474560 Apr 30 19:13 etherboot.img
+
+

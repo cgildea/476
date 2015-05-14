@@ -1,0 +1,23 @@
+
+
+This project is about ftp.
+1) On you local machine, check your ftpusers and proftpd.conf files to make sure that both network
+(NIS/yp) accounts and anonymous ftp are allowed.
+2) Log into jaguar. Ftp to your local machine. Use the username anonymous. Get the dummy test file. (If
+you don’t have a dummy test file under ~ftp, make one up.)
+Report: The ftp command used, and what it says when you login.
+3) Modify the anonymous account so it will put up a greeting message when at the start of an anonmyous
+ftp.
+Test: go back to jaguar, ftp to anonymous on your machine and make sure you see the message.
+Report: what changes did you make (give file names too).
+4) Go back to jaguar. Ftp to your local machine. Use the username bob. Get the demo file. (If you didn’t
+remember to make a demo file when you created bob, login as bob and create a text file called demo.)
+Report: The commands used.
+5) Change the settings on ftp so that bob may not use ftp. All other ftp capabilities should still be allowed.
+Note: several other users are usually not allowed to use ftp, including root, uucp news; do not change
+these permissions.
+Test: make sure that bob cannot use ftp into your machine and your account can.
+Report: Exactly what change you made and to what file/directory you made that change.
+6) Dynamically and statically loaded libraries. Compare the clogitA and clogitB commands found in
+~djv. Examine the size of the two commands and use ldd to look at the dynamically loaded libraries.
+Report: the difference between the two commands (sizes and dynamic libraries).

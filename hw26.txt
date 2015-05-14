@@ -1,0 +1,94 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+This project is about dhcp and remote booting.
+Your dhcp server is jaguar. You will examine the setup of the dhcp server on jaguar for this project.
+Be careful that the submit answers to the questions are correct for the machine you administer.
+Examine the dhcpd.conf file and answer the following questions.
+
+What file does your machine use to boot?
+
+filename "/tftpboot/pxelinux.0";
+
+What domain name server does your machine use? Give the lines that set the subnet, netmask and
+router for your machine. Give the lines that set the name and IP address of your machine.
+
+option domain-name "net.cecs.csulb.edu";
+option domain-name-servers 134.139.248.2;
+
+
+  host lab68 {
+    #hardware ethernet 00:11:11:92:09:db ;
+    hardware ethernet 00:22:4d:4c:79:03 ;
+    fixed-address 134.139.248.68 ;
+  }
+
+Search the rc.d directory. Which file starts dhcp?
+
+/etc/rc.d/rc.inet1
+
+The file from the previous questions also starts the trivial file transfer protocol server. It is started with an
+option, what does that option mean?
+
+-l use if you are not running from inetd.
+
+Examine the in.tftpd process on jaguar. What option is it running with? What does that option mean?
+
+ 1923 ?        Ss     0:00 /usr/sbin/in.tftpd -l
+
+       -l, --listen
+              Run the server in standalone (listen) mode, rather than run from inetd.  In listen mode, the  --timeout  option
+              is ignored, and the --address option can be used to specify a specific local address or port to listen to.
+
+Examine the in.tftpd entry in inetd.conf. What options does it start in.tftpd with? What do these
+option mean?
+
+# tftp  dgram   udp     wait    root    /usr/sbin/in.tftpd  in.tftpd -s /tftpboot -r blksize
+
+       --secure, -s
+              Change root directory on startup.  This means the remote host does not need to pass along the directory as part
+              of the transfer, and may add security.  When --secure is specified, exactly one directory should  be  specified
+              on  the  command  line.   The use of this option is recommended for security as well as compatibility with some
+              boot ROMs which cannot be easily made to include a directory name in its request.
+
+
+Which is more secure, the inetd.conf or the way the instructor actually started it? (This is what happens
+when you get in a hurry.)
+
+The way inetd.conf is more secure because -l ignores the timeout option and that could be a secuirty vulnerability. (Workstation attack)
+
+Examine the default config file pxelinux.cfg. How many boot options are there? (Hint: Did you see
+boot options when you did the install.)
+
+prompt=0
+label linux
+ kernel bzImage
+ append initrd=initrd.img load_ramdisk=1 prompt_ramdisk=0 rw SLACK_KERNEL=huge.s
+5 options.
+
+Examine the default.std config file pxelinux.cfg (this file is not used). How many boot options are
+there? Which kernels can be booted? Which message files can be displayed?
+
+default hugesmp.s
+prompt 1
+timeout 1200
+display message.txt
+F1 message.txt
+F2 f2.txt
+label huge.s
+  kernel kernels/huge.s/bzImage
+  append initrd=initrd.img load_ramdisk=1 prompt_ramdisk=0 rw SLACK_KERNEL=huge.s
+label hugesmp.s
+  kernel kernels/hugesmp.s/bzImage
+  append initrd=initrd.img load_ramdisk=1 prompt_ramdisk=0 rw SLACK_KERNEL=hugesmp.s
+label speakup.s
+  kernel kernels/speakup.s/bzImage
+  append initrd=initrd.img load_ramdisk=1 prompt_ramdisk=0 rw SLACK_KERNEL=speakup.s
+
+3 boot options.
+huge.s, hugesmp.s and speakup.s can be booted.
+message.txt and f2.txt can be displayed.
+
+

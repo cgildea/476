@@ -1,0 +1,114 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+This project is about NFS (Network File System).
+Examination items:
+1) Examine the /etc/exports file on jaguar. 
+/load 134.139.0.0/255.255.0.0(ro,sync,no_subtree_check)
+/sdb/slack13.37-64/slackware64 134.139.0.0/255.255.0.0(ro,sync,no_subtree_check)
+/sdb/slack13.37/slackware 134.139.0.0/255.255.0.0(ro,sync,no_subtree_check)
+/sdb/slack14.0-64/slackware64 134.139.0.0/255.255.0.0(ro,sync,no_subtree_check)
+
+What directories does it export? 
+	/load
+	/sdb/slack13.37-64/slackware64
+	/sdb/slack13.37/slackware
+	/sdb/slack14.0-64/slackware64
+
+What machines does it export to? 
+134.139.0.0/255.255.0.0
+All machines in the CSULB domain.
+
+What options are used? 
+(ro,sync,no_subtree_check)
+read only, sync, no subtree check - dont check the trees below you
+
+For the “what machines”, give an English description of the machines,
+i.e. figure out what the networks and netmasks mean. WARNING: you need to know the options to get
+the action items to work.
+
+2) The machine you administer mounts two directories from cheetah. Report: the fstab entries on your
+machine that cause these mounts.
+
+In /etc/fstab
+
+	134.139.248.17:/u3 /net/cheetah/u3 nfs soft,bg,nolock 0 0
+	134.139.248.17:/u4 /net/cheetah/u4 nfs soft,bg,nolock 0 0
+
+
+3) Cheetah is running the automounter. Look at cheetah. 
+
+Report: what NFS directories does cheetah actually have mounted (df or mount). (Note as our discussion of the automounter pointed out, the answer will depend on which of these directories has been accessed recently.) 
+
+aardvark.cecs.csulb.edu:/u1 432649216 16190464 394481664   4% /net/aardvark/u1
+
+Now do an "ls ~volper" and report any change in the directories cheetah has mounted. (Again, there will be no change if someone did this 
+just before you did.) 
+
+No change.
+Aardvark is still showing with a df:
+aardvark.cecs.csulb.edu:/u1 432649216 16190464 394481664   4% /net/aardvark/u1
+
+Examine the automount configuration (/etc/auto.master), it uses the indirect format.
+This means it will refer to some additional files which you will need to examine as well. 
+3a) Report: what options does cheetah use when it tries to mount the directory containing ~volper and what is the name of
+the file that contained those options. 
+
+In /etc/auto.aardvark
+	u1 -soft,intr,nsfvers=2 aardvark.cecs.csulb.edu:/u1
+
+3b) Report: what options does cheetah use when it tries to mount the directory from your machine and what is the name of the file that 
+contained those options.
+
+In /etc/auto.lab
+lab68 -soft,intr lab68:/etc
+
+WARNING: options not listed default. You should examine the mount manual entry and know what the
+defaults are; this is critical to getting the following questions to work.
+Action items:
+
+4) Configure your fstab so that it attaches the directory /sdb/slack13.37-64/slackware64 from jaguar
+on your local directory tree as /mnt whenever it boots. Jaguar is already configured to make this directory
+available to your machine, you do not need to modify jaguar. Your /mnt directory should already exist.
+Report: the file you changed on your local machine and the line you added to it.
+
+In /etc/fstab
+134.139.248.33:/sdb/slack13.37-64/slackware64   /mnt nfs soft,bg,nolock 1 1
+
+5) Configure your machine so that it makes the directory /etc available to cheetah. Cheetah will access
+this directory as /net/lab/labxx where labxx is the name the machine you are assigned to administer.
+Cheetah is already configured to mount your etc directory, you do not need to make any modifications to
+cheetah. Because your exports was empty when you last booted; you will also need to start rpc.nfsd and
+rpc.mountd. (I recommend using the /etc/rc.d/rc.nfsd script to do this.)
+
+In /etc/exports
+/etc/ 134.139.248.17/255.255.255.240(ro,sync,no_subtree_check)
+
+cd /etc/rc.d/
+./rc.nfsd
+
+Testing: Log into cheetah and run ls /net/lab/labxx. Because cheetah is running the automounter this
+ls will cause your directory to be mounted. Now run df, you should see the /etc from your machine
+mounted.
+Report: the files you changed on your local machine and give the lines you added to them. Also report
+the part of the disk free report from cheetah that applies to the /etc from your machine.
+
+csa476u1@cheetah:/etc$ df /net/lab/lab68
+Filesystem     1K-blocks    Used Available Use% Mounted on
+lab68:/etc      69231360 4204032  61510400   7% /net/lab/lab68
+
+6) Configure the automounter on your machine so that it will mount the /load directory from jaguar on
+/opt (that directory should already exist). Specifically ls /opt/load should display the directory from
+jaguar. Use an indirect map. Automount is by default disabled so you will need to enable it by marking
+the start script executable (chmod a+x /etc/rc.d/rc.autofs). You will need to use that script to start
+and reload the automounter. (Reload when you make changes to the files.)
+Report: The line you added to auto.master and the entire indirect file you created.
+
+In /etc/auto.master
+/opt /etc/auto.jaguar
+
+In /etc/auto.jaguar
+/load -soft intr jaguar:/load
+
+chmod a+x /etc/rc.d/rc.autofs

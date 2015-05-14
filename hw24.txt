@@ -1,0 +1,47 @@
+Cody Gildea
+csa476u1
+lab68.net.cecs.csulb.edu
+
+
+This project is about SAMBA.
+1) Create a directory /home/share on your machine and create a couple text files in it. Call them sam.txt
+and joe.txt.
+
+
+
+2) Modify the samba configuration file so that your security is by share and you share the /home/share
+directory as public read only. Call this share [myshare]. (Yes, you'll need to do a few other housekeeping
+items.) Also, turn off the printer shares and anything you are not really offering.
+
+In /etc/samba/smb.conf-sample
+[myshare]
+   comment = csa476u1's stuff
+   path = /home/share
+;   valid users = 134.139.
+   public = yes
+   readonly = yes
+   writable = no
+   printable = no
+ ;  create mask = 0765
+
+
+3) Set up the rc file (rc.samba) so it is executable. (You disabled it if you followed the instructions during
+the install project.) Run rc.samba. If you have already started samba (and it didn't work right), rc.samba
+has start, stop and restart as parameters. Once you have started samba, check to make sure the two samba
+daemons are running. If they are not, check the log files for messages.
+
+root@lab68:/etc/samba# /etc/rc.d/rc.samba start
+Starting Samba:  /usr/sbin/smbd -D
+                 /usr/sbin/nmbd -D
+
+4) Test your configuration: Go to a Windows machine in the lab (not in ECS-405). Login with your
+campus account. Open an explorer window (or My Computer). Use the syntax
+"\\134.139.248.xx\myshare" where "xx" is the last octet of your machine's IP address (refer to the IP
+numbers on the front of your machine or use the ifconfig command). You may only do this from on
+campus in the CECS labs (your share will not be exposed to the internet).
+Submit: a copy of your smb.conf with the comments removed.
+Demonstration: When you hand your submission to me, you must use the windows machine to
+demonstrate that your share works.
+
+AHHHH YEEEEAAAAH!
+
